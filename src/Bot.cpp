@@ -1,6 +1,8 @@
 // stl
 #include <iostream>
 #include <string>
+#include <cmath>
+#include <cstdlib>
 
 //project
 #include "Bot.h"
