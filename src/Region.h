@@ -1,5 +1,5 @@
-#ifndef REGION_H
-#define REGION_H
+#ifndef REGION_H_INCLUDED
+#define REGION_H_INCLUDED
 
 //stl
 #include <vector>
@@ -33,4 +33,4 @@ private:
 	int armies;
 };
 
-#endif // REGION_H
+#endif // REGION_H_INCLUDED

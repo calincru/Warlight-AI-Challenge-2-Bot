@@ -1,5 +1,5 @@
-#ifndef BOT_H
-#define BOT_H
+#ifndef BOT_H_INCLUDED
+#define BOT_H_INCLUDED
 
 // stl
 #include <iostream>
@@ -106,4 +106,4 @@ private:
 	Phase phase;
 };
 
-#endif // BOT_H
+#endif // BOT_H_INCLUDED
