@@ -1,7 +1,4 @@
-warlight2-starterbot
-===================
-
-AIGames warlight2 C++ starter bot
+# AIGames warlight2 C++ starter bot
 
 Basics
 ------
@@ -186,3 +183,6 @@ make zip does take care of that for you
 
 
 
+=======
+# Warlight AI Challenge 2 Bot
+>>>>>>> calin/master
