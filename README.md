@@ -12,17 +12,6 @@ This bot just implements the communication with the game and saves you from star
 This has a parser that implments the complete engine communication protocol and 
 has datastructures which represent the different objet in the game
 
-Getting the Bot
----------------
-
-Either clone the bot with 
-```
-git clone https://github.com/pizzard/warlight-starterbot.git your-bot-dir
-```
-or download the zip file at 
-https://github.com/pizzard/warlight-starterbot/archive/master.zip
-
-
 Getting Started
 ---------------
 
@@ -46,37 +35,17 @@ methods in Bot.cpp.
 
 Start adding your own logic on how to move and your own game logic there.
 
-
 Building
 --------
 
-For the challenge you don't need to build your bot, you can just upload it.
-But for the convienience of local testing it is highly recommended to do so.
-
-This describes the build environment used on linux, you can use a build envirenment of your choice.
-
 Requirements are:
- * Current c++ compiler e.g. g++ >= 4.7 (engine on server uses g++ 4.9 with -std=c++14)
- * gnu-automake (Makefiles)
- * zip (for automatic zip file creation for upload)
- * QT5's qmake (if you want to use the given qmake .pro file)
-
-You don't need to install the whole QT5 framework, the bot does not use it, just look
-for a qt5-qmake standalone package.
+* C++14 compiler (g++ or clang)
+* GNU make
 
 Then just go to the source directory of your bot.
 ```bash
-mkdir -p build # creates the build dir
-cd build
-qmake-qt5 ../starterbot.pro #creates your Makefile
+make run
 ```
-(you might want to rename the .pro file in advance to reflect the name of your cool bot, heh ;-))
-Then you can build your bot with 
-```bash
-make all 
-```
-or just make
-
 Because you mostly will use your local builds for testing your bot is by default created with debug 
 symbols enabled, ready to use with e.g. gdb or valgrind. Also all warnings are on.
 
@@ -84,14 +53,10 @@ Testing locally
 ---------------
 
 Once you successfully built your bot you will want to test your bot.
-The first very basicv test ist just run it from sour src dir with:
-(you can change the executeable name in the .pro file by changing the TARGET variable)
-```bash
-./build/starterbot
-```
 Now your bot should be running and will expect input from you over standard input,
 test typing something
 ```
+./ab_bot
 test
 ```
 then your bot will answer
@@ -109,7 +74,7 @@ If this works, you can let the bot play a simulated game.
 Therefore under testgames/, there are some tesgames where the complete engine output is captured
 you can run your bot with them using
 ```bash
-cat testgames/testmatch.game | ./build/starterbot 
+cat testgames/testmatch.game | ./ab_bot
 ```
 Then you see the complete output of your bot for that game.
 
@@ -177,12 +142,3 @@ The online compiler is g++ 4.9 in a recent version, it does compile your bot wit
 You can use subdirectories, but you have to care that in the zip file, the files are plced directly
 in the zip files root and not in a subdirectory, otherwise your includes won't work.
 make zip does take care of that for you
-
-
-
-
-
-
-=======
-# Warlight AI Challenge 2 Bot
->>>>>>> calin/master
