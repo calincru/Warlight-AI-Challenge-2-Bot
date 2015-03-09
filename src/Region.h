@@ -1,3 +1,9 @@
+// This program is free software licenced under MIT Licence. You can
+// find a copy of this licence in LICENCE.txt in the top directory of
+// source code.
+//
+
+
 #ifndef REGION_H_INCLUDED
 #define REGION_H_INCLUDED
 

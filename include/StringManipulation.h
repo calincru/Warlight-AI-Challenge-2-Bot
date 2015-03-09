@@ -1,7 +1,13 @@
+// This program is free software licenced under MIT Licence. You can
+// find a copy of this licence in LICENCE.txt in the top directory of
+// source code.
+//
+
+
 #ifndef STRING_MANIPULATION_H_INCLUDED
 #define STRING_MANIPULATION_H_INCLUDED
 
-// stl
+// C++
 #include <vector>
 #include <string>
 #include <sstream>

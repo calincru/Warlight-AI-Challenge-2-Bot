@@ -1,3 +1,9 @@
+# This program is free software licenced under MIT Licence. You can
+# find a copy of this licence in LICENCE.txt in the top directory of
+# source code.
+#
+
+
 #   ai_ab_target_name_for(<output variable> <source file>)
 #
 # Return the target name associated to a source file. If the path of the
