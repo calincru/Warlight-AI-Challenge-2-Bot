@@ -1,42 +1,43 @@
 #ifndef PARSER_H_INCLUDED
 #define PARSER_H_INCLUDED
 
-//stl
+// C++
 #include <stdio.h>
 #include <string>
 #include <vector>
 
-// project
+// Project
 #include "main.h"
+
 
 class Bot;
 
-class Parser: boost::noncopyable
+class Parser : public boost::noncopyable
 {
 public:
-	Parser(Bot* bot);
-	virtual ~Parser();
+    Parser(Bot* bot);
+    virtual ~Parser();
 
-	void parseInput();
-	void parseSetupMap();
-	void parseStartingRegions();
-	void parseSettings();
-	void parseUpdateMap();
-	void parseOpponentMoves();
-	void parseGo();
-	void parseSuperRegions();
-	void parseRegions();
-	void parsePickStartingRegion();
-	void parseOpponentStartingRegions();
-	void parseNeighbors();
-	void parseWastelands();
+    void parseInput();
+    void parseSetupMap();
+    void parseStartingRegions();
+    void parseSettings();
+    void parseUpdateMap();
+    void parseOpponentMoves();
+    void parseGo();
+    void parseSuperRegions();
+    void parseRegions();
+    void parsePickStartingRegion();
+    void parseOpponentStartingRegions();
+    void parseNeighbors();
+    void parseWastelands();
 
 private:
-	Parser();
-	Bot* theBot;
+    Parser();
+    Bot* theBot;
 
-	// helper function for the case we want to handle \r\n in future
-	inline bool lineEnds(){ return bool(std::cin.peek() == '\n'); }
+    // helper function for the case we want to handle \r\n in future
+    inline bool lineEnds(){ return bool(std::cin.peek() == '\n'); }
 
 };
 

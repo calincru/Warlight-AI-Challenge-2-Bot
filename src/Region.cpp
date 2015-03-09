@@ -1,23 +1,27 @@
-//stl
+// C++
 #include <stdio.h>
 #include <iostream>
-//project
+
+// Project
 #include "Region.h"
 #include "SuperRegion.h"
+#include "utils.h"
+
 
 Region::Region()
-	: id(0)
-	, superRegion(0)
-	, owner(NEUTRAL)
-	, armies(0)
+    : id(0)
+    , superRegion(0)
+    , owner(NEUTRAL)
+    , armies(0)
 {
+    UNUSED(id);
 }
 
 Region::Region(const int& pId, const int& pSuperRegion)
-	: id(pId)
-	, superRegion(pSuperRegion)
-	, owner(NEUTRAL)
-	, armies(0)
+    : id(pId)
+    , superRegion(pSuperRegion)
+    , owner(NEUTRAL)
+    , armies(0)
 {
 }
 
@@ -27,16 +31,15 @@ Region::~Region()
 
 void Region::addNeighbor(const int& neighbor)
 {
-	neighbors.push_back(neighbor);
+    neighbors.push_back(neighbor);
 }
 
 int Region::getNbNeighbors() const
 {
-	return neighbors.size();
+    return neighbors.size();
 }
 
 int Region::getNeighbor(const size_t& index) const
 {
-	return neighbors.at(index);
+    return neighbors.at(index);
 }
-
