@@ -19,11 +19,12 @@ class SuperRegion
 {
 public:
     SuperRegion();
-    SuperRegion(const int& pReward);
-
+    SuperRegion(int pReward);
     virtual ~SuperRegion();
-    void addRegion(const int& region);
 
+    void addRegion(int region);
+
+    // inline functions
     size_t size()
     {
         return regions.size();

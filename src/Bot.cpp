@@ -86,7 +86,7 @@ void Bot::makeMoves()
     std::cout << string::join(moves) << std::endl;
 }
 
-void Bot::addRegion(const unsigned& noRegion, const unsigned& noSuperRegion)
+void Bot::addRegion(unsigned noRegion, unsigned noSuperRegion)
 {
     while (regions.size() <= noRegion)
     {
@@ -96,18 +96,18 @@ void Bot::addRegion(const unsigned& noRegion, const unsigned& noSuperRegion)
     superRegions[noSuperRegion].addRegion(noRegion);
 }
 
-void Bot::addNeighbors(const unsigned& noRegion, const unsigned& neighbors)
+void Bot::addNeighbors(unsigned noRegion, unsigned neighbors)
 {
     regions[noRegion].addNeighbor(neighbors);
     regions[neighbors].addNeighbor(noRegion);
 }
 
-void Bot::addWasteland(const unsigned &noRegion)
+void Bot::addWasteland(unsigned noRegion)
 {
     wastelands.push_back(noRegion);
 }
 
-void Bot::addSuperRegion(const unsigned& noSuperRegion, const int&reward)
+void Bot::addSuperRegion(unsigned noSuperRegion, int reward)
 {
     while (superRegions.size() <= noSuperRegion)
     {
@@ -126,22 +126,22 @@ void Bot::setOpponentBotName(const std::string& name)
     opponentBotName = name;
 }
 
-void Bot::setArmiesLeft(const int& nbArmies)
+void Bot::setArmiesLeft(int nbArmies)
 {
     armiesLeft = nbArmies;
 }
 
-void Bot::setTimebank(const int &newTimebank)
+void Bot::setTimebank(int newTimebank)
 {
     timebank = newTimebank;
 }
 
-void Bot::setTimePerMove(const int &newTimePerMove)
+void Bot::setTimePerMove(int newTimePerMove)
 {
     timePerMove = newTimePerMove;
 }
 
-void Bot::setMaxRounds(const int &newMaxRounds)
+void Bot::setMaxRounds(int newMaxRounds)
 {
     maxRounds = newMaxRounds;
 }
@@ -151,17 +151,17 @@ void Bot::clearStartingRegions()
     startingRegionsreceived.clear();
 }
 
-void Bot::addStartingRegion(const unsigned& noRegion)
+void Bot::addStartingRegion(unsigned noRegion)
 {
     startingRegionsreceived.push_back(noRegion);
 }
 
-void Bot::addOpponentStartingRegion(const unsigned& noRegion)
+void Bot::addOpponentStartingRegion(unsigned noRegion)
 {
     opponentStartingRegions.push_back(noRegion);
 }
 
-void Bot::opponentPlacement(const unsigned & noRegion, const int & nbArmies)
+void Bot::opponentPlacement(unsigned  noRegion, int  nbArmies)
 {
     // suppress unused variable warnings
     (void) noRegion;
@@ -170,7 +170,7 @@ void Bot::opponentPlacement(const unsigned & noRegion, const int & nbArmies)
     // TODO: STUB
 }
 
-void Bot::opponentMovement(const unsigned &noRegion, const unsigned &toRegion, const int &nbArmies)
+void Bot::opponentMovement(unsigned noRegion, unsigned toRegion, int nbArmies)
 {
     // suppress unused variable warnings
     (void) noRegion;
@@ -180,7 +180,7 @@ void Bot::opponentMovement(const unsigned &noRegion, const unsigned &toRegion, c
     // TODO: STUB
 }
 
-void Bot::startDelay(const int& delay)
+void Bot::startDelay(int delay)
 {
     // suppress unused variable warnings
     (void) delay;
@@ -211,7 +211,7 @@ void Bot::executeAction()
     phase = NONE;
 }
 
-void Bot::updateRegion(const unsigned& noRegion, const  std::string& playerName, const int& nbArmies)
+void Bot::updateRegion(unsigned noRegion, const  std::string& playerName, int nbArmies)
 {
     Player owner;
     if (playerName == botName)
@@ -226,12 +226,12 @@ void Bot::updateRegion(const unsigned& noRegion, const  std::string& playerName,
         ownedRegions.push_back(noRegion);
 }
 
-void Bot::addArmies(const unsigned& noRegion, const int& nbArmies)
+void Bot::addArmies(unsigned noRegion, int nbArmies)
 {
     regions[noRegion].setArmies(regions[noRegion].getArmies() + nbArmies);
 }
 
-void Bot::moveArmies(const unsigned& noRegion, const unsigned& toRegion, const int& nbArmies)
+void Bot::moveArmies(unsigned noRegion, unsigned toRegion, int nbArmies)
 {
     if (regions[noRegion].getOwner() == regions[toRegion].getOwner() && regions[noRegion].getArmies() > nbArmies)
     {

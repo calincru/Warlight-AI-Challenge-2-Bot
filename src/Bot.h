@@ -22,7 +22,7 @@
 
 
 
-class Bot : public boost::noncopyable
+class Bot : private boost::noncopyable
 {
 public:
     enum Phase {
@@ -41,44 +41,44 @@ public:
     void placeArmies();
     void makeMoves();   ///< makes moves for a single turn
 
-    void addRegion(const unsigned& noRegion, const unsigned& noSuperRegion);
-    void addSuperRegion(const unsigned& noSuperRegion, const int& reward);
-    void addNeighbors(const unsigned& noRegion, const unsigned& Neighbors);
-    void addWasteland(const unsigned& noRegion);
+    void addRegion(unsigned noRegion, unsigned noSuperRegion);
+    void addSuperRegion(unsigned noSuperRegion, int reward);
+    void addNeighbors(unsigned noRegion, unsigned Neighbors);
+    void addWasteland(unsigned noRegion);
 
     /// Setters for settings
     void setBotName(const std::string& name);
     void setOpponentBotName(const std::string& name);
-    void setArmiesLeft(const int& nbArmies);
-    void setTimebank(const int& newTimebank);
-    void setTimePerMove(const int& newTimePerMove);
-    void setMaxRounds(const int& newMaxRounds);
+    void setArmiesLeft(int nbArmies);
+    void setTimebank(int newTimebank);
+    void setTimePerMove(int newTimePerMove);
+    void setMaxRounds(int newMaxRounds);
 
     /**
      * Adds armies to a region
      * @param noRegion region to add to
      * @param nbArmies number of Armies
      */
-    void addArmies(const unsigned& noRegion, const int& nbArmies);
+    void addArmies(unsigned noRegion, int nbArmies);
     /**
      * Moves armies on the map
      * @param noRegion starting region
      * @param toRegion target region
      * @param nbArmies number of Armies
      */
-    void moveArmies(const unsigned& noRegion, const unsigned& toRegion,
-                    const int& nbArmies);
+    void moveArmies(unsigned noRegion, unsigned toRegion,
+                    int nbArmies);
 
     void clearStartingRegions();
-    void addStartingRegion(const unsigned& noRegion);
+    void addStartingRegion(unsigned noRegion);
 
-    void addOpponentStartingRegion(const unsigned& noRegion);
+    void addOpponentStartingRegion(unsigned noRegion);
 
-    void opponentPlacement(const unsigned& noRegion, const int& nbArmies);
-    void opponentMovement(const unsigned& noRegion, const unsigned& toRegion,
-                          const int& nbArmies);
+    void opponentPlacement(unsigned noRegion, int nbArmies);
+    void opponentMovement(unsigned noRegion, unsigned toRegion,
+                          int nbArmies);
 
-    void startDelay(const int& delay);
+    void startDelay(int delay);
 
     void setPhase(const Phase phase);
 
@@ -93,8 +93,8 @@ public:
      * @param playerName player who owns it
      * @param nbArmies number of armies he gets
      */
-    void updateRegion(const unsigned& noRegion, const std::string& playerName,
-                      const int& nbArmies);
+    void updateRegion(unsigned noRegion, const std::string& playerName,
+                      int nbArmies);
 
     void resetRegionsOwned();
 

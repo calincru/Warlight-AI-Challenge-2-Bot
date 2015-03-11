@@ -23,7 +23,8 @@ Region::Region()
     UNUSED(id);
 }
 
-Region::Region(const int& pId, const int& pSuperRegion)
+
+Region::Region(int pId, int pSuperRegion)
     : id(pId)
     , superRegion(pSuperRegion)
     , owner(NEUTRAL)
@@ -35,7 +36,7 @@ Region::~Region()
 {
 }
 
-void Region::addNeighbor(const int& neighbor)
+void Region::addNeighbor(int neighbor)
 {
     neighbors.push_back(neighbor);
 }
@@ -45,7 +46,7 @@ int Region::getNbNeighbors() const
     return neighbors.size();
 }
 
-int Region::getNeighbor(const size_t& index) const
+int Region::getNeighbor(size_t index) const
 {
     return neighbors.at(index);
 }

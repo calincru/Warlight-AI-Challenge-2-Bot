@@ -15,7 +15,7 @@ SuperRegion::SuperRegion()
     UNUSED(reward);
 }
 
-SuperRegion::SuperRegion(const int& pReward)
+SuperRegion::SuperRegion(int pReward)
     : reward(pReward)
 {
     // nothing to do
@@ -23,10 +23,10 @@ SuperRegion::SuperRegion(const int& pReward)
 
 SuperRegion::~SuperRegion()
 {
-    // nothing tod o
+    // nothing to do
 }
 
-void SuperRegion::addRegion(const int& region)
+void SuperRegion::addRegion(int region)
 {
     regions.push_back(region);
 }
