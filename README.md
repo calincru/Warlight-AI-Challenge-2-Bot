@@ -1,18 +1,5 @@
 # AIGames Warlight2 - Aproape Bine team
 
-[C++ Starter repo.](https://github.com/pizzard/warlight-starterbot)
-
-## Build
-
-Make sure you have **gcc-4.9** installed.
-
-    mkdir build
-    cd build
-    cmake ..
-    make
-
-And then just do `make run` to run the bot.
-
 ## Useful
 
 Rules: http://theaigames.com/competitions/warlight-ai-challenge-2/rules
@@ -21,6 +8,8 @@ Rules more info: http://theaigames.com/discussions/warlight-ai-challenge-2/54e5e
 
 Syntax (Getting Started): http://theaigames.com/competitions/warlight-ai-challenge-2/getting-started
 
+Discussions: http://theaigames.com/discussions/warlight-ai-challenge-2
+
 Upload bot: http://theaigames.com/profile
 
 Game log: http://theaigames.com/competitions/warlight-ai-challenge-2/game-log/a/1
@@ -28,6 +17,8 @@ Game log: http://theaigames.com/competitions/warlight-ai-challenge-2/game-log/a/
 Good games: http://theaigames.com/competitions/warlight-ai-challenge-2/game-log/GreenTea+LuckyBot/1
 
 ## Misc useful
+
+[C++ Starter repo.](https://github.com/pizzard/warlight-starterbot)
 
 1v1 MM: https://www.warlight.net/MultiPlayer
 
@@ -42,3 +33,14 @@ Game Wiki: https://www.warlight.net/wiki/Main_Page
 * https://github.com/Norman1/SupremeDalek
 * https://github.com/psenough/warlight_ai_challenge
 * https://github.com/dinomite/ai-games
+
+## Build
+
+Make sure you have **gcc-4.9** installed.
+
+    mkdir build
+    cd build
+    cmake ..
+    make
+
+And then just do `make run` to run the bot.
