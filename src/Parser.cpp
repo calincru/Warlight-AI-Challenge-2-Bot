@@ -226,6 +226,5 @@ void Parser::parse_wastelands()
 {
     int region;
     while (!lineEnds() && std::cin >> region)
-        UNUSED(region);
         bot->add_wasteland(region);
 }
