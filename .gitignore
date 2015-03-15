@@ -4,6 +4,5 @@ build/
 .project
 .settings/
 
-AproapeBine.tar.gz
-AproapeBine.zip
-AproapeBine.rar
+deploy/*.tar.gz
+deploy/*.zip

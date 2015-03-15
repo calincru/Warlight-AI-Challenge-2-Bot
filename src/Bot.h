@@ -15,8 +15,6 @@
 #include "Settings.h"
 #include "boost/noncopyable.hpp"
 
-
-
 // Frwd decls
 class Parser;
 
@@ -31,38 +29,22 @@ public:
     void play();
 
     /**
-     * Prints to the stdout the index of the picked region
+     * Handles requests from the game
      */
+    void handle_request(Request request);
+
     void pick_starting_region();
-
-    /**
-     * Makes armies placements for a single turn
-     */
     void place_armies();
-
-    /**
-     * Makes moves for a single turn
-     */
     void make_moves();
-
-    /**
-     * Evaluates the current state and in turn figures out the proper action for
-     * the current move Hook in your army placements and attack moves here
-     */
-    void eval();
-
-    /**
-     * Gets the placements and movements of the opponent (those ones our bot can
-     * `see`).
-     */
     void handle_opp_moves(const Placements& pls, const Movements& movs);
 
     /**
+     * INITIAL starting positions!!
      * Gets the indexes of the starting regions and does some computation based
      * on them. E.g. computes the `scores` for each one of them to easily make a
      * choose in the pick starting regions phase.
      */
-    void handle_starting_regions(const std::vector<int> &regions);
+    void set_initial_starting_regions(const std::vector<int> &regions);
 
     /// Interface for settings
     void add_region(int region, int super);
@@ -78,12 +60,12 @@ public:
     void set_max_rounds(int rounds);
 
     /**
-     * Adds a new starting region among which our bot will have to choose from
+     * Sets the starting regions that are currently possible.
      * in the PICK_STARTING_REGION phase. It might use some precomputations done
      * when the starting regions have first been announced (when the method
      * handle_starting_regions has been called).
      */
-    void add_starting_region(int region);
+    void set_possible_starting_regions(const std::vector<int>& region);
 
     /**
      * Gets the indexes of the opponents starting regions and does some
@@ -92,7 +74,6 @@ public:
     void handle_opp_starting_region(const std::vector<int>& region);
 
     void start_delay(int delay);
-    void set_state(State state);
 
     /**
      * Updates the regions from the game engine
@@ -101,7 +82,6 @@ public:
      * @param nbArmies number of armies he gets
      */
     void update_region(int region, const std::string& name, int armies);
-
     void reset_owned_regions();
 
 private:
@@ -152,10 +132,8 @@ private:
     int time_per_move;
     int max_rounds;
 
-    std::vector<int> starting_regions;
+    std::vector<int> possible_starting_regions;
     std::vector<int> owned_regions;
-
-    State state;
 };
 
 #endif // BOT_H_INCLUDED
