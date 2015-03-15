@@ -96,9 +96,9 @@ void Parser::parse_settings()
         std::cin >> bot_name;
         bot->set_opp_name(bot_name);
     } else if (setting_type == "starting_armies") {
-        int starting_armies;
-        std::cin >> starting_armies;
-        bot->set_initial_armies(starting_armies);
+        int avail_armies;
+        std::cin >> avail_armies;
+        bot->set_avail_armies(avail_armies);
     } else if (setting_type == "starting_regions") {
         int starting_region;
         std::vector<int> regions;

@@ -72,7 +72,7 @@ public:
 
     void set_name(const std::string& name);
     void set_opp_name(const std::string& opp_name);
-    void set_initial_armies(int armies);
+    void set_avail_armies(int armies);
     void set_timebank(int timebank);
     void set_time_per_move(int time);
     void set_max_rounds(int rounds);
@@ -147,7 +147,7 @@ private:
 
     std::string name;
     std::string opp_name;
-    int init_armies_cnt;
+    int avail_armies;
     int timebank;
     int time_per_move;
     int max_rounds;

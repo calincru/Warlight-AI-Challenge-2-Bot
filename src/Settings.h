@@ -19,6 +19,9 @@ using AdjencyList = std::vector<std::vector<int>>;
 using Placements = std::vector<std::pair<int, int>>;
 using Movements = std::vector<std::tuple<int, int, int>>;
 
+#define NEUTRAL_ARMIES 2
+#define WASTELAND_ARMIES 10
+
 enum class Player {
     ME,
     ENEMY,

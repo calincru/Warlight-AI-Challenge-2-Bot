@@ -21,7 +21,8 @@ int main()
     try
     {
 #endif
-        Bot().play();
+        Bot b;
+        b.play();
 #ifndef STARTERBOT_DEBUG
     }
     catch (std::exception& ex)
