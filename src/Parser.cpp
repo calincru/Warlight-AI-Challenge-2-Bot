@@ -101,11 +101,8 @@ void Parser::parse_settings()
         bot->set_initial_armies(starting_armies);
     } else if (setting_type == "starting_regions") {
         std::size_t starting_region;
-        while (std::cin >> starting_region) {
+        while (!lineEnds() && std::cin >> starting_region)
             bot->add_starting_region(starting_region);
-            if (lineEnds())
-                break;
-        }
     }
 }
 
@@ -116,11 +113,8 @@ void Parser::parse_update_map()
     int armies;
 
     bot->reset_owned_regions();
-    while (std::cin >> region >> player >> armies) {
+    while (!lineEnds() && std::cin >> region >> player >> armies)
         bot->update_region(region, player, armies);
-        if (lineEnds())
-            break;
-    }
 }
 
 void Parser::parse_opp_moves()
