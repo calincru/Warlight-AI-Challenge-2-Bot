@@ -14,7 +14,7 @@
 
 int main()
 {
-    std::cout.sync_with_stdio(false);
+    std::ios_base::sync_with_stdio(false);
 
 #ifndef STARTERBOT_DEBUG
     try
@@ -23,9 +23,7 @@ int main()
         Bot b;
         b.play();
 #ifndef STARTERBOT_DEBUG
-    }
-    catch (std::exception& ex)
-    {
+    } catch (std::exception& ex) {
         std::cerr << "Exception:" << ex.what() << std::endl;
         return 1;
     }
