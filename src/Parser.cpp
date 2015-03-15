@@ -205,11 +205,9 @@ void Parser::parse_neighbors()
     std::string neighbors;
 
     while (!lineEnds() && std::cin >> region >> neighbors) {
-        std::vector<std::string> neighbors_flds;
-
-        string::split(neighbors_flds, neighbors);
-        for (auto i = 0u; i < neighbors_flds.size(); i++)
-            bot->add_neighbor(region, atoi(neighbors_flds[i].c_str()));
+        auto neighbors_flds = StringManipulation::comma_split(neighbors);
+        for (auto &neigh : neighbors_flds)
+            bot->add_neighbor(region, std::stoi(neigh));
     }
 
     // TODO:

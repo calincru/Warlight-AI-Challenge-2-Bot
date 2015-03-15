@@ -98,7 +98,7 @@ void Bot::make_moves()
         moves.emplace_back(move.str());
     }
 
-    std::cout << string::join(moves) << std::endl;
+    std::cout << StringManipulation::comma_join(moves) << std::endl;
 }
 
 void Bot::handle_starting_regions(const std::vector<int> &regions)
