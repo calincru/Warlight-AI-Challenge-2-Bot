@@ -48,6 +48,7 @@ void Bot::pick_starting_region()
 
     // Our bot is responsible for clearing the starting regions vector, to be
     // ready for a new regions picking phase.
+
     starting_regions.clear();
 }
 
@@ -131,11 +132,11 @@ void Bot::eval()
 
 void Bot::add_region(int region, int super)
 {
-    adj_list.emplace_back(std::vector<int>());
     assert(adj_list.size() == static_cast<std::size_t>(region));
+    adj_list.emplace_back(std::vector<int>());
 
+    assert(regs_super.size() == static_cast<std::size_t>(region));
     regs_super.emplace_back(super);
-    assert(regs_super.size() == static_cast<std::size_t>(super));
 }
 
 void Bot::add_neighbor(int region, int neigh)
@@ -150,8 +151,8 @@ void Bot::add_wasteland(int region)
 
 void Bot::add_super_region(int super, int reward)
 {
-    super_rewards.emplace_back(reward);
     assert(super_rewards.size() == static_cast<std::size_t>(super));
+    super_rewards.emplace_back(reward);
 }
 
 void Bot::set_name(const std::string& _name)
