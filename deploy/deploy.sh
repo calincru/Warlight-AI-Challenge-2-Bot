@@ -4,14 +4,12 @@ filename="AproapeBine.tar.gz"
 
 create_archive() {
     mkdir -p archive
-
     cp -R ../include/* archive
     cp -R ../src/*.cpp archive
     cp -R ../src/*.h archive
-
     tar czvf "$filename" -C ./archive .
-    ret=$?
 
+    ret=$?
     rm -rf archive &>/dev/null
     return $ret
 }
@@ -22,6 +20,11 @@ create_payload() {
 }
 
 upload_payload() {
+    if ! command -v curl >/dev/null; then
+        echo "curl not present in PATH"
+        return 1
+    fi
+    
     echo "CURL: logging in"
     curl --cookie-jar ~cookie "http://theaigames.com/sign-in" \
     -H "Host: theaigames.com" -H "User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:36.0) Gecko/20100101 Firefox/36.0" \
@@ -38,6 +41,10 @@ upload_payload() {
     -H "Cache-Control: no-cache" \
     --data "login=AproapeBine&password=050139899ecc3a268cb05a91d686958b&zAD2RZSTfdW2tH=bc1bfd0f3eea588d04df2e73cf3608ca" \
     &>/dev/null
+    
+    if [[ $? != 0 ]]; then
+        return 1
+    fi
 
     echo "CURL: uploading payload"
     curl --cookie ~cookie "http://theaigames.com/competitions/warlight-ai-challenge-2/bots/new" \
@@ -57,10 +64,12 @@ upload_payload() {
     --data-binary @~payload \
     &>/dev/null
 
-    rm -f ~cookie ~payload
+    return $?
 }
 
 echo "Creating archive" && (create_archive || (echo "Could not create archive $filename" && false)) && \
 echo "Creating payload" && (create_payload || (echo "Could not create payload" && false)) && \
 echo "Uploading payload" && (upload_payload || (echo "CURL error" && false))
+ret=$?
+rm -f ~cookie ~payload
 exit $?
