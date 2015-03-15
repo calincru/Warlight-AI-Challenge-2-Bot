@@ -11,21 +11,19 @@
 // Project
 #include "Bot.h"
 
-int main(int /*argc*/, char ** /*argv[] */)
+
+int main()
 {
-    std::cout.sync_with_stdio(false);
-    std::cout << "It works." << std::endl;
+    std::ios_base::sync_with_stdio(false);
 
 #ifndef STARTERBOT_DEBUG
     try
     {
 #endif
-        Bot bot;
-        bot.playGame();
+        Bot b;
+        b.play();
 #ifndef STARTERBOT_DEBUG
-    }
-    catch (std::exception& ex)
-    {
+    } catch (std::exception& ex) {
         std::cerr << "Exception:" << ex.what() << std::endl;
         return 1;
     }

@@ -12,29 +12,27 @@
 #include <string>
 #include <sstream>
 
-namespace string {
+namespace StringManipulation {
 
-inline std::vector<std::string> &split(std::vector<std::string> &elems,
-                                       const std::string &s,
-                                       char delim = ',')
+inline std::vector<std::string> comma_split(const std::string &s)
 {
     std::stringstream ss(s);
     std::string item;
-    while (std::getline(ss, item, delim))
-    {
+    std::vector<std::string> tokens;
+
+    while (std::getline(ss, item, ','))
         if (!item.empty())
-        elems.push_back(item);
-    }
-    return elems;
+            tokens.emplace_back(item);
+
+    return tokens;
 }
 
-inline std::string join(const std::vector<std::string> &elems,  char delim = ',')
+inline std::string comma_join(const std::vector<std::string> &elems)
 {
     std::string res = elems.front();
-    for(std::vector<std::string>::const_iterator it = ++elems.begin(); it != elems.end(); ++it)
-    {
-        res += delim + *it;
-    }
+    for(auto it = elems.begin() + 1; it != elems.end(); ++it)
+        res += ',' + *it;
+
     return res;
 }
 

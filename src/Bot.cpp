@@ -4,258 +4,245 @@
 //
 
 
-// C++
-#include <iostream>
-#include <string>
-#include <cmath>
-#include <cstdlib>
-
-// Project
+// Self
 #include "Bot.h"
 
-// Tools
+// C++
+#include <iostream>
+#include <sstream>
+#include <cmath>
+#include <cassert>
+
+// Project
+#include "Parser.h"
 #include "StringManipulation.h"
+#include "utils.h"
 
 
 Bot::Bot()
-    : armiesLeft(0)
-    , timebank(0)
-    , timePerMove(0)
-    , maxRounds(0)
-    , parser(this)
-    , phase(NONE)
+    : adj_list(1)
+    , super_rewards(1)
+    , regs_super(1)
+    , armies_cnt(1)
+    , regs_owner(1)
+    , state(State::NONE)
 {
     // nothing to do
 }
 
-Bot::~Bot()
+void Bot::play()
 {
-    // nothing to do
+    Parser(this).parseInput();
 }
 
-void Bot::playGame()
+void Bot::pick_starting_region()
 {
-    parser.parseInput();
+    // TODO
+    std::cout << starting_regions[std::rand() % starting_regions.size()];
+
+    // Our bot is responsible for clearing the starting regions vector, to be
+    // ready for a new regions picking phase.
+    starting_regions.clear();
 }
 
-void Bot::pickStartingRegion()
+void Bot::place_armies()
 {
-    // START HERE!
-    std::cout << startingRegionsreceived.front() << std::endl;
+    // TODO
+    auto region = owned_regions[std::rand() % owned_regions.size()];
+    std::cout << name << " place_armies " << region << " " << avail_armies
+              << std::endl;
+
+    add_armies(region, avail_armies);
 }
 
-void Bot::placeArmies()
+void Bot::make_moves()
 {
-    // START HERE!
-    unsigned region = std::rand() % ownedRegions.size();
-    std::cout << botName << " place_armies " << ownedRegions[region] << " "
-              << armiesLeft << std::endl;
+    // TODO
 
-    addArmies(ownedRegions[region], armiesLeft);
-}
-
-void Bot::makeMoves()
-{
-    // START HERE!
-    /// Output No moves when you have no time left or do not want to commit any moves.
+    /// Output No moves when you have no time left or do not want to commit any
+    /// moves.
+    //
     // std::cout << "No moves "  << std::endl;
+    //
     /// Anatomy of a single move
-    //  std::cout << botName << " attack/transfer " << from << " " << to << " "<< armiesMoved;
+    //
+    //  std::cout << name << " attack/transfer " << from << " " << to << " "
+    //            << armies_moved;
+    //
     /// When outputting multiple moves they must be seperated by a comma
+    //
+
     std::vector<std::string> moves;
-    for (size_t j = 0; j < ownedRegions.size(); ++j)
-    {
+    for (auto j = 0u; j < owned_regions.size(); ++j) {
         std::stringstream move;
-        int i = ownedRegions[j];
-        if (regions[i].getArmies() <= 1)
+
+        auto i = owned_regions[j];
+        if (armies_cnt[i] <= 1)
             continue;
 
-        int target = regions[i].getNeighbor(std::rand() % regions[i].getNbNeighbors());
+        auto target = adj_list[i].at(std::rand() % adj_list[i].size());
         // prefer enemy regions
-        for ( unsigned k = 0; k < 5; ++k)
-        {
-            if(regions[target].getOwner() != ME) break;
-            target = regions[i].getNeighbor(std::rand() % regions[i].getNbNeighbors());
+        for (auto k = 0; k < 5; ++k) {
+            if (regs_owner[target] != Player::ME)
+                break;
+            target = adj_list[i].at(std::rand() % adj_list[i].size());
         }
-        move << botName << " attack/transfer " << i << " "
-                << target << " "
-                << (regions[i].getArmies() - 1);
-        moves.push_back(move.str());
+        move << name << " attack/transfer " << i << " " << target << " "
+             << (armies_cnt[i] - 1);
+        moves.emplace_back(move.str());
     }
 
-    std::cout << string::join(moves) << std::endl;
+    std::cout << StringManipulation::comma_join(moves) << std::endl;
 }
 
-void Bot::addRegion(unsigned noRegion, unsigned noSuperRegion)
+void Bot::handle_starting_regions(const std::vector<int> &regions)
 {
-    while (regions.size() <= noRegion)
-    {
-        regions.push_back(Region());
-    }
-    regions[noRegion] = Region(noRegion, noSuperRegion);
-    superRegions[noSuperRegion].addRegion(noRegion);
+    // TODO
+    UNUSED(regions);
 }
 
-void Bot::addNeighbors(unsigned noRegion, unsigned neighbors)
+void Bot::handle_opp_moves(const Placements& pls, const Movements& movs)
 {
-    regions[noRegion].addNeighbor(neighbors);
-    regions[neighbors].addNeighbor(noRegion);
+    // TODO
+    UNUSED(pls);
+    UNUSED(movs);
 }
 
-void Bot::addWasteland(unsigned noRegion)
+void Bot::eval()
 {
-    wastelands.push_back(noRegion);
-}
-
-void Bot::addSuperRegion(unsigned noSuperRegion, int reward)
-{
-    while (superRegions.size() <= noSuperRegion)
-    {
-        superRegions.push_back(SuperRegion());
-    }
-    superRegions[noSuperRegion] = SuperRegion(reward);
-}
-
-void Bot::setBotName(const std::string& name)
-{
-    botName = name;
-}
-
-void Bot::setOpponentBotName(const std::string& name)
-{
-    opponentBotName = name;
-}
-
-void Bot::setArmiesLeft(int nbArmies)
-{
-    armiesLeft = nbArmies;
-}
-
-void Bot::setTimebank(int newTimebank)
-{
-    timebank = newTimebank;
-}
-
-void Bot::setTimePerMove(int newTimePerMove)
-{
-    timePerMove = newTimePerMove;
-}
-
-void Bot::setMaxRounds(int newMaxRounds)
-{
-    maxRounds = newMaxRounds;
-}
-
-void Bot::clearStartingRegions()
-{
-    startingRegionsreceived.clear();
-}
-
-void Bot::addStartingRegion(unsigned noRegion)
-{
-    startingRegionsreceived.push_back(noRegion);
-}
-
-void Bot::addOpponentStartingRegion(unsigned noRegion)
-{
-    opponentStartingRegions.push_back(noRegion);
-}
-
-void Bot::opponentPlacement(unsigned  noRegion, int  nbArmies)
-{
-    // suppress unused variable warnings
-    (void) noRegion;
-    (void) nbArmies;
-
-    // TODO: STUB
-}
-
-void Bot::opponentMovement(unsigned noRegion, unsigned toRegion, int nbArmies)
-{
-    // suppress unused variable warnings
-    (void) noRegion;
-    (void) toRegion;
-    (void) nbArmies;
-
-    // TODO: STUB
-}
-
-void Bot::startDelay(int delay)
-{
-    // suppress unused variable warnings
-    (void) delay;
-    // TODO: STUB
-}
-
-void Bot::setPhase(const Bot::Phase pPhase)
-{
-    phase = pPhase;
-}
-
-void Bot::executeAction()
-{
-    if (phase == NONE)
+    if (state == State::NONE)
         return;
-    if (phase == Bot::PICK_STARTING_REGION)
-    {
-        pickStartingRegion();
-    }
-    else if (phase == Bot::PLACE_ARMIES)
-    {
-        placeArmies();
-    }
-    else if (phase == Bot::ATTACK_TRANSFER)
-    {
-        makeMoves();
-    }
-    phase = NONE;
+
+    if (state == State::PICK_STARTING_REGION)
+        pick_starting_region();
+    else if (state == State::PLACE_ARMIES)
+        place_armies();
+    else if (state == State::ATTACK_TRANSFER)
+        make_moves();
+
+    state = State::NONE;
 }
 
-void Bot::updateRegion(unsigned noRegion, const  std::string& playerName, int nbArmies)
+void Bot::add_region(int region, int super)
 {
-    Player owner;
-    if (playerName == botName)
-        owner = ME;
-    else if (playerName == opponentBotName)
-        owner = ENEMY;
-    else
-        owner = NEUTRAL;
-    regions[noRegion].setArmies(nbArmies);
-    regions[noRegion].setOwner(owner);
-    if (owner == ME)
-        ownedRegions.push_back(noRegion);
+    assert(adj_list.size() == static_cast<std::size_t>(region));
+    adj_list.emplace_back(std::vector<int>());
+
+    assert(regs_super.size() == static_cast<std::size_t>(region));
+    regs_super.emplace_back(super);
+
+    assert(armies_cnt.size() == static_cast<std::size_t>(region));
+    armies_cnt.emplace_back(NEUTRAL_ARMIES);
+
+    assert(regs_owner.size() == static_cast<std::size_t>(region));
+    regs_owner.emplace_back(Player::NEUTRAL);
 }
 
-void Bot::addArmies(unsigned noRegion, int nbArmies)
+void Bot::add_neighbor(int region, int neigh)
 {
-    regions[noRegion].setArmies(regions[noRegion].getArmies() + nbArmies);
+    adj_list[region].emplace_back(neigh);
+    adj_list[neigh].emplace_back(region);
 }
 
-void Bot::moveArmies(unsigned noRegion, unsigned toRegion, int nbArmies)
+void Bot::add_wasteland(int region)
 {
-    if (regions[noRegion].getOwner() == regions[toRegion].getOwner() && regions[noRegion].getArmies() > nbArmies)
-    {
-        regions[noRegion].setArmies(regions[noRegion].getArmies() - nbArmies);
-        regions[toRegion].setArmies(regions[toRegion].getArmies() + nbArmies);
-    }
-    else if (regions[noRegion].getArmies() > nbArmies)
-    {
-        regions[noRegion].setArmies(regions[noRegion].getArmies() - nbArmies);
-        if (regions[toRegion].getArmies() - std::round(nbArmies * 0.6) <= 0)
-        {
-            regions[toRegion].setArmies(nbArmies - std::round(regions[toRegion].getArmies() * 0.7));
-            regions[toRegion].setOwner(regions[noRegion].getOwner());
+    wastelands.emplace_back(region);
+    armies_cnt[region] = WASTELAND_ARMIES;
+}
+
+void Bot::add_super_region(int super, int reward)
+{
+    assert(super_rewards.size() == static_cast<std::size_t>(super));
+    super_rewards.emplace_back(reward);
+}
+
+void Bot::set_name(const std::string& _name)
+{
+    name = _name;
+}
+
+void Bot::set_opp_name(const std::string& name)
+{
+    opp_name = name;
+}
+
+void Bot::set_avail_armies(int armies)
+{
+    avail_armies = armies;
+}
+
+void Bot::set_timebank(int _timebank)
+{
+    timebank = _timebank;
+}
+
+void Bot::set_time_per_move(int time)
+{
+    time_per_move = time;
+}
+
+void Bot::set_max_rounds(int rounds)
+{
+    max_rounds = rounds;
+}
+
+void Bot::add_starting_region(int region)
+{
+    starting_regions.emplace_back(region);
+}
+
+void Bot::handle_opp_starting_region(const std::vector<int>& regions)
+{
+    // TODO
+    UNUSED(regions);
+}
+
+void Bot::start_delay(int delay)
+{
+    UNUSED(delay);
+}
+
+void Bot::set_state(State _state)
+{
+    state = _state;
+}
+
+void Bot::update_region(int region, const std::string& player, int armies)
+{
+    // TODO take the changes into account
+    armies_cnt[region] = armies;
+    regs_owner[region] = player == name ? Player::ME :
+                                          player == opp_name ? Player::ENEMY :
+                                                               Player::NEUTRAL;
+    if (player == name)
+        owned_regions.emplace_back(region);
+}
+
+void Bot::reset_owned_regions()
+{
+    owned_regions.clear();
+}
+
+void Bot::add_armies(int region, int armies)
+{
+    armies_cnt[region] += armies;
+}
+
+void Bot::move_armies(int from_reg, int to_reg, int armies)
+{
+    if (regs_owner[from_reg] == regs_owner[to_reg] &&
+        armies_cnt[from_reg] > armies) {
+
+        armies_cnt[from_reg] -= armies;
+        armies_cnt[to_reg] += armies;
+    } else if (armies_cnt[from_reg] > armies) {
+        armies_cnt[from_reg] -= armies;
+        if (armies_cnt[to_reg] - std::round(armies * 0.6) <= 0) {
+            armies_cnt[to_reg] = armies - std::round(armies_cnt[to_reg] * 0.7);
+            regs_owner[to_reg] = regs_owner[from_reg];
+        } else {
+            armies_cnt[from_reg] += armies - std::round(armies_cnt[to_reg] * 0.7);
+            armies_cnt[to_reg] -= std::round(armies * 0.6);
         }
-        else
-        {
-            regions[noRegion].setArmies(
-                    regions[noRegion].getArmies() + nbArmies - std::round(regions[toRegion].getArmies() * 0.7));
-            regions[toRegion].setArmies(regions[toRegion].getArmies() - std::round(nbArmies * 0.6));
-        }
     }
-}
-
-void Bot::resetRegionsOwned()
-{
-    ownedRegions.clear();
 }
