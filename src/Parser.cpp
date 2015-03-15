@@ -104,7 +104,7 @@ void Parser::parse_settings()
         std::vector<int> regions;
 
         while (!lineEnds() && std::cin >> starting_region)
-            regions.push_back(starting_region);
+            regions.emplace_back(starting_region);
 
        bot->handle_starting_regions(regions);
     }
@@ -194,7 +194,7 @@ void Parser::parse_opp_starting_regions()
     int region;
     std::vector<int> opp_regions;
     while (!lineEnds() && std::cin >> region)
-        opp_regions.push_back(region);
+        opp_regions.emplace_back(region);
 
     bot->handle_opp_starting_region(opp_regions);
 }

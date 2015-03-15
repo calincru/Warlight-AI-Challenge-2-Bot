@@ -16,14 +16,8 @@
  */
 
 using AdjencyList = std::vector<std::vector<int>>;
-using Placements = std::vector<std::pair<std::size_t, std::size_t>>;
-using Movements = std::vector<
-                                std::tuple<
-                                            std::size_t,
-                                            std::size_t,
-                                            std::size_t
-                                          >
-                             >;
+using Placements = std::vector<std::pair<int, int>>;
+using Movements = std::vector<std::tuple<int, int, int>>;
 
 enum Player {
     ME,
