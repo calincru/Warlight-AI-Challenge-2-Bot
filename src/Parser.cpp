@@ -199,12 +199,12 @@ void Parser::parse_pick_starting_region()
 void Parser::parse_opp_starting_regions()
 {
     int region;
-    //std::vector<int> opp_regions;
+    std::vector<int> opp_regions;
     while (!lineEnds() && std::cin >> region)
         UNUSED(region);
-        //opp_regions.emplace_back(region);
+        opp_regions.emplace_back(region);
 
-    //bot->handle_opp_starting_region(opp_regions);
+    bot->handle_opp_starting_region(opp_regions);
 }
 
 void Parser::parse_neighbors()
@@ -227,5 +227,5 @@ void Parser::parse_wastelands()
     int region;
     while (!lineEnds() && std::cin >> region)
         UNUSED(region);
-        //bot->add_wasteland(region);
+        bot->add_wasteland(region);
 }
