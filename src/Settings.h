@@ -28,7 +28,7 @@ enum class Player {
     NEUTRAL
 };
 
-enum class State {
+enum class Request {
     NONE,
     PICK_STARTING_REGION,
     PLACE_ARMIES,

@@ -11,10 +11,12 @@
 #include <iostream>
 #include <vector>
 #include <stdexcept>
+#include <limits>
 
 // Project
 #include "Bot.h"
 #include "StringManipulation.h"
+#include "utils.h"
 
 
 Parser::Parser(Bot* _bot)
@@ -47,10 +49,8 @@ void Parser::parseInput()
         else {
             std::string line;
             getline(std::cin, line);
-            std::cerr  << input_type << " " << line << std::endl;
+            std::cerr << "BAD TOKEN: " << input_type << " in line " << line << std::endl;
         }
-
-        bot->eval();
     }
 }
 
@@ -106,7 +106,10 @@ void Parser::parse_settings()
         while (!lineEnds() && std::cin >> starting_region)
             regions.emplace_back(starting_region);
 
-       bot->handle_starting_regions(regions);
+       bot->set_initial_starting_regions(regions);
+    //Ignored:
+    } else if (setting_type == "starting_pick_amount") {
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
 }
 
@@ -145,20 +148,20 @@ void Parser::parse_opp_moves()
 
 void Parser::parse_go()
 {
-    std::string state;
+    std::string request;
     int delay;
-    std::cin >> state >> delay;
+    std::cin >> request >> delay;
 
     bot->start_delay(delay);
-    if (state == "place_armies") {
-        bot->set_state(State::PLACE_ARMIES);
+    if (request == "place_armies") {
+        bot->handle_request(Request::PLACE_ARMIES);
         return;
-    } else if (state == "attack/transfer") {
-        bot->set_state(State::ATTACK_TRANSFER);
+    } else if (request == "attack/transfer") {
+        bot->handle_request(Request::ATTACK_TRANSFER);
         return;
     }
 
-    throw std::invalid_argument("Cannot handle " + state + "correctly");
+    throw std::invalid_argument("Cannot handle " + request + "correctly");
 }
 
 void Parser::parse_super_regions()
@@ -182,21 +185,26 @@ void Parser::parse_pick_starting_region()
     std::cin >> delay;
     bot->start_delay(delay);
 
-    int region;
-    while (!lineEnds() && std::cin >> region)
-        bot->add_starting_region(region);
+    int starting_region;
+    std::vector<int> regions;
 
-    bot->set_state(State::PICK_STARTING_REGION);
+    while (!lineEnds() && std::cin >> starting_region)
+        regions.emplace_back(starting_region);
+
+    bot->set_possible_starting_regions(regions);
+
+    bot->handle_request(Request::PICK_STARTING_REGION);
 }
 
 void Parser::parse_opp_starting_regions()
 {
     int region;
-    std::vector<int> opp_regions;
+    //std::vector<int> opp_regions;
     while (!lineEnds() && std::cin >> region)
-        opp_regions.emplace_back(region);
+        UNUSED(region);
+        //opp_regions.emplace_back(region);
 
-    bot->handle_opp_starting_region(opp_regions);
+    //bot->handle_opp_starting_region(opp_regions);
 }
 
 void Parser::parse_neighbors()
@@ -211,12 +219,13 @@ void Parser::parse_neighbors()
     }
 
     // TODO:
-    // bot->set_state(State::FIND_BORDERS);
+    // bot->handle_request(Request::FIND_BORDERS);
 }
 
 void Parser::parse_wastelands()
 {
     int region;
     while (!lineEnds() && std::cin >> region)
-        bot->add_wasteland(region);
+        UNUSED(region);
+        //bot->add_wasteland(region);
 }

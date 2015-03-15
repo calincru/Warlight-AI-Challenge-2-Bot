@@ -25,7 +25,6 @@ Bot::Bot()
     , regs_super(1)
     , armies_cnt(1)
     , regs_owner(1)
-    , state(State::NONE)
 {
     // nothing to do
 }
@@ -35,14 +34,20 @@ void Bot::play()
     Parser(this).parseInput();
 }
 
+void Bot::handle_request(Request request)
+{
+    if (request == Request::PICK_STARTING_REGION)
+        pick_starting_region();
+    else if (request == Request::PLACE_ARMIES)
+        place_armies();
+    else if (request == Request::ATTACK_TRANSFER)
+        make_moves();
+}
+
 void Bot::pick_starting_region()
 {
     // TODO
-    std::cout << starting_regions[std::rand() % starting_regions.size()];
-
-    // Our bot is responsible for clearing the starting regions vector, to be
-    // ready for a new regions picking phase.
-    starting_regions.clear();
+    std::cout << possible_starting_regions[std::rand() % possible_starting_regions.size()] << std::endl;
 }
 
 void Bot::place_armies()
@@ -95,32 +100,11 @@ void Bot::make_moves()
     std::cout << StringManipulation::comma_join(moves) << std::endl;
 }
 
-void Bot::handle_starting_regions(const std::vector<int> &regions)
-{
-    // TODO
-    UNUSED(regions);
-}
-
 void Bot::handle_opp_moves(const Placements& pls, const Movements& movs)
 {
     // TODO
     UNUSED(pls);
     UNUSED(movs);
-}
-
-void Bot::eval()
-{
-    if (state == State::NONE)
-        return;
-
-    if (state == State::PICK_STARTING_REGION)
-        pick_starting_region();
-    else if (state == State::PLACE_ARMIES)
-        place_armies();
-    else if (state == State::ATTACK_TRANSFER)
-        make_moves();
-
-    state = State::NONE;
 }
 
 void Bot::add_region(int region, int super)
@@ -186,9 +170,15 @@ void Bot::set_max_rounds(int rounds)
     max_rounds = rounds;
 }
 
-void Bot::add_starting_region(int region)
+void Bot::set_initial_starting_regions(const std::vector<int> &regions)
 {
-    starting_regions.emplace_back(region);
+    // TODO
+    UNUSED(regions);
+}
+
+void Bot::set_possible_starting_regions(const std::vector<int> &regions)
+{
+    possible_starting_regions = std::move(regions);
 }
 
 void Bot::handle_opp_starting_region(const std::vector<int>& regions)
@@ -200,11 +190,6 @@ void Bot::handle_opp_starting_region(const std::vector<int>& regions)
 void Bot::start_delay(int delay)
 {
     UNUSED(delay);
-}
-
-void Bot::set_state(State _state)
-{
-    state = _state;
 }
 
 void Bot::update_region(int region, const std::string& player, int armies)
