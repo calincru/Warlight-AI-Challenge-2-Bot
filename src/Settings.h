@@ -19,7 +19,7 @@ using AdjencyList = std::vector<std::vector<int>>;
 using Placements = std::vector<std::pair<int, int>>;
 using Movements = std::vector<std::tuple<int, int, int>>;
 
-enum Player {
+enum class Player {
     ME,
     ENEMY,
     NEUTRAL

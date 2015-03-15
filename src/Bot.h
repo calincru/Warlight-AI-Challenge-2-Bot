@@ -138,7 +138,7 @@ private:
     std::vector<int> armies_cnt;
 
     // Lista conține pe poziția i ownerul regiunii cu indexul i.
-    std::vector<int> regs_owner;
+    std::vector<Player> regs_owner;
 
     // Lista care conține indicii wasteland-urilor. Pentru a evita iterarea prin
     // ea, ar trebui ținut un set, însă nu cred că are rost pentru inputurile

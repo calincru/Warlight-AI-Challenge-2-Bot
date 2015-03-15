@@ -82,14 +82,14 @@ void Bot::make_moves()
     for (auto j = 0u; j < owned_regions.size(); ++j) {
         std::stringstream move;
 
-        int i = owned_regions[j];
+        auto i = owned_regions[j];
         if (armies_cnt[i] <= 1)
             continue;
 
-        int target = adj_list[i].at(std::rand() % adj_list[i].size());
+        auto target = adj_list[i].at(std::rand() % adj_list[i].size());
         // prefer enemy regions
         for (auto k = 0; k < 5; ++k) {
-            if(regs_owner[target] != ME)
+            if (regs_owner[target] != Player::ME)
                 break;
             target = adj_list[i].at(std::rand() % adj_list[i].size());
         }
@@ -210,9 +210,9 @@ void Bot::update_region(int region, const std::string& player, int armies)
     // TODO take the changes into account
 
     armies_cnt[region] = armies;
-    regs_owner[region] = player == name ?
-                            ME : player == opp_name ? ENEMY : NEUTRAL;
-
+    regs_owner[region] = player == name ? Player::ME :
+                                          player == opp_name ? Player::ENEMY :
+                                                               Player::NEUTRAL;
     if (player == name)
         owned_regions.emplace_back(region);
 }
