@@ -11,6 +11,7 @@
 // Project
 #include "Bot.h"
 
+
 int main(int /*argc*/, char ** /*argv[] */)
 {
     std::cout.sync_with_stdio(false);
@@ -20,8 +21,7 @@ int main(int /*argc*/, char ** /*argv[] */)
     try
     {
 #endif
-        Bot bot;
-        bot.playGame();
+        Bot().play();
 #ifndef STARTERBOT_DEBUG
     }
     catch (std::exception& ex)

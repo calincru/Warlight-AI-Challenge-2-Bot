@@ -13,7 +13,8 @@
 #include <vector>
 
 // Project
-#include "main.h"
+#include "Settings.h"
+#include "boost/noncopyable.hpp"
 
 
 class Bot;
@@ -22,9 +23,10 @@ class Parser : private boost::noncopyable
 {
 public:
     Parser(Bot* bot);
-    virtual ~Parser();
 
     void parseInput();
+
+private:
     void parseSetupMap();
     void parseStartingRegions();
     void parseSettings();
@@ -38,15 +40,11 @@ public:
     void parseNeighbors();
     void parseWastelands();
 
-private:
-    Parser();
-
     // helper function for the case we want to handle \r\n in future
     bool lineEnds()
     {
         return bool(std::cin.peek() == '\n');
     }
-
 
     Bot* theBot;
 };

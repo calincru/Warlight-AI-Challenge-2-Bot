@@ -4,26 +4,22 @@
 //
 
 
+// Self
+#include "Parser.h"
+
 // C++
 #include <iostream>
-#include <stdlib.h>
+#include <cstdlib>
 #include <stdexcept>
 
 // Project
 #include "Bot.h"
-#include "Parser.h"
 #include "SuperRegion.h"
-
-// Tools
 #include "StringManipulation.h"
+
 
 Parser::Parser(Bot* bot)
     : theBot(bot)
-{
-    // nothing to do
-}
-
-Parser::~Parser()
 {
     // nothing to do
 }
@@ -140,25 +136,30 @@ void Parser::parseUpdateMap()
 
 void Parser::parseOpponentMoves()
 {
+    Placements pls;
+    Movements movs;
 
     std::string playerName, action;
-    unsigned noRegion, toRegion;
-    int nbArmies;
     while (std::cin.peek() != '\n' && std::cin >> playerName >> action)
     {
+        unsigned noRegion, toRegion;
+        int nbArmies;
+
         if (action == "place_armies")
         {
             std::cin >> noRegion >> nbArmies;
-            theBot->opponentPlacement(noRegion, nbArmies);
+            pls.emplace_back(noRegion, nbArmies);
         }
         if (action == "attack/transfer")
         {
             std::cin >> noRegion >> toRegion >> nbArmies;
-            theBot->opponentMovement(noRegion, toRegion, nbArmies);
+            movs.emplace_back(noRegion, toRegion, nbArmies);
         }
         if (lineEnds())
             break;
     }
+
+    theBot->handle_opp_moves(pls, movs);
 }
 
 void Parser::parseGo()
@@ -209,7 +210,6 @@ void Parser::parsePickStartingRegion()
     int delay;
     std::cin >> delay;
     theBot->startDelay(delay);
-    theBot->clearStartingRegions();
     while (std::cin >> region)
     {
         theBot->addStartingRegion(region);
@@ -232,7 +232,6 @@ void Parser::parseOpponentStartingRegions()
 
 void Parser::parseNeighbors()
 {
-
     unsigned region;
     std::string neighbors;
     std::vector<std::string> neighbors_flds;
@@ -241,7 +240,7 @@ void Parser::parseNeighbors()
         neighbors_flds.clear();
         string::split(neighbors_flds, neighbors);
         for (unsigned i = 0; i < neighbors_flds.size(); i++)
-            theBot->addNeighbors(region, atoi(neighbors_flds[i].c_str()));
+            theBot->add_neighbors(region, atoi(neighbors_flds[i].c_str()));
         if (lineEnds())
             break;
     }
