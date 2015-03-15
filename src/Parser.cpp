@@ -100,16 +100,20 @@ void Parser::parse_settings()
         std::cin >> starting_armies;
         bot->set_initial_armies(starting_armies);
     } else if (setting_type == "starting_regions") {
-        std::size_t starting_region;
+        int starting_region;
+        std::vector<int> regions;
+
         while (!lineEnds() && std::cin >> starting_region)
-            bot->add_starting_region(starting_region);
+            regions.push_back(starting_region);
+
+       bot->handle_starting_regions(regions);
     }
 }
 
 void Parser::parse_update_map()
 {
     std::string player;
-    std::size_t region;
+    int region;
     int armies;
 
     bot->reset_owned_regions();
@@ -124,7 +128,7 @@ void Parser::parse_opp_moves()
 
     std::string player, action;
     while (!lineEnds() && std::cin >> player >> action) {
-        unsigned from_reg, to_reg;
+        int from_reg, to_reg;
         int armies;
 
         if (action == "place_armies") {
@@ -159,7 +163,7 @@ void Parser::parse_go()
 
 void Parser::parse_super_regions()
 {
-    std::size_t super;
+    int super;
     int reward;
     while (!lineEnds() && std::cin >> super >> reward)
         bot->add_super_region(super, reward);
@@ -167,7 +171,7 @@ void Parser::parse_super_regions()
 
 void Parser::parse_regions()
 {
-    std::size_t super, region;
+    int super, region;
     while (!lineEnds() && std::cin >> region >> super)
         bot->add_region(region, super);
 }
@@ -187,14 +191,17 @@ void Parser::parse_pick_starting_region()
 
 void Parser::parse_opp_starting_regions()
 {
-    std::size_t region;
+    int region;
+    std::vector<int> opp_regions;
     while (!lineEnds() && std::cin >> region)
-        bot->add_opp_starting_region(region);
+        opp_regions.push_back(region);
+
+    bot->handle_opp_starting_region(opp_regions);
 }
 
 void Parser::parse_neighbors()
 {
-    std::size_t region;
+    int region;
     std::string neighbors;
 
     while (!lineEnds() && std::cin >> region >> neighbors) {
@@ -211,7 +218,7 @@ void Parser::parse_neighbors()
 
 void Parser::parse_wastelands()
 {
-    unsigned region;
+    int region;
     while (!lineEnds() && std::cin >> region)
         bot->add_wasteland(region);
 }

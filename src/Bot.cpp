@@ -45,6 +45,10 @@ void Bot::pick_starting_region()
     /* }); */
 
     /* std::cout << max << std::endl; */
+
+    // Our bot is responsible for clearing the starting regions vector, to be
+    // ready for a new regions picking phase.
+    starting_regions.clear();
 }
 
 void Bot::place_armies()
@@ -97,6 +101,12 @@ void Bot::make_moves()
     std::cout << string::join(moves) << std::endl;
 }
 
+void Bot::handle_starting_regions(const std::vector<int> &regions)
+{
+    // TODO
+    UNUSED(regions);
+}
+
 void Bot::handle_opp_moves(const Placements& pls, const Movements& movs)
 {
     // TODO
@@ -119,29 +129,29 @@ void Bot::eval()
     state = State::NONE;
 }
 
-void Bot::add_region(std::size_t region, std::size_t super)
+void Bot::add_region(int region, int super)
 {
     adj_list.emplace_back(std::vector<int>());
-    assert(adj_list.size() == region);
+    assert(adj_list.size() == static_cast<std::size_t>(region));
 
     regs_super.emplace_back(super);
-    assert(regs_super.size() == super);
+    assert(regs_super.size() == static_cast<std::size_t>(super));
 }
 
-void Bot::add_neighbor(std::size_t region, std::size_t neigh)
+void Bot::add_neighbor(int region, int neigh)
 {
     adj_list[region].emplace_back(neigh);
 }
 
-void Bot::add_wasteland(std::size_t region)
+void Bot::add_wasteland(int region)
 {
     wastelands.emplace_back(region);
 }
 
-void Bot::add_super_region(std::size_t super, int reward)
+void Bot::add_super_region(int super, int reward)
 {
     super_rewards.emplace_back(reward);
-    assert(super == super_rewards.size());
+    assert(super_rewards.size() == static_cast<std::size_t>(super));
 }
 
 void Bot::set_name(const std::string& _name)
@@ -174,21 +184,16 @@ void Bot::set_max_rounds(int rounds)
     max_rounds = rounds;
 }
 
-void Bot::clear_starting_regions()
-{
-    starting_regions.clear();
-}
-
-void Bot::add_starting_region(std::size_t region)
+void Bot::add_starting_region(int region)
 {
     starting_regions.emplace_back(region);
 }
 
-void Bot::add_opp_starting_region(std::size_t region)
+void Bot::handle_opp_starting_region(const std::vector<int>& regions)
 {
-    opp_starting_regions.emplace_back(region);
+    // TODO
+    UNUSED(regions);
 }
-
 
 void Bot::start_delay(int delay)
 {
@@ -200,9 +205,14 @@ void Bot::set_state(State _state)
     state = _state;
 }
 
-void Bot::update_region(std::size_t region, const std::string& player, int armies)
+void Bot::update_region(int region, const std::string& player, int armies)
 {
+    // TODO take the changes into account
+
     armies_cnt[region] = armies;
+    regs_owner[region] = player == name ?
+                            ME : player == opp_name ? ENEMY : NEUTRAL;
+
     if (player == name)
         owned_regions.emplace_back(region);
 }
@@ -212,12 +222,12 @@ void Bot::reset_owned_regions()
     owned_regions.clear();
 }
 
-void Bot::add_armies(std::size_t region, int armies)
+void Bot::add_armies(int region, int armies)
 {
     armies_cnt[region] += armies;
 }
 
-void Bot::move_armies(std::size_t from_reg, std::size_t to_reg, int armies)
+void Bot::move_armies(int from_reg, int to_reg, int armies)
 {
     if (regs_owner[from_reg] == regs_owner[to_reg] &&
         armies_cnt[from_reg] > armies) {

@@ -25,11 +25,25 @@ class Bot : private boost::noncopyable
 public:
     Bot();
 
-    void play();    ///< plays a single game of Warlight
+    /**
+     * Plays a single game of Warlight
+     */
+    void play();
 
+    /**
+     * Prints to the stdout the index of the picked region
+     */
     void pick_starting_region();
+
+    /**
+     * Makes armies placements for a single turn
+     */
     void place_armies();
-    void make_moves();   ///< makes moves for a single turn
+
+    /**
+     * Makes moves for a single turn
+     */
+    void make_moves();
 
     /**
      * Evaluates the current state and in turn figures out the proper action for
@@ -37,14 +51,24 @@ public:
      */
     void eval();
 
+    /**
+     * Gets the placements and movements of the opponent (those ones our bot can
+     * `see`).
+     */
     void handle_opp_moves(const Placements& pls, const Movements& movs);
 
+    /**
+     * Gets the indexes of the starting regions and does some computation based
+     * on them. E.g. computes the `scores` for each one of them to easily make a
+     * choose in the pick starting regions phase.
+     */
+    void handle_starting_regions(const std::vector<int> &regions);
 
     /// Interface for settings
-    void add_region(std::size_t region, std::size_t super);
-    void add_super_region(std::size_t super, int reward);
-    void add_neighbor(std::size_t region, std::size_t neigh);
-    void add_wasteland(std::size_t region);
+    void add_region(int region, int super);
+    void add_super_region(int super, int reward);
+    void add_neighbor(int region, int neigh);
+    void add_wasteland(int region);
 
     void set_name(const std::string& name);
     void set_opp_name(const std::string& opp_name);
@@ -53,11 +77,19 @@ public:
     void set_time_per_move(int time);
     void set_max_rounds(int rounds);
 
+    /**
+     * Adds a new starting region among which our bot will have to choose from
+     * in the PICK_STARTING_REGION phase. It might use some precomputations done
+     * when the starting regions have first been announced (when the method
+     * handle_starting_regions has been called).
+     */
+    void add_starting_region(int region);
 
-    void clear_starting_regions();
-    void add_starting_region(std::size_t region);
-
-    void add_opp_starting_region(std::size_t region);
+    /**
+     * Gets the indexes of the opponents starting regions and does some
+     * computation based on them.
+     */
+    void handle_opp_starting_region(const std::vector<int>& region);
 
     void start_delay(int delay);
     void set_state(State state);
@@ -68,7 +100,7 @@ public:
      * @param playerName player who owns it
      * @param nbArmies number of armies he gets
      */
-    void update_region(std::size_t region, const std::string& name, int armies);
+    void update_region(int region, const std::string& name, int armies);
 
     void reset_owned_regions();
 
@@ -78,7 +110,7 @@ private:
      * @param region region to add to
      * @param armies number of armies
      */
-    void add_armies(std::size_t region, int armies);
+    void add_armies(int region, int armies);
 
     /**
      * Moves armies on the map
@@ -86,7 +118,7 @@ private:
      * @param to_reg target region
      * @param armies number of armies
      */
-    void move_armies(std::size_t from_reg, std::size_t to_reg, int armies);
+    void move_armies(int from_reg, int to_reg, int armies);
 
 
     // Lista de adiacență; aka Graful; Pe poziția i se afla lista cu vecinii
@@ -121,7 +153,6 @@ private:
     int max_rounds;
 
     std::vector<int> starting_regions;
-    std::vector<unsigned> opp_starting_regions;
     std::vector<int> owned_regions;
 
     State state;
