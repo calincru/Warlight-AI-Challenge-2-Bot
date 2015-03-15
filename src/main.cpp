@@ -12,7 +12,7 @@
 #include "Bot.h"
 
 
-int main(int /*argc*/, char ** /*argv[] */)
+int main()
 {
     std::cout.sync_with_stdio(false);
     std::cout << "It works." << std::endl;
