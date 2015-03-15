@@ -49,7 +49,8 @@ void Parser::parseInput()
         else {
             std::string line;
             getline(std::cin, line);
-            std::cerr << "BAD TOKEN: " << input_type << " in line " << line << std::endl;
+            std::cerr << "BAD TOKEN: " << input_type << " in line " << line
+                      << std::endl;
         }
     }
 }
@@ -106,8 +107,8 @@ void Parser::parse_settings()
         while (!lineEnds() && std::cin >> starting_region)
             regions.emplace_back(starting_region);
 
-       bot->set_initial_starting_regions(regions);
-    //Ignored:
+       bot->handle_initial_starting_regions(regions);
+    // Ignored
     } else if (setting_type == "starting_pick_amount") {
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
@@ -192,7 +193,6 @@ void Parser::parse_pick_starting_region()
         regions.emplace_back(starting_region);
 
     bot->set_possible_starting_regions(regions);
-
     bot->handle_request(Request::PICK_STARTING_REGION);
 }
 
@@ -201,10 +201,9 @@ void Parser::parse_opp_starting_regions()
     int region;
     std::vector<int> opp_regions;
     while (!lineEnds() && std::cin >> region)
-        UNUSED(region);
         opp_regions.emplace_back(region);
 
-    bot->handle_opp_starting_region(opp_regions);
+    bot->handle_opp_starting_regions(opp_regions);
 }
 
 void Parser::parse_neighbors()

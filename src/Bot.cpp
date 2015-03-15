@@ -43,13 +43,14 @@ void Bot::handle_request(Request request)
     else if (request == Request::ATTACK_TRANSFER)
         make_moves();
     else
-        throw std::runtime_error("Unknown request");
+        throw std::invalid_argument("Unknown request");
 }
 
 void Bot::pick_starting_region()
 {
     // TODO
-    std::cout << possible_starting_regions[std::rand() % possible_starting_regions.size()] << std::endl;
+    std::cout << possible_starting_regions[
+                    std::rand() % possible_starting_regions.size()] << std::endl;
 }
 
 void Bot::place_armies()
@@ -172,7 +173,7 @@ void Bot::set_max_rounds(int rounds)
     max_rounds = rounds;
 }
 
-void Bot::set_initial_starting_regions(const std::vector<int> &regions)
+void Bot::handle_initial_starting_regions(const std::vector<int> &regions)
 {
     // TODO
     UNUSED(regions);
@@ -183,7 +184,7 @@ void Bot::set_possible_starting_regions(const std::vector<int> &regions)
     possible_starting_regions = std::move(regions);
 }
 
-void Bot::handle_opp_starting_region(const std::vector<int>& regions)
+void Bot::handle_opp_starting_regions(const std::vector<int>& regions)
 {
     // TODO
     UNUSED(regions);

@@ -44,7 +44,13 @@ public:
      * on them. E.g. computes the `scores` for each one of them to easily make a
      * choose in the pick starting regions phase.
      */
-    void set_initial_starting_regions(const std::vector<int> &regions);
+    void handle_initial_starting_regions(const std::vector<int> &regions);
+
+    /**
+     * Gets the indexes of the opponents starting regions and does some
+     * computation based on them.
+     */
+    void handle_opp_starting_regions(const std::vector<int>& region);
 
     /// Interface for settings
     void add_region(int region, int super);
@@ -61,17 +67,8 @@ public:
 
     /**
      * Sets the starting regions that are currently possible.
-     * in the PICK_STARTING_REGION phase. It might use some precomputations done
-     * when the starting regions have first been announced (when the method
-     * handle_starting_regions has been called).
      */
     void set_possible_starting_regions(const std::vector<int>& region);
-
-    /**
-     * Gets the indexes of the opponents starting regions and does some
-     * computation based on them.
-     */
-    void handle_opp_starting_region(const std::vector<int>& region);
 
     void start_delay(int delay);
 
