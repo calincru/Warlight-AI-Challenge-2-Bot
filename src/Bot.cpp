@@ -42,6 +42,8 @@ void Bot::handle_request(Request request)
         place_armies();
     else if (request == Request::ATTACK_TRANSFER)
         make_moves();
+    else
+        throw std::runtime_error("Unknown request");
 }
 
 void Bot::pick_starting_region()
