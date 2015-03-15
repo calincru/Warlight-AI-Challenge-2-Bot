@@ -8,6 +8,7 @@
 #define SETTINGS_H_INCLUDED
 
 #include <vector>
+#include <tuple>
 
 /**
  * This file contains gereral configuration and thing whoch should be in the
@@ -16,7 +17,13 @@
 
 using AdjencyList = std::vector<std::vector<int>>;
 using Placements = std::vector<std::pair<std::size_t, std::size_t>>;
-using Movements = std::vector<std::pair<std::size_t, std::size_t>>;
+using Movements = std::vector<
+                                std::tuple<
+                                            std::size_t,
+                                            std::size_t,
+                                            std::size_t
+                                          >
+                             >;
 
 enum Player {
     ME,

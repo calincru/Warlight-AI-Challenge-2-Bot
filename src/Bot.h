@@ -43,7 +43,7 @@ public:
     /// Interface for settings
     void add_region(std::size_t region, std::size_t super);
     void add_super_region(std::size_t super, int reward);
-    void add_neighbors(std::size_t region, std::size_t neigh);
+    void add_neighbor(std::size_t region, std::size_t neigh);
     void add_wasteland(std::size_t region);
 
     void set_name(const std::string& name);

@@ -61,11 +61,19 @@ void Bot::make_moves()
 {
     // TODO
 
-    /// Output No moves when you have no time left or do not want to commit any moves.
+    /// Output No moves when you have no time left or do not want to commit any
+    /// moves.
+    //
     // std::cout << "No moves "  << std::endl;
+    //
     /// Anatomy of a single move
-    //  std::cout << botName << " attack/transfer " << from << " " << to << " "<< armiesMoved;
+    //
+    //  std::cout << name << " attack/transfer " << from << " " << to << " "
+    //            << armies_moved;
+    //
     /// When outputting multiple moves they must be seperated by a comma
+    //
+
     std::vector<std::string> moves;
     for (auto j = 0u; j < owned_regions.size(); ++j) {
         std::stringstream move;
@@ -120,7 +128,7 @@ void Bot::add_region(std::size_t region, std::size_t super)
     assert(regs_super.size() == super);
 }
 
-void Bot::add_neighbors(std::size_t region, std::size_t neigh)
+void Bot::add_neighbor(std::size_t region, std::size_t neigh)
 {
     adj_list[region].emplace_back(neigh);
 }
