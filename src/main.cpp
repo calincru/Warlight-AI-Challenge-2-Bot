@@ -15,7 +15,6 @@
 int main()
 {
     std::cout.sync_with_stdio(false);
-    std::cout << "It works." << std::endl;
 
 #ifndef STARTERBOT_DEBUG
     try
