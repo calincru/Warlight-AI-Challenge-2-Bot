@@ -9,6 +9,7 @@
 
 #include <vector>
 #include <tuple>
+#include <queue>
 
 /**
  * This file contains gereral configuration and thing whoch should be in the
@@ -18,6 +19,7 @@
 using AdjencyList = std::vector<std::vector<int>>;
 using Placements = std::vector<std::pair<int, int>>;
 using Movements = std::vector<std::tuple<int, int, int>>;
+using ScoreQueue = std::priority_queue<std::pair<int, int>>;
 
 #define NEUTRAL_ARMIES 2
 #define WASTELAND_ARMIES 6

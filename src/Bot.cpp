@@ -19,6 +19,35 @@
 #include "utils.h"
 
 
+class ScoreComputer
+{
+public:
+    ScoreComputer(const Bot &b)
+        : m_bot(b)
+    {
+        // If you decide to make a copy of the bot, change the type of m_bot
+        // from const Bot& to Bot.
+    }
+
+    ScoreQueue compute_scores()
+    {
+        // TODO
+        return  ScoreQueue();
+    }
+
+    ScoreQueue compute_initial_scores(const std::vector<int> &starting_regions)
+    {
+        // TODO
+        UNUSED(starting_regions);
+        return  ScoreQueue();
+    }
+
+private:
+    // Add any helper method here.
+
+    const Bot &m_bot;
+};
+
 Bot::Bot()
     : adj_list(1)
     , super_rewards(1)
@@ -48,25 +77,42 @@ void Bot::handle_request(Request request)
 
 void Bot::pick_starting_region()
 {
-    // TODO
-    std::cout << possible_starting_regions[
-                    std::rand() % possible_starting_regions.size()] << std::endl;
+    // Pick some region based on super_scores.top() maybe.
 }
 
 void Bot::place_armies()
 {
-    // TODO
+    super_scores = ScoreComputer(*this).compute_scores();
+
+    // TODO: Use the queue to place the armies; e.g. check if we have enough
+    // armies to attack the highest ranked super region. If not, place some
+    // armies. If there are remaining armies to be placed, take the next
+    // highest ranked super region, and so on. Just an example.
+
+    // Use this vector to store the popped super regions and add them back into
+    // the priority queue at the end of this method.
+    std::vector<std::pair<int, int>> visited_super_regions;
+
+    // More code..
+
+    // E.g.
+    for (auto &entry : visited_super_regions)
+        super_scores.push(entry);
+
+
+
+
+    // Random - will be removed - kept for inspiration
     auto region = owned_regions[std::rand() % owned_regions.size()];
     std::cout << name << " place_armies " << region << " " << avail_armies
               << std::endl;
 
-    add_armies(region, avail_armies);
+    // Update armies count
+    armies_cnt[region] += avail_armies;
 }
 
 void Bot::make_moves()
 {
-    // TODO
-
     /// Output No moves when you have no time left or do not want to commit any
     /// moves.
     //
@@ -80,6 +126,11 @@ void Bot::make_moves()
     /// When outputting multiple moves they must be seperated by a comma
     //
 
+    // TODO: Use the super_scores priority queue to take the highest ranked super
+    // regions and get your armies towards it.
+
+
+    // Random - will be removed - kept for inspiration
     std::vector<std::string> moves;
     for (auto j = 0u; j < owned_regions.size(); ++j) {
         std::stringstream move;
@@ -175,8 +226,7 @@ void Bot::set_max_rounds(int rounds)
 
 void Bot::handle_initial_starting_regions(const std::vector<int> &regions)
 {
-    // TODO
-    UNUSED(regions);
+    ScoreComputer(*this).compute_initial_scores(regions);
 }
 
 void Bot::set_possible_starting_regions(const std::vector<int> &regions)
@@ -209,28 +259,4 @@ void Bot::update_region(int region, const std::string& player, int armies)
 void Bot::reset_owned_regions()
 {
     owned_regions.clear();
-}
-
-void Bot::add_armies(int region, int armies)
-{
-    armies_cnt[region] += armies;
-}
-
-void Bot::move_armies(int from_reg, int to_reg, int armies)
-{
-    if (regs_owner[from_reg] == regs_owner[to_reg] &&
-        armies_cnt[from_reg] > armies) {
-
-        armies_cnt[from_reg] -= armies;
-        armies_cnt[to_reg] += armies;
-    } else if (armies_cnt[from_reg] > armies) {
-        armies_cnt[from_reg] -= armies;
-        if (armies_cnt[to_reg] - std::round(armies * 0.6) <= 0) {
-            armies_cnt[to_reg] = armies - std::round(armies_cnt[to_reg] * 0.7);
-            regs_owner[to_reg] = regs_owner[from_reg];
-        } else {
-            armies_cnt[from_reg] += armies - std::round(armies_cnt[to_reg] * 0.7);
-            armies_cnt[to_reg] -= std::round(armies * 0.6);
-        }
-    }
 }

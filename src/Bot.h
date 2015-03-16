@@ -10,6 +10,7 @@
 // C++
 #include <vector>
 #include <string>
+#include <queue>
 
 // Project
 #include "Settings.h"
@@ -21,6 +22,8 @@ class Parser;
 class Bot : private boost::noncopyable
 {
 public:
+    friend class ScoreComputer;
+
     Bot();
 
     /**
@@ -82,22 +85,6 @@ public:
     void reset_owned_regions();
 
 private:
-    /**
-     * Adds armies to a region
-     * @param region region to add to
-     * @param armies number of armies
-     */
-    void add_armies(int region, int armies);
-
-    /**
-     * Moves armies on the map
-     * @param from_reg starting region
-     * @param to_reg target region
-     * @param armies number of armies
-     */
-    void move_armies(int from_reg, int to_reg, int armies);
-
-
     // Lista de adiacență; aka Graful; Pe poziția i se afla lista cu vecinii
     // regiunii i.
     AdjencyList adj_list;
@@ -131,6 +118,8 @@ private:
 
     std::vector<int> possible_starting_regions;
     std::vector<int> owned_regions;
+
+    ScoreQueue super_scores;
 };
 
 #endif // BOT_H_INCLUDED
