@@ -64,6 +64,7 @@ Bot::Bot()
     : adj_list(1)
     , super_rewards(1)
     , regs_super(1)
+    , super_table(1)
     , armies_cnt(1)
     , regs_owner(1)
 {
@@ -94,19 +95,14 @@ void Bot::pick_starting_region()
     // function just picks the region with the maximum score.
 
     ScoreComputer sc(*this);
-    auto max_score = sc.compute_score(regs_super[possible_starting_regions[0]]);
-    auto max_index = 0u;
-
-    for (auto i = 1u; i < possible_starting_regions.size(); ++i) {
-        auto tmp = sc.compute_score(regs_super[possible_starting_regions[i]]);
-
-        if (tmp > max_score) {
-            max_score  = tmp;
-            max_index = i;
+    auto max_reg = -1;
+    auto max_score = -1;
+    for (auto reg: possible_starting_regions)
+        if (sc.compute_score(regs_super[reg]) > max_score) {
+            max_score = sc.compute_score(regs_super[reg]);
+            max_reg = reg;
         }
-    }
-
-    std::cout << max_index << std::endl;
+    std::cout << max_reg << std::endl;
 }
 
 std::pair<int, int> Bot::plan_moves()
@@ -121,10 +117,15 @@ std::pair<int, int> Bot::plan_moves()
     // as parameters either a list of pairs or one pair at a time.
 
     std::vector<int> adj_sr;
-    std::vector<std::pair<int, int>> bordering_reg;
+    std::vector<std::pair<int, int> my_reg_other_reg_pairs;
 
     // Finds all the adjacent super regions and keep all the (src, dest) pairs
     // for possible attacks
+    for (auto my_reg: owned_regions)
+        for (auto other_reg: adj_list[my_reg])
+            if (regs_owner[other_reg] != Player::ME)
+                my_reg_other_reg_pairs
+
     for (auto i = 0u; i < owned_regions.size(); ++i) {
         auto neighbours = adj_list[i];
 
@@ -223,6 +224,8 @@ void Bot::add_region(int region, int super)
 
     assert(regs_owner.size() == static_cast<std::size_t>(region));
     regs_owner.emplace_back(Player::NEUTRAL);
+
+    super_table[super].emplace_back(region);
 }
 
 void Bot::add_neighbor(int region, int neigh)
@@ -241,6 +244,7 @@ void Bot::add_super_region(int super, int reward)
 {
     assert(super_rewards.size() == static_cast<std::size_t>(super));
     super_rewards.emplace_back(reward);
+    super_table.emplace_back();
 }
 
 void Bot::set_name(const std::string& _name)
