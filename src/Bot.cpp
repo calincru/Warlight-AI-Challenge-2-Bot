@@ -47,7 +47,8 @@ void Bot::handle_request(Request request)
         throw std::invalid_argument("Unknown request");
 }
 
-int Bot::compute_score(int super_region) {
+int Bot::compute_score(int super_region)
+{
     auto regs = super_table[super_region];
 
     auto nr_regs = regs.size();
@@ -80,18 +81,19 @@ std::pair<int, int> Bot::plan_moves()
 
     // Finds all the adjacent super regions and keep all the (src, dest) pairs
     // for possible attacks
-    for (auto my_reg: owned_regions)
-        for (auto other_reg: adj_list[my_reg])
+    for (auto &my_reg : owned_regions)
+        for (auto &other_reg : adj_list[my_reg])
             if (regs_owner[other_reg] != Player::ME)
                 my_reg_other_reg_pairs.emplace_back(my_reg, other_reg);
 
     std::pair<int, int> max_pair;
-    auto max_score = -1;
-    for (auto pair: my_reg_other_reg_pairs)
-        if (compute_score(regs_super[pair.second]) > max_score) {
-            max_score = compute_score(regs_super[pair.second]);
-            max_pair = pair;
+    auto max_score = std::numeric_limits<int>::min();
+    for (auto &p : my_reg_other_reg_pairs)
+        if (compute_score(regs_super[p.second]) > max_score) {
+            max_score = compute_score(regs_super[p.second]);
+            max_pair = p;
         }
+
     return max_pair;
 }
 
@@ -103,38 +105,21 @@ void Bot::pick_starting_region()
 
     auto max_reg = -1;
     auto max_score = -1;
-    for (auto reg: possible_starting_regions)
+    for (auto &reg : possible_starting_regions)
         if (compute_score(regs_super[reg]) > max_score) {
             max_score = compute_score(regs_super[reg]);
             max_reg = reg;
         }
+
     std::cout << max_reg << std::endl;
 }
 
 void Bot::place_armies()
 {
-    // TODO: Use the queue to place the armies; e.g. check if we have enough
-    // armies to attack the highest ranked super region. If not, place some
-    // armies. If there are remaining armies to be placed, take the next
-    // highest ranked super region, and so on. Just an example.
-
-    // Use this vector to store the popped super regions and add them back into
-    // the priority queue at the end of this method.
-    // std::vector<std::pair<int, int>> visited_super_regions;
-
-    // More code..
-
-    // E.g.
-    // for (auto &entry : visited_super_regions)
-    //    super_scores.push(entry);
-
-
     auto p = plan_moves();
-
     std::cout << name << " place_armies " << p.first  << " " << avail_armies
               << std::endl;
 
-    // Update armies count
     armies_cnt[p.first] += avail_armies;
 }
 
@@ -152,9 +137,6 @@ void Bot::make_moves()
     //
     /// When outputting multiple moves they must be seperated by a comma
     //
-
-    // TODO: Use the super_scores priority queue to take the highest ranked super
-    // regions and get your armies towards it.
 
     auto p = plan_moves();
     std::cout << name << " attack/transfer " << p.first << " " << p.second
@@ -236,11 +218,6 @@ void Bot::set_max_rounds(int rounds)
 
 void Bot::handle_initial_starting_regions(const std::vector<int> &regions)
 {
-    // Nu știu dacă mai e utilă funcția asta, dacă calculezi scorul regiunilor
-    // la fiecare alegere
-    //
-    // ScoreComputer(*this).compute_initial_scores(regions);
-
     UNUSED(regions);
 }
 

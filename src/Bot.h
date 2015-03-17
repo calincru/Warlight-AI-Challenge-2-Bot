@@ -22,8 +22,6 @@ class Parser;
 class Bot : private boost::noncopyable
 {
 public:
-    friend class ScoreComputer;
-
     Bot();
 
     /**
@@ -131,8 +129,6 @@ private:
 
     std::vector<int> possible_starting_regions;
     std::vector<int> owned_regions;
-
-    ScoreQueue super_scores;
 };
 
 #endif // BOT_H_INCLUDED
