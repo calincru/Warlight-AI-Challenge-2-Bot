@@ -12,7 +12,7 @@
 #include <queue>
 
 /**
- * This file contains gereral configuration and thing whoch should be in the
+ * This file contains general configuration and things which should be in the
  * global scope
  */
 
@@ -37,4 +37,4 @@ enum class Request {
     ATTACK_TRANSFER
 };
 
-#endif // MAIN_H_INCLUDED
+#endif // SETTINGS_H_INCLUDED
