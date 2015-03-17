@@ -19,47 +19,6 @@
 #include "StringManipulation.h"
 #include "utils.h"
 
-
-class ScoreComputer
-{
-public:
-    ScoreComputer(const Bot &b)
-        : m_bot(b)
-    {
-        // If you decide to make a copy of the bot, change the type of m_bot
-        // from const Bot& to Bot.
-    }
-
-    /**
-     * Computes the score for a given super region
-     *
-     * Radu zice să nu mai folosim membrii botului ci să transmitem parametrii
-     * pentru că, pe viitor, poate vrem să-i modificăm.
-     */
-    int compute_score(int super_region) {
-        auto regs = m_bot.super_table[super_region];
-
-        auto nr_regs = regs.size();
-        auto sum = -(static_cast<int>(nr_regs));
-
-        for (auto i = 0u; i < nr_regs; ++i)
-            if (m_bot.regs_owner[regs[i]] == Player::ME)
-                sum += m_bot.armies_cnt[regs[i]];
-            else
-                sum -= 3./2. * m_bot.armies_cnt[regs[i]];
-
-        if (sum > 0)
-            sum = 0;
-
-        return (10 - (-sum)/m_bot.avail_armies) * m_bot.super_rewards[super_region];
-    }
-
-private:
-    // Add any helper method here.
-
-    const Bot &m_bot;
-};
-
 Bot::Bot()
     : adj_list(1)
     , super_rewards(1)
@@ -88,21 +47,22 @@ void Bot::handle_request(Request request)
         throw std::invalid_argument("Unknown request");
 }
 
-void Bot::pick_starting_region()
-{
-    // There is no need for a priority queue, since the score of the starting
-    // regions might vary based on the previous choices of either botm, so this
-    // function just picks the region with the maximum score.
+int Bot::compute_score(int super_region) {
+    auto regs = super_table[super_region];
 
-    ScoreComputer sc(*this);
-    auto max_reg = -1;
-    auto max_score = -1;
-    for (auto reg: possible_starting_regions)
-        if (sc.compute_score(regs_super[reg]) > max_score) {
-            max_score = sc.compute_score(regs_super[reg]);
-            max_reg = reg;
-        }
-    std::cout << max_reg << std::endl;
+    auto nr_regs = regs.size();
+    auto sum = -(static_cast<int>(nr_regs));
+
+    for (auto i = 0u; i < nr_regs; ++i)
+        if (regs_owner[regs[i]] == Player::ME)
+            sum += armies_cnt[regs[i]];
+        else
+            sum -= 3./2. * armies_cnt[regs[i]];
+
+    if (sum > 0)
+        sum = 0;
+
+    return (10 - (-sum)/avail_armies) * super_rewards[super_region];
 }
 
 std::pair<int, int> Bot::plan_moves()
@@ -116,41 +76,39 @@ std::pair<int, int> Bot::plan_moves()
     // and call the "place_armies" and "make_moves" functions (which should take
     // as parameters either a list of pairs or one pair at a time.
 
-    std::vector<int> adj_sr;
-    std::vector<std::pair<int, int> my_reg_other_reg_pairs;
+    std::vector<std::pair<int, int>> my_reg_other_reg_pairs;
 
     // Finds all the adjacent super regions and keep all the (src, dest) pairs
     // for possible attacks
     for (auto my_reg: owned_regions)
         for (auto other_reg: adj_list[my_reg])
             if (regs_owner[other_reg] != Player::ME)
-                my_reg_other_reg_pairs
+                my_reg_other_reg_pairs.emplace_back(my_reg, other_reg);
 
-    for (auto i = 0u; i < owned_regions.size(); ++i) {
-        auto neighbours = adj_list[i];
-
-        for (auto j = 0u; j < neighbours.size(); ++j)
-            if (regs_owner[neighbours[j]] != Player::ME &&
-                std::find(adj_sr.begin(), adj_sr.end(), regs_super[neighbours[j]]) == adj_sr.end()) {
-                adj_sr.push_back(regs_super[neighbours[j]]);
-                bordering_reg.push_back(std::make_pair(i, j));
-            }
-    }
-
-    // Determine the super region with the maximum score
-    auto max_score = ScoreComputer(*this).compute_score(adj_sr[0]);
-    auto max_index = 0u;
-
-    for (auto i = 1u; i < adj_sr.size(); ++i) {
-        auto tmp = ScoreComputer(*this).compute_score(adj_sr[i]);
-
-        if (tmp > max_score) {
-            max_score = tmp;
-            max_index = i;
+    std::pair<int, int> max_pair;
+    auto max_score = -1;
+    for (auto pair: my_reg_other_reg_pairs)
+        if (compute_score(regs_super[pair.second]) > max_score) {
+            max_score = compute_score(regs_super[pair.second]);
+            max_pair = pair;
         }
-    }
+    return max_pair;
+}
 
-    return bordering_reg[max_index];
+void Bot::pick_starting_region()
+{
+    // There is no need for a priority queue, since the score of the starting
+    // regions might vary based on the previous choices of either botm, so this
+    // function just picks the region with the maximum score.
+
+    auto max_reg = -1;
+    auto max_score = -1;
+    for (auto reg: possible_starting_regions)
+        if (compute_score(regs_super[reg]) > max_score) {
+            max_score = compute_score(regs_super[reg]);
+            max_reg = reg;
+        }
+    std::cout << max_reg << std::endl;
 }
 
 void Bot::place_armies()
@@ -172,13 +130,12 @@ void Bot::place_armies()
 
 
     auto p = plan_moves();
-    auto region = adj_list[p.first][p.second];
 
-    std::cout << name << " place_armies " << region  << " " << avail_armies
+    std::cout << name << " place_armies " << p.first  << " " << avail_armies
               << std::endl;
 
     // Update armies count
-    armies_cnt[region] += avail_armies;
+    armies_cnt[p.first] += avail_armies;
 }
 
 void Bot::make_moves()

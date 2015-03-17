@@ -35,13 +35,13 @@ public:
      * Handles requests from the game
      */
     void handle_request(Request request);
-
     void pick_starting_region();
 
     /**
      * Returns a (source, destination) pair for an attack
      */
     std::pair<int, int> plan_moves();
+    int compute_score(int super);
 
     void place_armies();
     void make_moves();
