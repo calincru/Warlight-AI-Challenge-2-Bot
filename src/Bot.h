@@ -13,16 +13,24 @@
 #include <queue>
 
 // Project
-#include "Settings.h"
 #include "boost/noncopyable.hpp"
+#include "consts.h"
+#include "World.h"
 
-// Frwd decls
-class Parser;
+
+namespace warlightAi {
 
 class Bot : private boost::noncopyable
 {
+    typedef World::RegionPtr RegionPtr;
+    typedef World::SuperRegionPtr SuperRegionPtr;
+
 public:
-    Bot();
+    using VecOfPairs = std::vector<std::pair<int, int>>;
+    using VecOfTuples = std::vector<std::tuple<int, int, int>>;
+
+
+    Bot() = default;
 
     /**
      * Plays a single game of Warlight
@@ -32,18 +40,18 @@ public:
     /**
      * Handles requests from the game
      */
-    void handle_request(Request request);
-    void pick_starting_region();
+    void handleRequest(Request request);
+    void pickStartingRegion();
 
     /**
      * Returns a (source, destination) pair for an attack
      */
-    std::pair<int, int> plan_moves();
-    int compute_score(int super);
+    std::pair<RegionPtr, RegionPtr> planMoves();
+    int computeScore(SuperRegionPtr superRegion);
 
-    void place_armies();
-    void make_moves();
-    void handle_opp_moves(const Placements& pls, const Movements& movs);
+    void placeArmies();
+    void makeMoves();
+    void handleOppMoves(const VecOfPairs& pls, const VecOfTuples& movs);
 
     /**
      * INITIAL starting positions!!
@@ -51,33 +59,33 @@ public:
      * on them. E.g. computes the `scores` for each one of them to easily make a
      * choice in the pick starting regions phase.
      */
-    void handle_initial_starting_regions(const std::vector<int> &regions);
+    void handleInitialStartingRegions(const std::vector<int> &regions);
 
     /**
      * Gets the indexes of the opponents starting regions and does some
      * computation based on them.
      */
-    void handle_opp_starting_regions(const std::vector<int>& region);
+    void handleOppStartingRegions(const std::vector<int>& region);
 
     /// Interface for settings
-    void add_region(int region, int super);
-    void add_super_region(int super, int reward);
-    void add_neighbor(int region, int neigh);
-    void add_wasteland(int region);
+    void addRegion(int region, int super);
+    void addSuperRegion(int super, int reward);
+    void addNeighbor(int region, int neigh);
+    void addWasteland(int region);
 
-    void set_name(const std::string& name);
-    void set_opp_name(const std::string& opp_name);
-    void set_avail_armies(int armies);
-    void set_timebank(int timebank);
-    void set_time_per_move(int time);
-    void set_max_rounds(int rounds);
+    void setName(const std::string& name);
+    void setOppName(const std::string& oppName);
+    void setAvailArmies(int armies);
+    void setTimebank(int timebank);
+    void setTimePerMove(int time);
+    void setMaxRounds(int rounds);
 
     /**
      * Sets the starting regions that are currently possible.
      */
-    void set_possible_starting_regions(const std::vector<int>& region);
+    void setPossibleStartingRegions(const std::vector<int>& region);
 
-    void start_delay(int delay);
+    void startDelay(int delay);
 
     /**
      * Updates the regions from the game engine
@@ -85,50 +93,26 @@ public:
      * @param name player who owns it
      * @param armies number of armies he gets
      */
-    void update_region(int region, const std::string& name, int armies);
-    void reset_owned_regions();
+    void updateRegion(int region, const std::string& name, int armies);
+    void resetOwnedRegions();
 
 private:
-    // Lista de adiacență; aka Graful; Pe poziția i se afla lista cu vecinii
-    // regiunii i.
-    AdjencyList adj_list;
-
-    // Rewardurile fiecărei super regiuni; Pe poziția i, rewardul super regiunii
-    // i.
-    std::vector<int> super_rewards;
-
-    // Lista care conține super regiunile din care fac parte regiunile. Pe
-    // poziția i se află super regiunea din care face parte regiunea i.
-    std::vector<int> regs_super;
-
-    // Lista care conține listele de regiuni dintr-o super regiune. Pe poziția
-    // i se află lista cu regiunile care fac parte din super regiunea i.
-    std::vector<std::vector<int>> super_table;
-
-    // Lista conține numărul de armate pe fiecare regiune despre care botul
-    // nostru știe.
-    std::vector<int> armies_cnt;
-
-    // Lista conține pe poziția i ownerul regiunii cu indexul i.
-    std::vector<Player> regs_owner;
-
-    // Lista care conține indicii wasteland-urilor. Pentru a evita iterarea prin
-    // ea, ar trebui ținut un set, însă nu cred că are rost pentru inputurile
-    // din situația de față.
-    std::vector<int> wastelands;
+    World m_world;
 
     std::string name;
-    std::string opp_name;
+    std::string oppName;
 
-    // numărul de armate pe tură
-    int avail_armies;
+    int availArmies;
 
     int timebank;
-    int time_per_move;
-    int max_rounds;
+    int timePerMove;
+    int maxRounds;
 
-    std::vector<int> possible_starting_regions;
-    std::vector<int> owned_regions;
-};
+    std::vector<int> possibleStartingRegions;
+    std::vector<int> ownedRegions;
+
+}; // class Bot
+
+} // namespace warlightAi
 
 #endif // BOT_H_INCLUDED

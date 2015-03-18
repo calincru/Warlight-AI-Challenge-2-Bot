@@ -7,6 +7,14 @@
 // Self
 #include "Bot.h"
 
+// Project
+#include "Parser.h"
+#include "StringManipulation.h"
+#include "utils.h"
+#include "consts.h"
+#include "Region.h"
+#include "SuperRegion.h"
+
 // C++
 #include <iostream>
 #include <sstream>
@@ -14,59 +22,45 @@
 #include <cassert>
 #include <algorithm>
 
-// Project
-#include "Parser.h"
-#include "StringManipulation.h"
-#include "utils.h"
 
-Bot::Bot()
-    : adj_list(1)
-    , super_rewards(1)
-    , regs_super(1)
-    , super_table(1)
-    , armies_cnt(1)
-    , regs_owner(1)
-{
-    // nothing to do
-}
+
+namespace warlightAi {
 
 void Bot::play()
 {
-    Parser(this).parseInput();
+    Parser(*this).parseInput();
 }
 
-void Bot::handle_request(Request request)
+void Bot::handleRequest(Request request)
 {
     if (request == Request::PICK_STARTING_REGION)
-        pick_starting_region();
+        pickStartingRegion();
     else if (request == Request::PLACE_ARMIES)
-        place_armies();
+        placeArmies();
     else if (request == Request::ATTACK_TRANSFER)
-        make_moves();
+        makeMoves();
     else
         throw std::invalid_argument("Unknown request");
 }
 
-int Bot::compute_score(int super_region)
+int Bot::computeScore(SuperRegionPtr superRegion)
 {
-    auto regs = super_table[super_region];
+    auto subRegs = superRegion->getSubRegions();
+    auto sum = -(static_cast<int>(subRegs.size()));
 
-    auto nr_regs = regs.size();
-    auto sum = -(static_cast<int>(nr_regs));
-
-    for (auto i = 0u; i < nr_regs; ++i)
-        if (regs_owner[regs[i]] == Player::ME)
-            sum += armies_cnt[regs[i]];
+    for (auto &reg : subRegs)
+        if (reg->getOwner() == Player::ME)
+            sum += reg->getArmies();
         else
-            sum -= 3./2. * armies_cnt[regs[i]];
+            sum -= 3./2. * reg->getArmies();
 
     if (sum > 0)
         sum = 0;
 
-    return (10 - (-sum)/avail_armies) * super_rewards[super_region];
+    return (10 - (-sum)/availArmies) * superRegion->getReward();
 }
 
-std::pair<int, int> Bot::plan_moves()
+auto Bot::planMoves() -> std::pair<RegionPtr, RegionPtr>
 {
     // TODO
     //
@@ -74,56 +68,60 @@ std::pair<int, int> Bot::plan_moves()
     // should be a function that decides all the actions for the second phase
     // and deploys accordingly. This function should not return a pair, but
     // rather compute all possible pairs needed for the attack/transfer phase
-    // and call the "place_armies" and "make_moves" functions (which should take
+    // and call the "placeArmies" and "makeMoves" functions (which should take
     // as parameters either a list of pairs or one pair at a time.
 
-    std::vector<std::pair<int, int>> my_reg_other_reg_pairs;
+    std::vector<std::pair<RegionPtr, RegionPtr>> myRegOtherRegPairs;
 
     // Finds all the adjacent super regions and keep all the (src, dest) pairs
     // for possible attacks
-    for (auto &my_reg : owned_regions)
-        for (auto &other_reg : adj_list[my_reg])
-            if (regs_owner[other_reg] != Player::ME)
-                my_reg_other_reg_pairs.emplace_back(my_reg, other_reg);
+    for (auto &myReg : m_world.getRegionsOwnedBy(Player::ME))
+        for (auto &otherReg : myReg->getNeighbors())
+            if (otherReg->getOwner() != Player::ME)
+                myRegOtherRegPairs.emplace_back(myReg, otherReg);
 
-    std::pair<int, int> max_pair;
-    auto max_score = std::numeric_limits<int>::min();
-    for (auto &p : my_reg_other_reg_pairs)
-        if (compute_score(regs_super[p.second]) > max_score) {
-            max_score = compute_score(regs_super[p.second]);
-            max_pair = p;
+    std::pair<RegionPtr, RegionPtr> maxPair;
+    auto maxScore = std::numeric_limits<int>::min();
+    for (auto &p : myRegOtherRegPairs) {
+        auto score = computeScore(p.second->getSuperRegion());
+        if (score > maxScore) {
+            maxScore = score;
+            maxPair = p;
         }
+    }
 
-    return max_pair;
+    return maxPair;
 }
 
-void Bot::pick_starting_region()
+void Bot::pickStartingRegion()
 {
     // There is no need for a priority queue, since the score of the starting
     // regions might vary based on the previous choices of either botm, so this
     // function just picks the region with the maximum score.
 
-    auto max_reg = -1;
-    auto max_score = -1;
-    for (auto &reg : possible_starting_regions)
-        if (compute_score(regs_super[reg]) > max_score) {
-            max_score = compute_score(regs_super[reg]);
-            max_reg = reg;
+    auto maxReg = -1;
+    auto maxScore = -1;
+    for (auto &reg : possibleStartingRegions) {
+        auto score = computeScore(m_world.getRegionById(reg)->getSuperRegion());
+        if (score > maxScore) {
+            maxScore = score;
+            maxReg = reg;
         }
+    }
 
-    std::cout << max_reg << std::endl;
+    std::cout << maxReg << std::endl;
 }
 
-void Bot::place_armies()
+void Bot::placeArmies()
 {
-    auto p = plan_moves();
-    std::cout << name << " place_armies " << p.first  << " " << avail_armies
+    auto p = planMoves();
+    std::cout << name << " placeArmies " << p.first->id()  << " " << availArmies
               << std::endl;
 
-    armies_cnt[p.first] += avail_armies;
+    p.first->setArmies(p.first->getArmies() + availArmies);
 }
 
-void Bot::make_moves()
+void Bot::makeMoves()
 {
     /// Output No moves when you have no time left or do not want to commit any
     /// moves.
@@ -133,122 +131,105 @@ void Bot::make_moves()
     /// Anatomy of a single move
     //
     //  std::cout << name << " attack/transfer " << from << " " << to << " "
-    //            << armies_moved;
+    //            << armiesMoved;
     //
     /// When outputting multiple moves they must be seperated by a comma
     //
 
-    auto p = plan_moves();
-    std::cout << name << " attack/transfer " << p.first << " " << p.second
-              << " " << (armies_cnt[p.first] - 1) << std::endl;
+    auto p = planMoves();
+    std::cout << name << " attack/transfer " << p.first->id() << " "
+              << p.second->id() << " " << p.first->getArmies() - 1 << std::endl;
 }
 
-void Bot::handle_opp_moves(const Placements& pls, const Movements& movs)
+void Bot::handleOppMoves(const VecOfPairs& pls, const VecOfTuples& movs)
 {
     // TODO
     UNUSED(pls);
     UNUSED(movs);
 }
 
-void Bot::add_region(int region, int super)
+void Bot::addRegion(int region, int super)
 {
-    assert(adj_list.size() == static_cast<std::size_t>(region));
-    adj_list.emplace_back(std::vector<int>());
-
-    assert(regs_super.size() == static_cast<std::size_t>(region));
-    regs_super.emplace_back(super);
-
-    assert(armies_cnt.size() == static_cast<std::size_t>(region));
-    armies_cnt.emplace_back(NEUTRAL_ARMIES);
-
-    assert(regs_owner.size() == static_cast<std::size_t>(region));
-    regs_owner.emplace_back(Player::NEUTRAL);
-
-    super_table[super].emplace_back(region);
+    m_world.addRegion(region, super);
 }
 
-void Bot::add_neighbor(int region, int neigh)
+void Bot::addNeighbor(int region, int neigh)
 {
-    adj_list[region].emplace_back(neigh);
-    adj_list[neigh].emplace_back(region);
+    m_world.addLink(region, neigh);
 }
 
-void Bot::add_wasteland(int region)
+void Bot::addWasteland(int region)
 {
-    wastelands.emplace_back(region);
-    armies_cnt[region] = WASTELAND_ARMIES;
+    m_world.addWasteland(region);
 }
 
-void Bot::add_super_region(int super, int reward)
+void Bot::addSuperRegion(int super, int reward)
 {
-    assert(super_rewards.size() == static_cast<std::size_t>(super));
-    super_rewards.emplace_back(reward);
-    super_table.emplace_back();
+    m_world.addSuperRegion(super, reward);
 }
 
-void Bot::set_name(const std::string& _name)
+void Bot::setName(const std::string& _name)
 {
     name = _name;
 }
 
-void Bot::set_opp_name(const std::string& name)
+void Bot::setOppName(const std::string& name)
 {
-    opp_name = name;
+    oppName = name;
 }
 
-void Bot::set_avail_armies(int armies)
+void Bot::setAvailArmies(int armies)
 {
-    avail_armies = armies;
+    availArmies = armies;
 }
 
-void Bot::set_timebank(int _timebank)
+void Bot::setTimebank(int _timebank)
 {
     timebank = _timebank;
 }
 
-void Bot::set_time_per_move(int time)
+void Bot::setTimePerMove(int time)
 {
-    time_per_move = time;
+    timePerMove = time;
 }
 
-void Bot::set_max_rounds(int rounds)
+void Bot::setMaxRounds(int rounds)
 {
-    max_rounds = rounds;
+    maxRounds = rounds;
 }
 
-void Bot::handle_initial_starting_regions(const std::vector<int> &regions)
+void Bot::handleInitialStartingRegions(const std::vector<int> &regions)
 {
     UNUSED(regions);
 }
 
-void Bot::set_possible_starting_regions(const std::vector<int> &regions)
+void Bot::setPossibleStartingRegions(const std::vector<int> &regions)
 {
-    possible_starting_regions = std::move(regions);
+    possibleStartingRegions = std::move(regions);
 }
 
-void Bot::handle_opp_starting_regions(const std::vector<int>& regions)
+void Bot::handleOppStartingRegions(const std::vector<int>& regions)
 {
     // TODO
     UNUSED(regions);
 }
 
-void Bot::start_delay(int delay)
+void Bot::startDelay(int delay)
 {
     UNUSED(delay);
 }
 
-void Bot::update_region(int region, const std::string& player, int armies)
+void Bot::updateRegion(int region, const std::string& player, int armies)
 {
-    // TODO take the changes into account
-    armies_cnt[region] = armies;
-    regs_owner[region] = player == name ? Player::ME :
-                                          player == opp_name ? Player::ENEMY :
-                                                               Player::NEUTRAL;
-    if (player == name)
-        owned_regions.emplace_back(region);
+    Player p = player == name ? Player::ME :
+                                player == oppName ? Player::OPPONENT :
+                                                    Player::NEUTRAL;
+    m_world.updateRegion(region, p, armies);
 }
 
-void Bot::reset_owned_regions()
+void Bot::resetOwnedRegions()
 {
-    owned_regions.clear();
+    ownedRegions.clear();
 }
+
+} // namespace warlightAi

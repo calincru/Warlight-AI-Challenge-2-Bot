@@ -14,9 +14,10 @@ cmake_minimum_required(VERSION 2.8)
 # Setup CMake options
 #=============================================================================
 include(CMakeDependentOption)
-option(AI_AB_ENABLE_PEDANTIC "Compile with pedantic enabled." ON)
-option(AI_AB_ENABLE_WERROR   "Fail and stop if a warning is triggered." ON)
-option(AI_AB_ENABLE_CXX14    "Use the -std=c++14 switch if the compiler supports it." ON)
+option(AI_AB_ENABLE_PEDANTIC      "Compile with pedantic enabled." ON)
+option(AI_AB_ENABLE_WERROR        "Fail and stop if a warning is triggered." ON)
+option(AI_AB_ENABLE_CXX14         "Use the -std=c++14 switch if the compiler supports it." ON)
+option(AI_AB_ENABLE_STDLIB_LIBCXX "Use the -stdlib=libc++ switch if the compilter supports it." ON)
 
 
 #=============================================================================
@@ -49,6 +50,10 @@ endif()
 
 if (AI_AB_ENABLE_CXX14)
     ai_ab_append_flag(AI_AB_CXX_FEATURE_FLAGS AI_AB_HAS_STDCXX14_FLAG -std=c++14)
+endif()
+
+if (AI_AB_ENABLE_STDLIB_LIBCXX)
+    ai_ab_append_flag(AI_AB_CXX_FEATURE_FLAGS AI_AB_HAS_STDLIB_LIBCXX_FLAG -stdlib=libc++)
 endif()
 
 

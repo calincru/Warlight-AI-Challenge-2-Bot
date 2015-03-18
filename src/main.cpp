@@ -20,7 +20,7 @@ int main()
     try
     {
 #endif
-        Bot b;
+        warlightAi::Bot b;
         b.play();
 #ifndef STARTERBOT_DEBUG
     } catch (std::exception& ex) {
