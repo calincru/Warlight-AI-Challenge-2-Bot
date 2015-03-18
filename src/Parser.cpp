@@ -121,7 +121,6 @@ void Parser::parseUpdateMap()
     int region;
     int armies;
 
-    m_bot.resetOwnedRegions();
     while (!lineEnds() && std::cin >> region >> player >> armies)
         m_bot.updateRegion(region, player, armies);
 }

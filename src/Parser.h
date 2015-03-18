@@ -11,10 +11,6 @@
 #include "consts.h"
 #include "boost/noncopyable.hpp"
 
-// C++
-#include <vector>
-#include <tuple>
-
 
 namespace warlightAi {
 
@@ -42,7 +38,6 @@ private:
     void parseNeighbors();
     void parseWastelands();
 
-    // helper function for the case we want to handle \r\n in future
     bool lineEnds() const;
 
     Bot &m_bot;

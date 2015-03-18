@@ -7,15 +7,14 @@
 #ifndef BOT_H_INCLUDED
 #define BOT_H_INCLUDED
 
-// C++
-#include <vector>
-#include <string>
-#include <queue>
-
 // Project
 #include "boost/noncopyable.hpp"
 #include "consts.h"
 #include "World.h"
+
+// C++
+#include <vector>
+#include <string>
 
 
 namespace warlightAi {
@@ -65,7 +64,7 @@ public:
      * Gets the indexes of the opponents starting regions and does some
      * computation based on them.
      */
-    void handleOppStartingRegions(const std::vector<int>& region);
+    void handleOppStartingRegions(const std::vector<int>& regions);
 
     /// Interface for settings
     void addRegion(int region, int super);
@@ -75,15 +74,15 @@ public:
 
     void setName(const std::string& name);
     void setOppName(const std::string& oppName);
-    void setAvailArmies(int armies);
+    void setAvailArmies(int availableArmies);
     void setTimebank(int timebank);
-    void setTimePerMove(int time);
-    void setMaxRounds(int rounds);
+    void setTimePerMove(int timePerMove);
+    void setMaxRounds(int maxRounds);
 
     /**
      * Sets the starting regions that are currently possible.
      */
-    void setPossibleStartingRegions(const std::vector<int>& region);
+    void setPossibleStartingRegions(const std::vector<int> &regions);
 
     void startDelay(int delay);
 
@@ -93,23 +92,21 @@ public:
      * @param name player who owns it
      * @param armies number of armies he gets
      */
-    void updateRegion(int region, const std::string& name, int armies);
-    void resetOwnedRegions();
+    void updateRegion(int region, const std::string &name, int armies);
 
 private:
     World m_world;
 
-    std::string name;
-    std::string oppName;
+    std::string m_name;
+    std::string m_oppName;
 
-    int availArmies;
+    int m_availableArmies;
 
-    int timebank;
-    int timePerMove;
-    int maxRounds;
+    int m_timebank;
+    int m_timePerMove;
+    int m_maxRounds;
 
-    std::vector<int> possibleStartingRegions;
-    std::vector<int> ownedRegions;
+    std::vector<int> m_possibleStartingRegions;
 
 }; // class Bot
 

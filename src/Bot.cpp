@@ -8,10 +8,9 @@
 #include "Bot.h"
 
 // Project
-#include "Parser.h"
-#include "StringManipulation.h"
 #include "utils.h"
 #include "consts.h"
+#include "Parser.h"
 #include "Region.h"
 #include "SuperRegion.h"
 
@@ -57,7 +56,7 @@ int Bot::computeScore(SuperRegionPtr superRegion)
     if (sum > 0)
         sum = 0;
 
-    return (10 - (-sum)/availArmies) * superRegion->getReward();
+    return (10 - (-sum)/m_availableArmies) * superRegion->getReward();
 }
 
 auto Bot::planMoves() -> std::pair<RegionPtr, RegionPtr>
@@ -101,7 +100,7 @@ void Bot::pickStartingRegion()
 
     auto maxReg = -1;
     auto maxScore = -1;
-    for (auto &reg : possibleStartingRegions) {
+    for (auto &reg : m_possibleStartingRegions) {
         auto score = computeScore(m_world.getRegionById(reg)->getSuperRegion());
         if (score > maxScore) {
             maxScore = score;
@@ -115,10 +114,10 @@ void Bot::pickStartingRegion()
 void Bot::placeArmies()
 {
     auto p = planMoves();
-    std::cout << name << " placeArmies " << p.first->id()  << " " << availArmies
-              << std::endl;
+    std::cout << m_name << " placeArmies " << p.first->id()  << " "
+              << m_availableArmies << std::endl;
 
-    p.first->setArmies(p.first->getArmies() + availArmies);
+    p.first->setArmies(p.first->getArmies() + m_availableArmies);
 }
 
 void Bot::makeMoves()
@@ -137,7 +136,7 @@ void Bot::makeMoves()
     //
 
     auto p = planMoves();
-    std::cout << name << " attack/transfer " << p.first->id() << " "
+    std::cout << m_name << " attack/transfer " << p.first->id() << " "
               << p.second->id() << " " << p.first->getArmies() - 1 << std::endl;
 }
 
@@ -168,34 +167,34 @@ void Bot::addSuperRegion(int super, int reward)
     m_world.addSuperRegion(super, reward);
 }
 
-void Bot::setName(const std::string& _name)
+void Bot::setName(const std::string & name)
 {
-    name = _name;
+    m_name = name;
 }
 
-void Bot::setOppName(const std::string& name)
+void Bot::setOppName(const std::string &oppName)
 {
-    oppName = name;
+    m_oppName = oppName;
 }
 
-void Bot::setAvailArmies(int armies)
+void Bot::setAvailArmies(int availableArmies)
 {
-    availArmies = armies;
+    m_availableArmies = availableArmies;
 }
 
-void Bot::setTimebank(int _timebank)
+void Bot::setTimebank(int timebank)
 {
-    timebank = _timebank;
+    m_timebank = timebank;
 }
 
-void Bot::setTimePerMove(int time)
+void Bot::setTimePerMove(int timePerMove)
 {
-    timePerMove = time;
+    m_timePerMove = timePerMove;
 }
 
-void Bot::setMaxRounds(int rounds)
+void Bot::setMaxRounds(int maxRounds)
 {
-    maxRounds = rounds;
+    m_maxRounds = maxRounds;
 }
 
 void Bot::handleInitialStartingRegions(const std::vector<int> &regions)
@@ -205,7 +204,7 @@ void Bot::handleInitialStartingRegions(const std::vector<int> &regions)
 
 void Bot::setPossibleStartingRegions(const std::vector<int> &regions)
 {
-    possibleStartingRegions = std::move(regions);
+    m_possibleStartingRegions = std::move(regions);
 }
 
 void Bot::handleOppStartingRegions(const std::vector<int>& regions)
@@ -221,15 +220,10 @@ void Bot::startDelay(int delay)
 
 void Bot::updateRegion(int region, const std::string& player, int armies)
 {
-    Player p = player == name ? Player::ME :
-                                player == oppName ? Player::OPPONENT :
-                                                    Player::NEUTRAL;
+    Player p = player == m_name ? Player::ME :
+                                  player == m_oppName ? Player::OPPONENT :
+                                                        Player::NEUTRAL;
     m_world.updateRegion(region, p, armies);
-}
-
-void Bot::resetOwnedRegions()
-{
-    ownedRegions.clear();
 }
 
 } // namespace warlightAi
