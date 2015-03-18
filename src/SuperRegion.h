@@ -30,27 +30,7 @@ public:
 
     void addSubRegion(RegionPtr subRegion);
     bool containsRegion(RegionPtr region) const;
-
-    /**
-     * Use
-     *
-     *      decltype(auto) subRegs = supraRegion->getSubRegions();
-     *
-     *      or
-     *
-     *      const auto &subRegs = supraRegion->getSubRegions();
-     *
-     *  to get the constant reference to the internal neighbors vector.
-     *  If one does
-     *
-     *      auto subRegs = supraRegion->getSubRegions();
-     *
-     *  a copy of the vector will be made.
-     */
-    const auto &getSubRegions() const
-    {
-        return m_subRegions;
-    }
+    const std::vector<RegionPtr> &getSubRegions() const;
 
     bool isOwnedBy(warlightAi::Player player) const;
 
@@ -59,7 +39,7 @@ public:
 private:
     int m_id;
     int m_reward;
-    std::vector<const RegionPtr> m_subRegions;
+    std::vector<RegionPtr> m_subRegions;
 
 }; // class SuperRegion
 

@@ -7,7 +7,7 @@
 # A list of all sources
 file(GLOB_RECURSE AI_AB_SOURCES "*.cpp")
 add_executable(ai_ab ${AI_AB_SOURCES})
-target_link_libraries(ai_ab c++ c++abi)
+target_link_libraries(ai_ab)
 
 add_custom_target(
     run

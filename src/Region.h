@@ -33,27 +33,7 @@ public:
 
     void addNeighbor(RegionPtr neighbor);
     bool isNeighbor(RegionPtr region) const;
-
-    /**
-     * Use
-     *
-     *      decltype(auto) neighs = region->getNeighbors();
-     *
-     *      or
-     *
-     *      const auto &neighs = region->getNeighbors();
-     *
-     *  to get the constant reference to the internal neighbors vector.
-     *  If one does
-     *
-     *      auto neighs = region->getNeighbors();
-     *
-     *  a copy of the vector will be made.
-     */
-    const auto &getNeighbors() const
-    {
-        return m_neighbors;
-    }
+    const std::vector<RegionPtr> &getNeighbors() const;
 
     void setOwner(warlightAi::Player player);
     bool isOwnedBy(warlightAi::Player player) const;
@@ -67,7 +47,7 @@ public:
 private:
     int m_id;
     const SuperRegionPtr m_superRegion;
-    std::vector<const RegionPtr> m_neighbors;
+    std::vector<RegionPtr> m_neighbors;
     int m_armies;
     warlightAi::Player m_owner;
 

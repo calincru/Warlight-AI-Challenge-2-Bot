@@ -38,6 +38,11 @@ bool SuperRegion::containsRegion(RegionPtr region) const
     return false;
 }
 
+auto SuperRegion::getSubRegions() const -> decltype((m_subRegions))
+{
+    return m_subRegions;
+}
+
 bool SuperRegion::isOwnedBy(warlightAi::Player player) const
 {
     for (auto &reg : m_subRegions)

@@ -41,6 +41,11 @@ bool Region::isNeighbor(RegionPtr region) const
     return false;
 }
 
+auto Region::getNeighbors() const -> decltype((m_neighbors))
+{
+    return m_neighbors;
+}
+
 void Region::setOwner(warlightAi::Player player)
 {
     m_owner = player;
