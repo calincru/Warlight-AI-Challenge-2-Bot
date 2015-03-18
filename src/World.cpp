@@ -45,7 +45,7 @@ void World::addLink(int region1, int region2)
         throw std::runtime_error("Couldn't find regions by id");
 
     region1Ptr->addNeighbor(region2Ptr);
-    region1Ptr->addNeighbor(region1Ptr);
+    region2Ptr->addNeighbor(region1Ptr);
 }
 
 void World::addWasteland(int id)
