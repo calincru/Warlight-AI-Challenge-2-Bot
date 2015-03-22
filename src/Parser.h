@@ -8,7 +8,7 @@
 #define PARSER_H_INCLUDED
 
 // Project
-#include "consts.h"
+#include "globals.h"
 #include "boost/noncopyable.hpp"
 
 

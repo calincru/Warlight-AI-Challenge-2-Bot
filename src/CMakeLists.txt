@@ -3,6 +3,7 @@
 # source code.
 #
 
+include_directories(basic-strategies)
 
 # A list of all sources
 file(GLOB_RECURSE AI_AB_SOURCES "*.cpp")
@@ -15,3 +16,5 @@ add_custom_target(
     DEPENDS ai_ab
     WORKING_DIRECTORY ${CMAKE_PROJECT_DIR}
 )
+
+add_subdirectory(basic-strategies)

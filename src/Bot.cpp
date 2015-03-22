@@ -9,15 +9,16 @@
 
 // Project
 #include "utils.h"
-#include "consts.h"
 #include "Parser.h"
 #include "Region.h"
 #include "SuperRegion.h"
+#include "BasicPickStrategy.h"
 
 // C++
 #include <iostream>
 #include <cmath>
 #include <algorithm>
+#include <memory>
 
 
 
@@ -87,17 +88,7 @@ auto Bot::planMoves() -> std::pair<RegionPtr, RegionPtr>
 
 void Bot::pick()
 {
-    auto maxReg = static_cast<RegionPtr>(nullptr);
-    auto maxScore = -1;
-    for (auto &regionPtr : m_pickableRegions) {
-        auto score = computeScore(regionPtr->getSuperRegion());
-        if (score > maxScore) {
-            maxScore = score;
-            maxReg = regionPtr;
-        }
-    }
-
-    std::cout << maxReg->id() << std::endl;
+    std::cout << m_pickStrategy->pickNext(m_pickableRegions)->id() << std::endl;
 }
 
 void Bot::deploy()
@@ -118,11 +109,16 @@ void Bot::attack()
 
 void Bot::checkStartingRegions()
 {
-    // TODO
+    m_pickStrategy.reset(
+        new BasicPickStrategy(m_startingRegions, m_availableArmies)
+    );
 }
 
 void Bot::checkOpponentStartingRegions()
 {
+    // Correctness guaranteed by commands order.
+    delete m_pickStrategy.release();
+
     // TODO
 }
 

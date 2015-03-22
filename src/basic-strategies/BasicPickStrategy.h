@@ -1,0 +1,35 @@
+// This program is free software licenced under MIT Licence. You can
+// find a copy of this licence in LICENCE.txt in the top directory of
+// source code.
+//
+
+#ifndef BASIC_PICK_STRATEGY_H_INCLUDED
+#define BASIC_PICK_STRATEGY_H_INCLUDED
+
+// Project
+#include "PickStrategy.h"
+#include "globals.h"
+
+
+namespace warlightAi {
+
+// Fwrd decls
+class World;
+
+class BasicPickStrategy : public PickStrategy
+{
+public:
+    BasicPickStrategy(const VecOfRegionPtrs &startingRegions,
+                      int availableArmies);
+
+    RegionPtr pickNext(const VecOfRegionPtrs &pickableRegions) const override;
+
+private:
+    int m_availableArmies;
+
+}; // class BasicPickStrategy
+
+} // namespace warlightAi
+
+
+#endif // BASIC_PICK_STRATEGY_H_INCLUDED

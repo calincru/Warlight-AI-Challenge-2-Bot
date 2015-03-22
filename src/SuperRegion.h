@@ -7,7 +7,7 @@
 #define SUPERREGION_H_INCLUDED
 
 // Project
-#include "consts.h"
+#include "globals.h"
 
 // C++
 #include <memory>
@@ -20,9 +20,6 @@ class Region;
 
 class SuperRegion
 {
-    using RegionPtr = std::shared_ptr<Region>;
-    using SuperRegionPtr = std::shared_ptr<SuperRegion>;
-
 public:
     SuperRegion(int id, int reward);
 

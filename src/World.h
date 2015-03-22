@@ -7,7 +7,7 @@
 #define WORLD_H_INCLUDED
 
 // Project
-#include "consts.h"
+#include "globals.h"
 
 // C++
 #include <vector>
@@ -23,12 +23,6 @@ class SuperRegion;
 class World
 {
 public:
-    using RegionPtr = std::shared_ptr<Region>;
-    using SuperRegionPtr = std::shared_ptr<SuperRegion>;
-    using VecOfRegionPtrs = std::vector<RegionPtr>;
-    using VecOfSuperRegionPtrs = std::vector<SuperRegionPtr>;
-
-
     World() = default;
     ~World() = default;
 

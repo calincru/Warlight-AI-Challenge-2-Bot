@@ -4,12 +4,12 @@
 //
 
 
+// Project
+#include "Bot.h"
+
 // C++
 #include <iostream>
 #include <exception>
-
-// Project
-#include "Bot.h"
 
 
 int main()

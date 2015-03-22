@@ -4,17 +4,20 @@
 //
 
 
-#ifndef CONSTANTS_H_INCLUDED
-#define CONSTANTS_H_INCLUDED
+#ifndef GLOBALS_H_INCLUDED
+#define GLOBALS_H_INCLUDED
 
 #include <vector>
 #include <tuple>
+#include <memory>
 
 namespace warlightAi {
 
+// Consts
 const int neutralArmies = 2;
 const int wastelandArmies = 6;
 
+// Enums
 enum class Player {
     ME,
     OPPONENT,
@@ -31,6 +34,17 @@ enum class Request {
     CHECK_OPPONENT_STARTING_REGIONS
 };
 
+// Aliases
+class Region;
+class SuperRegion;
+
+using RegionPtr = std::shared_ptr<Region>;
+using SuperRegionPtr = std::shared_ptr<SuperRegion>;
+using VecOfRegionPtrs = std::vector<RegionPtr>;
+using VecOfSuperRegionPtrs = std::vector<SuperRegionPtr>;
+using VecOfPairs = std::vector<std::pair<RegionPtr, int>>;
+using VecOfTuples = std::vector<std::tuple<RegionPtr, RegionPtr, int>>;
+
 }
 
-#endif // CONSTANTS_H_INCLUDED
+#endif // GLOBALS_H_INCLUDED

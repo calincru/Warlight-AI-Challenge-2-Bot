@@ -8,7 +8,7 @@
 #define REGION_H_INCLUDED
 
 // Project
-#include <consts.h>
+#include <globals.h>
 
 // C++
 #include <vector>
@@ -22,9 +22,6 @@ class SuperRegion;
 
 class Region
 {
-    using RegionPtr = std::shared_ptr<Region>;
-    using SuperRegionPtr = std::shared_ptr<SuperRegion>;
-
 public:
     Region(int id, SuperRegionPtr superRegion, int armies,
            warlightAi::Player player);

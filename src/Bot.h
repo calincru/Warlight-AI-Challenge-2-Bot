@@ -9,8 +9,9 @@
 
 // Project
 #include "boost/noncopyable.hpp"
-#include "consts.h"
+#include "globals.h"
 #include "World.h"
+#include "PickStrategy.h"
 
 // C++
 #include <vector>
@@ -19,17 +20,12 @@
 
 namespace warlightAi {
 
+
 class Bot : private boost::noncopyable
 {
+    using PickStrategyPtr = std::unique_ptr<PickStrategy>;
+
 public:
-    using RegionPtr = World::RegionPtr;
-    using SuperRegionPtr = World::SuperRegionPtr;
-    using VecOfRegionPtrs = World::VecOfRegionPtrs;
-    using VecOfSuperRegionPtrs = World::VecOfSuperRegionPtrs;
-    using VecOfPairs = std::vector<std::pair<RegionPtr, int>>;
-    using VecOfTuples = std::vector<std::tuple<RegionPtr, RegionPtr, int>>;
-
-
     void play();
     void handleRequest(Request request);
 
@@ -82,6 +78,8 @@ private:
     VecOfRegionPtrs m_opponentStartingRegions;
     VecOfTuples m_opponentAttacks;
     VecOfPairs m_opponentDeployments;
+
+    PickStrategyPtr m_pickStrategy;
 
 }; // class Bot
 
