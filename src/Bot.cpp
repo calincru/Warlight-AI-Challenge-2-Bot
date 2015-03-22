@@ -63,8 +63,7 @@ void Bot::pick()
 
 void Bot::deploy()
 {
-    auto deployments = m_roundStrategy->getDeployments();
-    for (auto &entry : deployments) {
+    for (auto &entry : m_roundStrategy->getDeployments()) {
         std::cout << m_name << " deploy " << entry.first->id() << " "
                   << entry.second << std::endl;
 
@@ -74,8 +73,7 @@ void Bot::deploy()
 
 void Bot::attack()
 {
-    auto attacks = m_roundStrategy->getAttacks();
-    for (auto &attack : attacks)
+    for (auto &attack : m_roundStrategy->getAttacks())
         std::cout << m_name << " attack/transfer " << std::get<0>(attack)->id()
                   << " " << std::get<1>(attack)->id() << " "
                   << std::get<2>(attack) << std::endl;

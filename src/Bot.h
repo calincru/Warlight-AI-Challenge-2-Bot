@@ -64,13 +64,13 @@ private:
 
     World m_world;
 
-    int m_availableArmies;
     std::string m_name;
     std::string m_oppName;
 
     int m_timebank;
     int m_timePerMove;
     int m_maxRounds;
+    int m_availableArmies;
 
     VecOfRegionPtrs m_pickableRegions;
     VecOfRegionPtrs m_startingRegions;
