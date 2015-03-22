@@ -45,7 +45,7 @@ std::vector<RegionPtr> Region::getNeighbors() const
 {
     std::vector<RegionPtr> neighs;
     for (auto &neigh : m_neighbors)
-        neighs.push_back(neigh.lock());
+        neighs.emplace_back(neigh.lock());
 
     return neighs;
 }

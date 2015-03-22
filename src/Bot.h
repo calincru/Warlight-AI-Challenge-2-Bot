@@ -12,6 +12,7 @@
 #include "globals.h"
 #include "World.h"
 #include "PickStrategy.h"
+#include "RoundStrategy.h"
 
 // C++
 #include <vector>
@@ -24,6 +25,7 @@ namespace warlightAi {
 class Bot : private boost::noncopyable
 {
     using PickStrategyPtr = std::unique_ptr<PickStrategy>;
+    using RoundStrategyPtr = std::unique_ptr<RoundStrategy>;
 
 public:
     Bot();
@@ -43,7 +45,7 @@ public:
 
     void setName(const std::string &name);
     void setOppName(const std::string &oppName);
-    void setAvailArmies(int availableArmies);
+    void setAvailableArmies(int availableArmies);
     void setTimebank(int timebank);
     void setTimePerMove(int timePerMove);
     void setMaxRounds(int maxRounds);
@@ -59,16 +61,12 @@ private:
     void checkOpponentStartingRegions();
     void checkOpponentMoves();
 
-    std::pair<RegionPtr, RegionPtr> planMoves();
-    int computeScore(SuperRegionPtr superRegion);
-
 
     World m_world;
 
+    int m_availableArmies;
     std::string m_name;
     std::string m_oppName;
-
-    int m_availableArmies;
 
     int m_timebank;
     int m_timePerMove;
@@ -76,12 +74,13 @@ private:
 
     VecOfRegionPtrs m_pickableRegions;
     VecOfRegionPtrs m_startingRegions;
-
     VecOfRegionPtrs m_opponentStartingRegions;
+
     VecOfTuples m_opponentAttacks;
     VecOfPairs m_opponentDeployments;
 
     PickStrategyPtr m_pickStrategy;
+    RoundStrategyPtr m_roundStrategy;
 
 }; // class Bot
 

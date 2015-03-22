@@ -101,7 +101,7 @@ void Parser::parseSettings()
     } else if (settingType == "starting_armies") {
         int availArmies;
         std::cin >> availArmies;
-        m_bot.setAvailArmies(availArmies);
+        m_bot.setAvailableArmies(availArmies);
     } else if (settingType == "starting_regions") {
         int startingRegion;
         while (!lineEnds() && std::cin >> startingRegion)

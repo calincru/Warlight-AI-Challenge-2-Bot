@@ -18,11 +18,11 @@ class ScoreComputer
 {
 public:
     // Basic brain impl score
-    static int simulationScore(const SuperRegionPtr &superRegion,
-                               int availableArmies)
+    static double simulationScore(const SuperRegionPtr &superRegion,
+                                  int availableArmies)
     {
         auto subRegs = superRegion->getSubRegions();
-        auto sum = -(static_cast<int>(subRegs.size()));
+        double sum = -subRegs.size();
 
         for (auto &reg : subRegs)
             if (reg->getOwner() == Player::ME)
@@ -31,7 +31,7 @@ public:
                 sum -= 3./2. * reg->getArmies();
 
         if (sum > 0)
-            sum = 0;
+            sum = 0.;
 
         return (10 - (-sum)/availableArmies) * superRegion->getReward();
     }

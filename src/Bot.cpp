@@ -13,6 +13,7 @@
 #include "Region.h"
 #include "SuperRegion.h"
 #include "BasicPickStrategy.h"
+#include "BasicRoundStrategy.h"
 
 // C++
 #include <iostream>
@@ -26,8 +27,8 @@ namespace warlightAi {
 
 Bot::Bot()
     : m_pickStrategy(nullptr)
+    , m_roundStrategy(nullptr)
 {
-
 }
 
 void Bot::play()
@@ -37,59 +38,22 @@ void Bot::play()
 
 void Bot::handleRequest(Request request)
 {
-    if (request == Request::CHECK_STARTING_REGIONS)
+    if (request == Request::CHECK_STARTING_REGIONS) {
         checkStartingRegions();
-    else if (request == Request::PICK_STARTING_REGION)
+    } else if (request == Request::PICK_STARTING_REGION) {
         pick();
-    else if (request == Request::PLACE_ARMIES)
+    } else if (request == Request::PLACE_ARMIES) {
+        m_roundStrategy.reset(
+            new BasicRoundStrategy(m_world, m_availableArmies)
+        );
         deploy();
-    else if (request == Request::ATTACK_TRANSFER)
+    } else if (request == Request::ATTACK_TRANSFER) {
         attack();
-    else if (request == Request::CHECK_OPPONENT_STARTING_REGIONS)
+    } else if (request == Request::CHECK_OPPONENT_STARTING_REGIONS) {
         checkOpponentStartingRegions();
-    else if (request == Request::CHECK_OPPONENT_MOVES)
+    } else if (request == Request::CHECK_OPPONENT_MOVES) {
         checkOpponentMoves();
-}
-
-int Bot::computeScore(SuperRegionPtr superRegion)
-{
-    auto subRegs = superRegion->getSubRegions();
-    auto sum = -(static_cast<int>(subRegs.size()));
-
-    for (auto &reg : subRegs)
-        if (reg->getOwner() == Player::ME)
-            sum += reg->getArmies();
-        else
-            sum -= 3./2. * reg->getArmies();
-
-    if (sum > 0)
-        sum = 0;
-
-    return (10 - (-sum)/m_availableArmies) * superRegion->getReward();
-}
-
-auto Bot::planMoves() -> std::pair<RegionPtr, RegionPtr>
-{
-    std::vector<std::pair<RegionPtr, RegionPtr>> myRegOtherRegPairs;
-
-    // Finds all the adjacent super regions and keep all the (src, dest) pairs
-    // for possible attacks
-    for (auto &myReg : m_world.getRegionsOwnedBy(Player::ME))
-        for (auto &otherReg : myReg->getNeighbors())
-            if (otherReg->getOwner() != Player::ME)
-                myRegOtherRegPairs.emplace_back(myReg, otherReg);
-
-    std::pair<RegionPtr, RegionPtr> maxPair;
-    auto maxScore = std::numeric_limits<int>::min();
-    for (auto &p : myRegOtherRegPairs) {
-        auto score = computeScore(p.second->getSuperRegion());
-        if (score > maxScore) {
-            maxScore = score;
-            maxPair = p;
-        }
     }
-
-    return maxPair;
 }
 
 void Bot::pick()
@@ -99,18 +63,22 @@ void Bot::pick()
 
 void Bot::deploy()
 {
-    auto p = planMoves();
-    std::cout << m_name << " deploy " << p.first->id()  << " "
-              << m_availableArmies << std::endl;
+    auto deployments = m_roundStrategy->getDeployments();
+    for (auto &entry : deployments) {
+        std::cout << m_name << " deploy " << entry.first->id() << " "
+                  << entry.second << std::endl;
 
-    p.first->setArmies(p.first->getArmies() + m_availableArmies);
+        entry.first->setArmies(entry.first->getArmies() + entry.second);
+    }
 }
 
 void Bot::attack()
 {
-    auto p = planMoves();
-    std::cout << m_name << " attack/transfer " << p.first->id() << " "
-              << p.second->id() << " " << p.first->getArmies() - 1 << std::endl;
+    auto attacks = m_roundStrategy->getAttacks();
+    for (auto &attack : attacks)
+        std::cout << m_name << " attack/transfer " << std::get<0>(attack)->id()
+                  << " " << std::get<1>(attack)->id() << " "
+                  << std::get<2>(attack) << std::endl;
 }
 
 void Bot::checkStartingRegions()
@@ -120,8 +88,11 @@ void Bot::checkStartingRegions()
 
 void Bot::checkOpponentStartingRegions()
 {
-    // Correctness guaranteed by commands order.
+    // Correctness guaranteed by commands order. Just because it's not needed
+    // anymore.
     m_pickStrategy.reset();
+    m_startingRegions.clear();
+    m_pickableRegions.clear();
 
     // TODO
 }
@@ -195,7 +166,7 @@ void Bot::setOppName(const std::string &oppName)
     m_oppName = oppName;
 }
 
-void Bot::setAvailArmies(int availableArmies)
+void Bot::setAvailableArmies(int availableArmies)
 {
     m_availableArmies = availableArmies;
 }
