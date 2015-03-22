@@ -22,6 +22,9 @@ class SuperRegion;
 
 class Region
 {
+    using RegionWkPtr = std::weak_ptr<Region>;
+    using SuperRegionWkPtr = std::weak_ptr<SuperRegion>;
+
 public:
     Region(int id, SuperRegionPtr superRegion, int armies,
            warlightAi::Player player);
@@ -30,7 +33,7 @@ public:
 
     void addNeighbor(RegionPtr neighbor);
     bool isNeighbor(RegionPtr region) const;
-    const std::vector<RegionPtr> &getNeighbors() const;
+    std::vector<RegionPtr> getNeighbors() const;
 
     void setOwner(warlightAi::Player player);
     bool isOwnedBy(warlightAi::Player player) const;
@@ -43,8 +46,8 @@ public:
 
 private:
     int m_id;
-    const SuperRegionPtr m_superRegion;
-    std::vector<RegionPtr> m_neighbors;
+    const SuperRegionWkPtr m_superRegion;
+    std::vector<RegionWkPtr> m_neighbors;
     int m_armies;
     warlightAi::Player m_owner;
 

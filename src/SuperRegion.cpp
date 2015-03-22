@@ -32,21 +32,25 @@ void SuperRegion::addSubRegion(RegionPtr subRegion)
 bool SuperRegion::containsRegion(RegionPtr region) const
 {
     for (auto &reg : m_subRegions)
-        if (reg == region)
+        if (reg.lock() == region)
             return true;
 
     return false;
 }
 
-auto SuperRegion::getSubRegions() const -> decltype((m_subRegions))
+std::vector<RegionPtr> SuperRegion::getSubRegions() const
 {
-    return m_subRegions;
+    std::vector<RegionPtr> subRegs;
+    for (auto &subReg : m_subRegions)
+        subRegs.emplace_back(subReg.lock());
+
+    return subRegs;
 }
 
 bool SuperRegion::isOwnedBy(warlightAi::Player player) const
 {
     for (auto &reg : m_subRegions)
-        if (reg->getOwner() != player)
+        if (reg.lock()->getOwner() != player)
             return false;
 
     return true;

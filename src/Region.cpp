@@ -35,15 +35,19 @@ void Region::addNeighbor(RegionPtr neighbor)
 bool Region::isNeighbor(RegionPtr region) const
 {
     for (auto &neigh : m_neighbors)
-        if (neigh == region)
+        if (neigh.lock() == region)
             return true;
 
     return false;
 }
 
-auto Region::getNeighbors() const -> decltype((m_neighbors))
+std::vector<RegionPtr> Region::getNeighbors() const
 {
-    return m_neighbors;
+    std::vector<RegionPtr> neighs;
+    for (auto &neigh : m_neighbors)
+        neighs.push_back(neigh.lock());
+
+    return neighs;
 }
 
 void Region::setOwner(warlightAi::Player player)
@@ -73,7 +77,7 @@ int Region::getArmies() const
 
 auto Region::getSuperRegion() const -> SuperRegionPtr
 {
-    return m_superRegion;
+    return m_superRegion.lock();
 }
 
 } // namespace warlightAi
