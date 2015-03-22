@@ -25,8 +25,8 @@ void World::addRegion(int regionId, int superRegionId)
     m_regions.emplace_back(
                 std::make_shared<Region>(regionId,
                                          regionSuper,
-                                         warlightAi::neutralArmies,
-                                         warlightAi::Player::NEUTRAL)
+                                         NEUTRAL_ARMY_COUNT,
+                                         Player::NEUTRAL)
     );
 }
 
@@ -50,7 +50,7 @@ void World::addLink(int region1, int region2)
 
 void World::addWasteland(int id)
 {
-    getRegionById(id)->setArmies(warlightAi::wastelandArmies);
+    getRegionById(id)->setArmies(WASTELAND_ARMY_COUNT);
 }
 
 void World::updateRegion(int region, Player owner, int armies)

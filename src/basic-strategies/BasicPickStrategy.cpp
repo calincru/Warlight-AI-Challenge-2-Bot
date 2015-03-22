@@ -8,18 +8,23 @@
 
 // Project
 #include "utils.h"
+#include "globals.h"
 #include "World.h"
 #include "common/ScoreComputer.h"
+
+// C++
+#include <limits>
 
 
 namespace warlightAi {
 
-BasicPickStrategy::BasicPickStrategy(const VecOfRegionPtrs &startingRegions,
-                                     int availableArmies)
+BasicPickStrategy::BasicPickStrategy(const VecOfRegionPtrs &startingRegions)
     : PickStrategy(startingRegions)
-    , m_availableArmies(availableArmies)
 {
-    UNUSED(startingRegions);
+}
+
+BasicPickStrategy::~BasicPickStrategy()
+{
 }
 
 RegionPtr BasicPickStrategy::pickNext(const VecOfRegionPtrs &pickableRegions) const
@@ -27,11 +32,11 @@ RegionPtr BasicPickStrategy::pickNext(const VecOfRegionPtrs &pickableRegions) co
     using common::ScoreComputer;
 
     auto maxReg = static_cast<RegionPtr>(nullptr);
-    auto maxScore = -1;
+    auto maxScore = std::numeric_limits<int>::min();
     for (auto &regionPtr : pickableRegions) {
         auto score = ScoreComputer::simulationScore(
                                             regionPtr->getSuperRegion(),
-                                            m_availableArmies);
+                                            INIT_AVAILABLE_ARMIES);
         if (score > maxScore) {
             maxScore = score;
             maxReg = regionPtr;

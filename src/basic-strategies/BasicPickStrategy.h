@@ -13,19 +13,15 @@
 
 namespace warlightAi {
 
-// Fwrd decls
-class World;
-
 class BasicPickStrategy : public PickStrategy
 {
 public:
-    BasicPickStrategy(const VecOfRegionPtrs &startingRegions,
-                      int availableArmies);
+    BasicPickStrategy(const VecOfRegionPtrs &startingRegions);
+    virtual ~BasicPickStrategy();
 
     RegionPtr pickNext(const VecOfRegionPtrs &pickableRegions) const override;
 
 private:
-    int m_availableArmies;
 
 }; // class BasicPickStrategy
 

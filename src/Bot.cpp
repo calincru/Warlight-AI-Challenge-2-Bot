@@ -24,6 +24,12 @@
 
 namespace warlightAi {
 
+Bot::Bot()
+    : m_pickStrategy(nullptr)
+{
+
+}
+
 void Bot::play()
 {
     Parser(*this).parseInput();
@@ -109,15 +115,13 @@ void Bot::attack()
 
 void Bot::checkStartingRegions()
 {
-    m_pickStrategy.reset(
-        new BasicPickStrategy(m_startingRegions, m_availableArmies)
-    );
+    m_pickStrategy.reset(new BasicPickStrategy(m_startingRegions));
 }
 
 void Bot::checkOpponentStartingRegions()
 {
     // Correctness guaranteed by commands order.
-    delete m_pickStrategy.release();
+    m_pickStrategy.reset();
 
     // TODO
 }

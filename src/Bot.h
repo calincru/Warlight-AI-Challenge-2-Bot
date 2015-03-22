@@ -26,6 +26,8 @@ class Bot : private boost::noncopyable
     using PickStrategyPtr = std::unique_ptr<PickStrategy>;
 
 public:
+    Bot();
+
     void play();
     void handleRequest(Request request);
 

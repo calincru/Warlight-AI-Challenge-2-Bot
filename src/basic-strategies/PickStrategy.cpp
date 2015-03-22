@@ -6,6 +6,7 @@
 // Self
 #include "PickStrategy.h"
 
+
 namespace warlightAi {
 
 PickStrategy::PickStrategy(const VecOfRegionPtrs &startingRegions)

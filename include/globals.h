@@ -14,8 +14,9 @@
 namespace warlightAi {
 
 // Consts
-const int neutralArmies = 2;
-const int wastelandArmies = 6;
+const int INIT_AVAILABLE_ARMIES= 5;
+const int NEUTRAL_ARMY_COUNT = 2;
+const int WASTELAND_ARMY_COUNT = 6;
 
 // Enums
 enum class Player {
