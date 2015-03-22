@@ -22,7 +22,7 @@ void World::addRegion(int regionId, int superRegionId)
     if (!regionSuper)
         throw std::runtime_error("Couldn't find region's superRegion");
 
-    m_regions.push_back(
+    m_regions.emplace_back(
                 std::make_shared<Region>(regionId,
                                          regionSuper,
                                          warlightAi::neutralArmies,
@@ -32,7 +32,7 @@ void World::addRegion(int regionId, int superRegionId)
 
 void World::addSuperRegion(int superRegionId, int award)
 {
-    m_superRegions.push_back(
+    m_superRegions.emplace_back(
                 std::make_shared<SuperRegion>(superRegionId, award));
 }
 
@@ -67,7 +67,7 @@ auto World::getRegionsOwnedBy(warlightAi::Player player) const
 
     for (auto &region : m_regions)
         if (region->getOwner() == player)
-            ownedRegions.push_back(region);
+            ownedRegions.emplace_back(region);
 
     return ownedRegions;
 }

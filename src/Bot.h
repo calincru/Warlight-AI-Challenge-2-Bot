@@ -21,80 +21,50 @@ namespace warlightAi {
 
 class Bot : private boost::noncopyable
 {
-    typedef World::RegionPtr RegionPtr;
-    typedef World::SuperRegionPtr SuperRegionPtr;
-
 public:
-    using VecOfPairs = std::vector<std::pair<int, int>>;
-    using VecOfTuples = std::vector<std::tuple<int, int, int>>;
+    using RegionPtr = World::RegionPtr;
+    using SuperRegionPtr = World::SuperRegionPtr;
+    using VecOfRegionPtrs = World::VecOfRegionPtrs;
+    using VecOfSuperRegionPtrs = World::VecOfSuperRegionPtrs;
+    using VecOfPairs = std::vector<std::pair<RegionPtr, int>>;
+    using VecOfTuples = std::vector<std::tuple<RegionPtr, RegionPtr, int>>;
 
 
-    Bot() = default;
-
-    /**
-     * Plays a single game of Warlight
-     */
     void play();
-
-    /**
-     * Handles requests from the game
-     */
     void handleRequest(Request request);
-    void pickStartingRegion();
 
-    /**
-     * Returns a (source, destination) pair for an attack
-     */
-    std::pair<RegionPtr, RegionPtr> planMoves();
-    int computeScore(SuperRegionPtr superRegion);
+    void addRegion(int newRegion, int superOfRegion);
+    void addSuperRegion(int superRegion, int superRegionReward);
+    void addNeighbor(int region, int regionNeigh);
+    void addWasteland(int targetRegion);
+    void addStartingRegion(int startingRegion);
+    void addPickableRegion(int pickableRegion);
+    void addOpponentAttack(int fromRegion, int toRegion, int armiesCount);
+    void addOpponentDeployment(int destRegion, int armiesCount);
+    void addOpponentStartingRegion(int startingRegion);
 
-    void placeArmies();
-    void makeMoves();
-    void handleOppMoves(const VecOfPairs& pls, const VecOfTuples& movs);
-
-    /**
-     * INITIAL starting positions!!
-     * Gets the indexes of the starting regions and does some computation based
-     * on them. E.g. computes the `scores` for each one of them to easily make a
-     * choice in the pick starting regions phase.
-     */
-    void handleInitialStartingRegions(const std::vector<int> &regions);
-
-    /**
-     * Gets the indexes of the opponents starting regions and does some
-     * computation based on them.
-     */
-    void handleOppStartingRegions(const std::vector<int>& regions);
-
-    /// Interface for settings
-    void addRegion(int region, int super);
-    void addSuperRegion(int super, int reward);
-    void addNeighbor(int region, int neigh);
-    void addWasteland(int region);
-
-    void setName(const std::string& name);
-    void setOppName(const std::string& oppName);
+    void setName(const std::string &name);
+    void setOppName(const std::string &oppName);
     void setAvailArmies(int availableArmies);
     void setTimebank(int timebank);
     void setTimePerMove(int timePerMove);
     void setMaxRounds(int maxRounds);
 
-    /**
-     * Sets the starting regions that are currently possible.
-     */
-    void setPossibleStartingRegions(const std::vector<int> &regions);
-
     void startDelay(int delay);
-
-    /**
-     * Updates the regions from the game engine
-     * @param region region identifier
-     * @param name player who owns it
-     * @param armies number of armies he gets
-     */
-    void updateRegion(int region, const std::string &name, int armies);
+    void updateRegion(int region, const std::string &playerName, int armiesCnt);
 
 private:
+    void pick();
+    void deploy();
+    void attack();
+    void checkStartingRegions();
+    void checkOpponentStartingRegions();
+    void checkOpponentMoves();
+
+    std::pair<RegionPtr, RegionPtr> planMoves();
+    int computeScore(SuperRegionPtr superRegion);
+
+
     World m_world;
 
     std::string m_name;
@@ -106,7 +76,12 @@ private:
     int m_timePerMove;
     int m_maxRounds;
 
-    std::vector<int> m_possibleStartingRegions;
+    VecOfRegionPtrs m_pickableRegions;
+    VecOfRegionPtrs m_startingRegions;
+
+    VecOfRegionPtrs m_opponentStartingRegions;
+    VecOfTuples m_opponentAttacks;
+    VecOfPairs m_opponentDeployments;
 
 }; // class Bot
 

@@ -29,7 +29,7 @@ int Region::id() const
 void Region::addNeighbor(RegionPtr neighbor)
 {
     if (!isNeighbor(neighbor))
-        m_neighbors.push_back(neighbor);
+        m_neighbors.emplace_back(neighbor);
 }
 
 bool Region::isNeighbor(RegionPtr region) const

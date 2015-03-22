@@ -16,9 +16,7 @@
 
 // C++
 #include <iostream>
-#include <sstream>
 #include <cmath>
-#include <cassert>
 #include <algorithm>
 
 
@@ -32,14 +30,18 @@ void Bot::play()
 
 void Bot::handleRequest(Request request)
 {
-    if (request == Request::PICK_STARTING_REGION)
-        pickStartingRegion();
+    if (request == Request::CHECK_STARTING_REGIONS)
+        checkStartingRegions();
+    else if (request == Request::PICK_STARTING_REGION)
+        pick();
     else if (request == Request::PLACE_ARMIES)
-        placeArmies();
+        deploy();
     else if (request == Request::ATTACK_TRANSFER)
-        makeMoves();
-    else
-        throw std::invalid_argument("Unknown request");
+        attack();
+    else if (request == Request::CHECK_OPPONENT_STARTING_REGIONS)
+        checkOpponentStartingRegions();
+    else if (request == Request::CHECK_OPPONENT_MOVES)
+        checkOpponentMoves();
 }
 
 int Bot::computeScore(SuperRegionPtr superRegion)
@@ -61,15 +63,6 @@ int Bot::computeScore(SuperRegionPtr superRegion)
 
 auto Bot::planMoves() -> std::pair<RegionPtr, RegionPtr>
 {
-    // TODO
-    //
-    // Because deployments are dependent on planned attacks/transfers, there
-    // should be a function that decides all the actions for the second phase
-    // and deploys accordingly. This function should not return a pair, but
-    // rather compute all possible pairs needed for the attack/transfer phase
-    // and call the "placeArmies" and "makeMoves" functions (which should take
-    // as parameters either a list of pairs or one pair at a time.
-
     std::vector<std::pair<RegionPtr, RegionPtr>> myRegOtherRegPairs;
 
     // Finds all the adjacent super regions and keep all the (src, dest) pairs
@@ -92,82 +85,107 @@ auto Bot::planMoves() -> std::pair<RegionPtr, RegionPtr>
     return maxPair;
 }
 
-void Bot::pickStartingRegion()
+void Bot::pick()
 {
-    // There is no need for a priority queue, since the score of the starting
-    // regions might vary based on the previous choices of either botm, so this
-    // function just picks the region with the maximum score.
-
-    auto maxReg = -1;
+    auto maxReg = static_cast<RegionPtr>(nullptr);
     auto maxScore = -1;
-    for (auto &reg : m_possibleStartingRegions) {
-        auto score = computeScore(m_world.getRegionById(reg)->getSuperRegion());
+    for (auto &regionPtr : m_pickableRegions) {
+        auto score = computeScore(regionPtr->getSuperRegion());
         if (score > maxScore) {
             maxScore = score;
-            maxReg = reg;
+            maxReg = regionPtr;
         }
     }
 
-    std::cout << maxReg << std::endl;
+    std::cout << maxReg->id() << std::endl;
 }
 
-void Bot::placeArmies()
+void Bot::deploy()
 {
     auto p = planMoves();
-    std::cout << m_name << " placeArmies " << p.first->id()  << " "
+    std::cout << m_name << " deploy " << p.first->id()  << " "
               << m_availableArmies << std::endl;
 
     p.first->setArmies(p.first->getArmies() + m_availableArmies);
 }
 
-void Bot::makeMoves()
+void Bot::attack()
 {
-    /// Output No moves when you have no time left or do not want to commit any
-    /// moves.
-    //
-    // std::cout << "No moves "  << std::endl;
-    //
-    /// Anatomy of a single move
-    //
-    //  std::cout << name << " attack/transfer " << from << " " << to << " "
-    //            << armiesMoved;
-    //
-    /// When outputting multiple moves they must be seperated by a comma
-    //
-
     auto p = planMoves();
     std::cout << m_name << " attack/transfer " << p.first->id() << " "
               << p.second->id() << " " << p.first->getArmies() - 1 << std::endl;
 }
 
-void Bot::handleOppMoves(const VecOfPairs& pls, const VecOfTuples& movs)
+void Bot::checkStartingRegions()
 {
     // TODO
-    UNUSED(pls);
-    UNUSED(movs);
 }
 
-void Bot::addRegion(int region, int super)
+void Bot::checkOpponentStartingRegions()
 {
-    m_world.addRegion(region, super);
+    // TODO
 }
 
-void Bot::addNeighbor(int region, int neigh)
+void Bot::checkOpponentMoves()
 {
-    m_world.addLink(region, neigh);
+    // TODO
 }
 
-void Bot::addWasteland(int region)
+void Bot::addRegion(int newRegion, int superOfRegion)
 {
-    m_world.addWasteland(region);
+    m_world.addRegion(newRegion, superOfRegion);
 }
 
-void Bot::addSuperRegion(int super, int reward)
+void Bot::addSuperRegion(int superRegion, int superRegionReward)
 {
-    m_world.addSuperRegion(super, reward);
+    m_world.addSuperRegion(superRegion, superRegionReward);
 }
 
-void Bot::setName(const std::string & name)
+void Bot::addNeighbor(int region, int regionNeigh)
+{
+    m_world.addLink(region, regionNeigh);
+}
+
+void Bot::addWasteland(int targetRegion)
+{
+    m_world.addWasteland(targetRegion);
+}
+
+void Bot::addStartingRegion(int startingRegion)
+{
+    m_startingRegions.emplace_back(m_world.getRegionById(startingRegion));
+}
+
+void Bot::addPickableRegion(int pickableRegion)
+{
+    m_pickableRegions.emplace_back(m_world.getRegionById(pickableRegion));
+}
+
+void Bot::addOpponentAttack(int fromRegion, int toRegion, int armiesCount)
+{
+    m_opponentAttacks.emplace_back(
+                        m_world.getRegionById(fromRegion),
+                        m_world.getRegionById(toRegion),
+                        armiesCount
+    );
+}
+
+void Bot::addOpponentDeployment(int destRegion, int armiesCount)
+{
+    m_opponentDeployments.emplace_back(
+                        m_world.getRegionById(destRegion),
+                        armiesCount
+    );
+}
+
+void Bot::addOpponentStartingRegion(int startingRegion)
+{
+    m_opponentStartingRegions.emplace_back(
+                        m_world.getRegionById(startingRegion)
+    );
+}
+
+void Bot::setName(const std::string &name)
 {
     m_name = name;
 }
@@ -197,33 +215,19 @@ void Bot::setMaxRounds(int maxRounds)
     m_maxRounds = maxRounds;
 }
 
-void Bot::handleInitialStartingRegions(const std::vector<int> &regions)
-{
-    UNUSED(regions);
-}
-
-void Bot::setPossibleStartingRegions(const std::vector<int> &regions)
-{
-    m_possibleStartingRegions = std::move(regions);
-}
-
-void Bot::handleOppStartingRegions(const std::vector<int>& regions)
-{
-    // TODO
-    UNUSED(regions);
-}
-
 void Bot::startDelay(int delay)
 {
     UNUSED(delay);
 }
 
-void Bot::updateRegion(int region, const std::string& player, int armies)
+void Bot::updateRegion(int region, const std::string &playerName, int armiesCnt)
 {
-    Player p = player == m_name ? Player::ME :
-                                  player == m_oppName ? Player::OPPONENT :
-                                                        Player::NEUTRAL;
-    m_world.updateRegion(region, p, armies);
+    Player p = playerName == m_name ?
+                                Player::ME :
+                                playerName == m_oppName ?
+                                                    Player::OPPONENT :
+                                                    Player::NEUTRAL;
+    m_world.updateRegion(region, p, armiesCnt);
 }
 
 } // namespace warlightAi

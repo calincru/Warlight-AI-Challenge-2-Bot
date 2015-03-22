@@ -26,7 +26,7 @@ int SuperRegion::id() const
 void SuperRegion::addSubRegion(RegionPtr subRegion)
 {
     if (!containsRegion(subRegion))
-        m_subRegions.push_back(subRegion);
+        m_subRegions.emplace_back(subRegion);
 }
 
 bool SuperRegion::containsRegion(RegionPtr region) const
