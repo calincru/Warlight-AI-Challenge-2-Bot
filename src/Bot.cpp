@@ -42,6 +42,7 @@ void Bot::handleRequest(Request request)
         checkStartingRegions();
     } else if (request == Request::PICK_STARTING_REGION) {
         pick();
+        m_pickableRegions.clear();
     } else if (request == Request::PLACE_ARMIES) {
         m_roundStrategy.reset(
             new BasicRoundStrategy(m_world, m_availableArmies)
@@ -64,7 +65,7 @@ void Bot::pick()
 void Bot::deploy()
 {
     for (auto &entry : m_roundStrategy->getDeployments()) {
-        std::cout << m_name << " deploy " << entry.first->id() << " "
+        std::cout << m_name << " place_armies " << entry.first->id() << " "
                   << entry.second << std::endl;
 
         entry.first->setArmies(entry.first->getArmies() + entry.second);
