@@ -22,8 +22,8 @@ class BasicRoundStrategy : public RoundStrategy
 public:
     BasicRoundStrategy(const World &world, int availableArmies);
 
-    VecOfPairs getDeployments() const;
-    VecOfTuples getAttacks() const;
+    VecOfPairs getDeployments() const override;
+    VecOfTuples getAttacks() const override;
 
 private:
     VecOfPairs m_deployments;
