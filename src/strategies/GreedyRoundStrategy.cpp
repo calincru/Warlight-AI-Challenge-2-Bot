@@ -37,11 +37,11 @@ GreedyRoundStrategy::GreedyRoundStrategy(const World &world,
                         std::vector<ScoreSuperPair>,
                         decltype(pq_cmp)
                        > pq(pq_cmp);
-    std::unordered_set<SuperRegionPtr> s;
+    std::unordered_set<SuperRegionPtr> supers;
 
     for (auto &myReg : world.getRegionsOwnedBy(Player::ME))
         for (auto &neigh : myReg->getNeighbors()) {
-            if (s.count(neigh->getSuperRegion()))
+            if (supers.count(neigh->getSuperRegion()))
                 continue;
 
             pq.emplace(
@@ -49,9 +49,10 @@ GreedyRoundStrategy::GreedyRoundStrategy(const World &world,
                                                availableArmies),
                 neigh->getSuperRegion()
             );
-            s.emplace(neigh->getSuperRegion());
+            supers.emplace(neigh->getSuperRegion());
         }
 
+    std::unordered_set<RegionPtr> addedRegs;
     VecOfRegionPtrs neighs;
     while (!pq.empty()) {
         auto superReg = pq.top().second;
@@ -76,7 +77,6 @@ GreedyRoundStrategy::GreedyRoundStrategy(const World &world,
         }
     }
 
-    std::cerr << neighs.size() << std::endl;
     for (auto &neigh : neighs) {
         if (availableArmies <= 0)
             break;
