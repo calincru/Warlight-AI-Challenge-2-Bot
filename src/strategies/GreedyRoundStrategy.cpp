@@ -15,7 +15,6 @@
 
 // C++
 #include <queue>
-#include <unordered_set>
 #include <limits>
 #include <iostream>
 
@@ -58,19 +57,13 @@ GreedyRoundStrategy::GreedyRoundStrategy(const World &world,
         pq.pop();
 
         for (auto &reg : superReg->getSubRegions()) {
-            if (reg->getOwner() == Player::ME)
+            if (reg->getOwner() == Player::ME || addedRegs.count(reg))
                 continue;
 
             for (auto &regNeigh : reg->getNeighbors())
                 if (regNeigh->getOwner() == Player::ME) {
-                    auto isAlready = false;
-                    for (auto &already : neighs)
-                        if (already == reg) {
-                            isAlready = true;
-                            break;
-                        }
-                    if (!isAlready)
-                        neighs.emplace_back(reg);
+                    addedRegs.emplace(reg);
+                    neighs.emplace_back(reg);
                     break;
                 }
         }
@@ -120,6 +113,8 @@ GreedyRoundStrategy::GreedyRoundStrategy(const World &world,
 
         m_deployments.emplace_back(maxReg, availableArmies);
     }
+
+    computeMigrations();
 }
 
 VecOfPairs GreedyRoundStrategy::getDeployments() const
@@ -132,5 +127,47 @@ VecOfTuples GreedyRoundStrategy::getAttacks() const
     return m_attacks;
 }
 
+void GreedyRoundStrategy::computeMigrations()
+{
+    auto visitedRegs = getRegionsOnBorder();
+    std::queue<RegionPtr> Q;
+
+    for (auto &reg : visitedRegs)
+        Q.emplace(reg);
+
+    while (!Q.empty()) {
+        auto nextReg = Q.front();
+        Q.pop();
+
+        for (auto &neigh : nextReg->getNeighbors()) {
+            if (neigh->getOwner() != Player::ME || visitedRegs.count(neigh))
+                continue;
+
+            visitedRegs.emplace(neigh);
+            Q.emplace(neigh);
+            if (neigh->getArmies() > 1)
+                m_attacks.emplace_back(neigh, nextReg, neigh->getArmies() - 1);
+        }
+    }
+}
+
+std::unordered_set<RegionPtr> GreedyRoundStrategy::getRegionsOnBorder()
+{
+    std::unordered_set<RegionPtr> regsOnBorder;
+
+    for (auto &mine : m_world.getRegionsOwnedBy(Player::ME)) {
+        auto isOnBorder = false;
+        for (auto &neigh : mine->getNeighbors())
+            if (neigh->getOwner() != Player::ME) {
+                isOnBorder = true;
+                break;
+            }
+
+        if (isOnBorder)
+            regsOnBorder.emplace(mine);
+    }
+
+    return regsOnBorder;
+}
 
 } // namespace warlightAi

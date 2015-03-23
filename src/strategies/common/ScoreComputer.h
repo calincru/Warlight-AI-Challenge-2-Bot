@@ -40,6 +40,8 @@ public:
     static int armiesNeeded(int oppArmies, double probability)
     {
         UNUSED(probability);
+        if (oppArmies == 1)
+            return 2.;
         return 3./2. * oppArmies;
     }
 

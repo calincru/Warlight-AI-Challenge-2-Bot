@@ -9,6 +9,9 @@
 // Project
 #include "RoundStrategy.h"
 
+// C++
+#include <unordered_set>
+
 
 namespace warlightAi {
 
@@ -21,6 +24,9 @@ public:
     VecOfTuples getAttacks() const override;
 
 private:
+    void computeMigrations();
+    std::unordered_set<RegionPtr> getRegionsOnBorder();
+
     VecOfPairs m_deployments;
     VecOfTuples m_attacks;
 
