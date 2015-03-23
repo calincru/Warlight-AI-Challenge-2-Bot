@@ -8,9 +8,11 @@
 #define PARSER_H_INCLUDED
 
 // Project
-#include "Settings.h"
+#include "globals.h"
 #include "boost/noncopyable.hpp"
 
+
+namespace warlightAi {
 
 // Fwrd decls
 class Bot;
@@ -18,28 +20,30 @@ class Bot;
 class Parser : private boost::noncopyable
 {
 public:
-    Parser(Bot* bot);
+    Parser(Bot &bot);
 
     void parseInput();
 
 private:
-    void parse_setup_map();
+    void parseSetupMap();
     void parseStartingRegions();
-    void parse_settings();
-    void parse_update_map();
-    void parse_opp_moves();
-    void parse_go();
-    void parse_super_regions();
-    void parse_regions();
-    void parse_pick_starting_region();
-    void parse_opp_starting_regions();
-    void parse_neighbors();
-    void parse_wastelands();
+    void parseSettings();
+    void parseUpdateMap();
+    void parseOppMoves();
+    void parseGo();
+    void parseSuperRegions();
+    void parseRegions();
+    void parsePickStartingRegion();
+    void parseOppStartingRegions();
+    void parseNeighbors();
+    void parseWastelands();
 
-    // helper function for the case we want to handle \r\n in future
     bool lineEnds() const;
 
-    Bot* bot;
-};
+    Bot &m_bot;
+
+}; // class Parser
+
+} // namespace warlightAi
 
 #endif // PARSER_H_INCLUDED

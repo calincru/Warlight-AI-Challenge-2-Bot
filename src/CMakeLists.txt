@@ -3,10 +3,16 @@
 # source code.
 #
 
+include_directories(strategies)
 
 # A list of all sources
-file(GLOB_RECURSE AI_AB_SOURCES "*.cpp")
+file(GLOB_RECURSE AI_AB_SOURCES "*.cpp"
+                                "strategies/*.cpp")
 add_executable(ai_ab ${AI_AB_SOURCES})
+
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    target_link_libraries(ai_ab c++ c++abi)
+endif()
 
 add_custom_target(
     run
@@ -14,3 +20,5 @@ add_custom_target(
     DEPENDS ai_ab
     WORKING_DIRECTORY ${CMAKE_PROJECT_DIR}
 )
+
+add_subdirectory(strategies)

@@ -4,12 +4,12 @@
 //
 
 
+// Project
+#include "Bot.h"
+
 // C++
 #include <iostream>
 #include <exception>
-
-// Project
-#include "Bot.h"
 
 
 int main()
@@ -20,7 +20,7 @@ int main()
     try
     {
 #endif
-        Bot b;
+        warlightAi::Bot b;
         b.play();
 #ifndef STARTERBOT_DEBUG
     } catch (std::exception& ex) {

@@ -29,6 +29,11 @@ file(GLOB_RECURSE AI_AB_TEST_SOURCES "*.cpp")
 foreach(file IN LISTS AI_AB_TEST_SOURCES)
     ai_ab_target_name_for(_target "${file}")
     add_executable(${_target} EXCLUDE_FROM_ALL "${file}")
+
+    if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        target_link_libraries(${_target} c++ c++abi)
+    endif()
+
     add_test(NAME ${_target} COMMAND ${_target})
     add_dependencies(tests ${_target})
 endforeach()

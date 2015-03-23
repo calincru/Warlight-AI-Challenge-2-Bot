@@ -7,227 +7,196 @@
 // Self
 #include "Bot.h"
 
+// Project
+#include "utils.h"
+#include "Parser.h"
+#include "Region.h"
+#include "SuperRegion.h"
+#include "BasicPickStrategy.h"
+#include "BasicRoundStrategy.h"
+
 // C++
 #include <iostream>
-#include <sstream>
 #include <cmath>
-#include <cassert>
+#include <algorithm>
+#include <memory>
 
-// Project
-#include "Parser.h"
-#include "StringManipulation.h"
-#include "utils.h"
 
+
+namespace warlightAi {
 
 Bot::Bot()
-    : adj_list(1)
-    , super_rewards(1)
-    , regs_super(1)
-    , armies_cnt(1)
-    , regs_owner(1)
+    : m_pickStrategy(nullptr)
+    , m_roundStrategy(nullptr)
 {
-    // nothing to do
 }
 
 void Bot::play()
 {
-    Parser(this).parseInput();
+    Parser(*this).parseInput();
 }
 
-void Bot::handle_request(Request request)
+void Bot::handleRequest(Request request)
 {
-    if (request == Request::PICK_STARTING_REGION)
-        pick_starting_region();
-    else if (request == Request::PLACE_ARMIES)
-        place_armies();
-    else if (request == Request::ATTACK_TRANSFER)
-        make_moves();
-}
-
-void Bot::pick_starting_region()
-{
-    // TODO
-    std::cout << possible_starting_regions[std::rand() % possible_starting_regions.size()] << std::endl;
-}
-
-void Bot::place_armies()
-{
-    // TODO
-    auto region = owned_regions[std::rand() % owned_regions.size()];
-    std::cout << name << " place_armies " << region << " " << avail_armies
-              << std::endl;
-
-    add_armies(region, avail_armies);
-}
-
-void Bot::make_moves()
-{
-    // TODO
-
-    /// Output No moves when you have no time left or do not want to commit any
-    /// moves.
-    //
-    // std::cout << "No moves "  << std::endl;
-    //
-    /// Anatomy of a single move
-    //
-    //  std::cout << name << " attack/transfer " << from << " " << to << " "
-    //            << armies_moved;
-    //
-    /// When outputting multiple moves they must be seperated by a comma
-    //
-
-    std::vector<std::string> moves;
-    for (auto j = 0u; j < owned_regions.size(); ++j) {
-        std::stringstream move;
-
-        auto i = owned_regions[j];
-        if (armies_cnt[i] <= 1)
-            continue;
-
-        auto target = adj_list[i].at(std::rand() % adj_list[i].size());
-        // prefer enemy regions
-        for (auto k = 0; k < 5; ++k) {
-            if (regs_owner[target] != Player::ME)
-                break;
-            target = adj_list[i].at(std::rand() % adj_list[i].size());
-        }
-        move << name << " attack/transfer " << i << " " << target << " "
-             << (armies_cnt[i] - 1);
-        moves.emplace_back(move.str());
+    if (request == Request::CHECK_STARTING_REGIONS) {
+        checkStartingRegions();
+    } else if (request == Request::PICK_STARTING_REGION) {
+        pick();
+    } else if (request == Request::PLACE_ARMIES) {
+        m_roundStrategy.reset(
+            new BasicRoundStrategy(m_world, m_availableArmies)
+        );
+        deploy();
+    } else if (request == Request::ATTACK_TRANSFER) {
+        attack();
+    } else if (request == Request::CHECK_OPPONENT_STARTING_REGIONS) {
+        checkOpponentStartingRegions();
+    } else if (request == Request::CHECK_OPPONENT_MOVES) {
+        checkOpponentMoves();
     }
-
-    std::cout << StringManipulation::comma_join(moves) << std::endl;
 }
 
-void Bot::handle_opp_moves(const Placements& pls, const Movements& movs)
+void Bot::pick()
+{
+    std::cout << m_pickStrategy->pickNext(m_pickableRegions)->id() << std::endl;
+}
+
+void Bot::deploy()
+{
+    for (auto &entry : m_roundStrategy->getDeployments()) {
+        std::cout << m_name << " deploy " << entry.first->id() << " "
+                  << entry.second << std::endl;
+
+        entry.first->setArmies(entry.first->getArmies() + entry.second);
+    }
+}
+
+void Bot::attack()
+{
+    for (auto &attack : m_roundStrategy->getAttacks())
+        std::cout << m_name << " attack/transfer " << std::get<0>(attack)->id()
+                  << " " << std::get<1>(attack)->id() << " "
+                  << std::get<2>(attack) << std::endl;
+}
+
+void Bot::checkStartingRegions()
+{
+    m_pickStrategy.reset(new BasicPickStrategy(m_startingRegions));
+}
+
+void Bot::checkOpponentStartingRegions()
+{
+    // Correctness guaranteed by commands order. Just because it's not needed
+    // anymore.
+    m_pickStrategy.reset();
+    m_startingRegions.clear();
+    m_pickableRegions.clear();
+
+    // TODO
+}
+
+void Bot::checkOpponentMoves()
 {
     // TODO
-    UNUSED(pls);
-    UNUSED(movs);
 }
 
-void Bot::add_region(int region, int super)
+void Bot::addRegion(int newRegion, int superOfRegion)
 {
-    assert(adj_list.size() == static_cast<std::size_t>(region));
-    adj_list.emplace_back(std::vector<int>());
-
-    assert(regs_super.size() == static_cast<std::size_t>(region));
-    regs_super.emplace_back(super);
-
-    assert(armies_cnt.size() == static_cast<std::size_t>(region));
-    armies_cnt.emplace_back(NEUTRAL_ARMIES);
-
-    assert(regs_owner.size() == static_cast<std::size_t>(region));
-    regs_owner.emplace_back(Player::NEUTRAL);
+    m_world.addRegion(newRegion, superOfRegion);
 }
 
-void Bot::add_neighbor(int region, int neigh)
+void Bot::addSuperRegion(int superRegion, int superRegionReward)
 {
-    adj_list[region].emplace_back(neigh);
-    adj_list[neigh].emplace_back(region);
+    m_world.addSuperRegion(superRegion, superRegionReward);
 }
 
-void Bot::add_wasteland(int region)
+void Bot::addNeighbor(int region, int regionNeigh)
 {
-    wastelands.emplace_back(region);
-    armies_cnt[region] = WASTELAND_ARMIES;
+    m_world.addLink(region, regionNeigh);
 }
 
-void Bot::add_super_region(int super, int reward)
+void Bot::addWasteland(int targetRegion)
 {
-    assert(super_rewards.size() == static_cast<std::size_t>(super));
-    super_rewards.emplace_back(reward);
+    m_world.addWasteland(targetRegion);
 }
 
-void Bot::set_name(const std::string& _name)
+void Bot::addStartingRegion(int startingRegion)
 {
-    name = _name;
+    m_startingRegions.emplace_back(m_world.getRegionById(startingRegion));
 }
 
-void Bot::set_opp_name(const std::string& name)
+void Bot::addPickableRegion(int pickableRegion)
 {
-    opp_name = name;
+    m_pickableRegions.emplace_back(m_world.getRegionById(pickableRegion));
 }
 
-void Bot::set_avail_armies(int armies)
+void Bot::addOpponentAttack(int fromRegion, int toRegion, int armiesCount)
 {
-    avail_armies = armies;
+    m_opponentAttacks.emplace_back(
+                        m_world.getRegionById(fromRegion),
+                        m_world.getRegionById(toRegion),
+                        armiesCount
+    );
 }
 
-void Bot::set_timebank(int _timebank)
+void Bot::addOpponentDeployment(int destRegion, int armiesCount)
 {
-    timebank = _timebank;
+    m_opponentDeployments.emplace_back(
+                        m_world.getRegionById(destRegion),
+                        armiesCount
+    );
 }
 
-void Bot::set_time_per_move(int time)
+void Bot::addOpponentStartingRegion(int startingRegion)
 {
-    time_per_move = time;
+    m_opponentStartingRegions.emplace_back(
+                        m_world.getRegionById(startingRegion)
+    );
 }
 
-void Bot::set_max_rounds(int rounds)
+void Bot::setName(const std::string &name)
 {
-    max_rounds = rounds;
+    m_name = name;
 }
 
-void Bot::set_initial_starting_regions(const std::vector<int> &regions)
+void Bot::setOppName(const std::string &oppName)
 {
-    // TODO
-    UNUSED(regions);
+    m_oppName = oppName;
 }
 
-void Bot::set_possible_starting_regions(const std::vector<int> &regions)
+void Bot::setAvailableArmies(int availableArmies)
 {
-    possible_starting_regions = std::move(regions);
+    m_availableArmies = availableArmies;
 }
 
-void Bot::handle_opp_starting_region(const std::vector<int>& regions)
+void Bot::setTimebank(int timebank)
 {
-    // TODO
-    UNUSED(regions);
+    m_timebank = timebank;
 }
 
-void Bot::start_delay(int delay)
+void Bot::setTimePerMove(int timePerMove)
+{
+    m_timePerMove = timePerMove;
+}
+
+void Bot::setMaxRounds(int maxRounds)
+{
+    m_maxRounds = maxRounds;
+}
+
+void Bot::startDelay(int delay)
 {
     UNUSED(delay);
 }
 
-void Bot::update_region(int region, const std::string& player, int armies)
+void Bot::updateRegion(int region, const std::string &playerName, int armiesCnt)
 {
-    // TODO take the changes into account
-    armies_cnt[region] = armies;
-    regs_owner[region] = player == name ? Player::ME :
-                                          player == opp_name ? Player::ENEMY :
-                                                               Player::NEUTRAL;
-    if (player == name)
-        owned_regions.emplace_back(region);
+    Player p = playerName == m_name ?
+                                Player::ME :
+                                playerName == m_oppName ?
+                                                    Player::OPPONENT :
+                                                    Player::NEUTRAL;
+    m_world.updateRegion(region, p, armiesCnt);
 }
 
-void Bot::reset_owned_regions()
-{
-    owned_regions.clear();
-}
-
-void Bot::add_armies(int region, int armies)
-{
-    armies_cnt[region] += armies;
-}
-
-void Bot::move_armies(int from_reg, int to_reg, int armies)
-{
-    if (regs_owner[from_reg] == regs_owner[to_reg] &&
-        armies_cnt[from_reg] > armies) {
-
-        armies_cnt[from_reg] -= armies;
-        armies_cnt[to_reg] += armies;
-    } else if (armies_cnt[from_reg] > armies) {
-        armies_cnt[from_reg] -= armies;
-        if (armies_cnt[to_reg] - std::round(armies * 0.6) <= 0) {
-            armies_cnt[to_reg] = armies - std::round(armies_cnt[to_reg] * 0.7);
-            regs_owner[to_reg] = regs_owner[from_reg];
-        } else {
-            armies_cnt[from_reg] += armies - std::round(armies_cnt[to_reg] * 0.7);
-            armies_cnt[to_reg] -= std::round(armies * 0.6);
-        }
-    }
-}
+} // namespace warlightAi
