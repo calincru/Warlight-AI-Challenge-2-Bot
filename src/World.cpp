@@ -22,12 +22,14 @@ void World::addRegion(int regionId, int superRegionId)
     if (!regionSuper)
         throw std::runtime_error("Couldn't find region's superRegion");
 
-    m_regions.emplace_back(
-                std::make_shared<Region>(regionId,
-                                         regionSuper,
-                                         NEUTRAL_ARMY_COUNT,
-                                         Player::NEUTRAL)
+    auto newReg = std::make_shared<Region>(
+                        regionId,
+                        regionSuper,
+                        NEUTRAL_ARMY_COUNT,
+                        Player::NEUTRAL
     );
+    m_regions.emplace_back(newReg);
+    regionSuper->addSubRegion(newReg);
 }
 
 void World::addSuperRegion(int superRegionId, int award)

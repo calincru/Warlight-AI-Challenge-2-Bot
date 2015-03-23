@@ -7,6 +7,7 @@
 #define SCORE_COMPUTER_H_INCLUDED
 
 // Project
+#include "utils.h"
 #include "globals.h"
 #include "Region.h"
 #include "SuperRegion.h"
@@ -28,12 +29,18 @@ public:
             if (reg->getOwner() == Player::ME)
                 sum += reg->getArmies();
             else
-                sum -= 3./2. * reg->getArmies();
+                sum -= armiesNeeded(reg->getArmies(), 0.7);
 
         if (sum > 0)
             sum = 0.;
 
         return (10 - (-sum)/availableArmies) * superRegion->getReward();
+    }
+
+    static int armiesNeeded(int oppArmies, double probability)
+    {
+        UNUSED(probability);
+        return 3./2. * oppArmies;
     }
 
     // Others

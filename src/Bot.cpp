@@ -9,14 +9,17 @@
 
 // Project
 #include "utils.h"
+#include "StringManipulation.h"
 #include "Parser.h"
 #include "Region.h"
 #include "SuperRegion.h"
 #include "BasicPickStrategy.h"
 #include "BasicRoundStrategy.h"
+#include "GreedyRoundStrategy.h"
 
 // C++
 #include <iostream>
+#include <sstream>
 #include <cmath>
 #include <algorithm>
 #include <memory>
@@ -45,7 +48,7 @@ void Bot::handleRequest(Request request)
         m_pickableRegions.clear();
     } else if (request == Request::PLACE_ARMIES) {
         m_roundStrategy.reset(
-            new BasicRoundStrategy(m_world, m_availableArmies)
+            new GreedyRoundStrategy(m_world, m_availableArmies)
         );
         deploy();
     } else if (request == Request::ATTACK_TRANSFER) {
@@ -64,20 +67,31 @@ void Bot::pick()
 
 void Bot::deploy()
 {
+    std::vector<std::string> deployments;
     for (auto &entry : m_roundStrategy->getDeployments()) {
-        std::cout << m_name << " place_armies " << entry.first->id() << " "
-                  << entry.second << std::endl;
+        std::stringstream ss;
+        ss << m_name << " place_armies " << entry.first->id() << " "
+           << entry.second;
 
-        entry.first->setArmies(entry.first->getArmies() + entry.second);
+        deployments.emplace_back(ss.str());
     }
+
+    std::cout << StringManipulation::comma_join(deployments) << std::endl;
 }
 
 void Bot::attack()
 {
-    for (auto &attack : m_roundStrategy->getAttacks())
-        std::cout << m_name << " attack/transfer " << std::get<0>(attack)->id()
-                  << " " << std::get<1>(attack)->id() << " "
-                  << std::get<2>(attack) << std::endl;
+    std::vector<std::string> attacks;
+    for (auto &attack : m_roundStrategy->getAttacks()) {
+        std::stringstream ss;
+        ss << m_name << " attack/transfer " << std::get<0>(attack)->id()
+           << " " << std::get<1>(attack)->id() << " "
+           << std::get<2>(attack);
+
+        attacks.emplace_back(ss.str());
+    }
+
+    std::cout << StringManipulation::comma_join(attacks) << std::endl;
 }
 
 void Bot::checkStartingRegions()

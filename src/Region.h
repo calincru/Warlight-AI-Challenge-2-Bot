@@ -53,6 +53,14 @@ private:
 
 }; // class Region
 
+struct RegionPtrHasher
+{
+    std::size_t operator()(const RegionPtr &reg) const
+    {
+        return reg->getArmies();
+    }
+};
+
 } // namespace warlightAi
 
 

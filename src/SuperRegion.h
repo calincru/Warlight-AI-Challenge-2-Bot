@@ -42,6 +42,14 @@ private:
 
 }; // class SuperRegion
 
+struct SuperRegionPtrHasher
+{
+    std::size_t operator()(const SuperRegionPtr &reg) const
+    {
+        return reg->id();
+    }
+};
+
 } // namespace warlightAi
 
 

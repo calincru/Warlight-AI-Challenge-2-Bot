@@ -42,7 +42,7 @@ std::vector<RegionPtr> SuperRegion::getSubRegions() const
 {
     std::vector<RegionPtr> subRegs;
     for (auto &subReg : m_subRegions)
-        subRegs.emplace_back(subReg.lock());
+        subRegs.emplace_back(subReg);
 
     return subRegs;
 }
