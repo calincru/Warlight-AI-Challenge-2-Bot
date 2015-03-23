@@ -3,11 +3,11 @@
 # source code.
 #
 
-include_directories(basic-strategies)
+include_directories(strategies)
 
 # A list of all sources
 file(GLOB_RECURSE AI_AB_SOURCES "*.cpp"
-                                "basic-strategies/*.cpp")
+                                "strategies/*.cpp")
 add_executable(ai_ab ${AI_AB_SOURCES})
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -21,4 +21,4 @@ add_custom_target(
     WORKING_DIRECTORY ${CMAKE_PROJECT_DIR}
 )
 
-add_subdirectory(basic-strategies)
+add_subdirectory(strategies)
