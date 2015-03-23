@@ -17,6 +17,7 @@
 #include <queue>
 #include <limits>
 #include <iostream>
+#include <algorithm>
 
 
 namespace warlightAi {
@@ -123,7 +124,7 @@ VecOfPairs GreedyRoundStrategy::getDeployments() const
 
 VecOfTuples GreedyRoundStrategy::getAttacks() const
 {
-    std::reverse(m_attacks.begin(), m_attacks.end());
+    // This is reversed by Bot. Temporary decision.
     return m_attacks;
 }
 

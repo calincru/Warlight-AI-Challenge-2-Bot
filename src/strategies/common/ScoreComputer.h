@@ -42,7 +42,10 @@ public:
         UNUSED(probability);
         if (oppArmies == 1)
             return 2.;
-        return 3./2. * oppArmies;
+        if (oppArmies == 2)
+            return 3.;
+
+        return 3./2.*oppArmies + 1;
     }
 
     static double wastelandsBasedScore(const SuperRegionPtr &superRegion)

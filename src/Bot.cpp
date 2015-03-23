@@ -66,31 +66,34 @@ void Bot::pick()
 
 void Bot::deploy()
 {
-    std::vector<std::string> deployments;
+    std::vector<std::string> result;
     for (auto &entry : m_roundStrategy->getDeployments()) {
         std::stringstream ss;
         ss << m_name << " place_armies " << entry.first->id() << " "
            << entry.second;
 
-        deployments.emplace_back(ss.str());
+        result.emplace_back(ss.str());
     }
 
-    std::cout << StringManipulation::comma_join(deployments) << std::endl;
+    std::cout << StringManipulation::comma_join(result) << std::endl;
 }
 
 void Bot::attack()
 {
-    std::vector<std::string> attacks;
-    for (auto &attack : m_roundStrategy->getAttacks()) {
-        std::stringstream ss;
-        ss << m_name << " attack/transfer " << std::get<0>(attack)->id()
-           << " " << std::get<1>(attack)->id() << " "
-           << std::get<2>(attack);
+    std::vector<std::string> result;
 
-        attacks.emplace_back(ss.str());
+    // Temporary, until I learn how to reverse that vector
+    auto attacks = m_roundStrategy->getAttacks();
+    for (auto it = attacks.crbegin(); it != attacks.crend(); ++it) {
+        std::stringstream ss;
+        ss << m_name << " attack/transfer " << std::get<0>(*it)->id()
+           << " " << std::get<1>(*it)->id() << " "
+           << std::get<2>(*it);
+
+        result.emplace_back(ss.str());
     }
 
-    std::cout << StringManipulation::comma_join(attacks) << std::endl;
+    std::cout << StringManipulation::comma_join(result) << std::endl;
 }
 
 void Bot::checkStartingRegions()
