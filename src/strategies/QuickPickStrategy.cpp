@@ -13,6 +13,7 @@
 
 // C++
 #include <queue>
+#include <limits>
 
 
 namespace warlightAi {
