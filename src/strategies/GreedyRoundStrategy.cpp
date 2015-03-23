@@ -123,6 +123,7 @@ VecOfPairs GreedyRoundStrategy::getDeployments() const
 
 VecOfTuples GreedyRoundStrategy::getAttacks() const
 {
+    std::reverse(m_attacks.begin(), m_attacks.end());
     return m_attacks;
 }
 
