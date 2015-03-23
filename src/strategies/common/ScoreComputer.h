@@ -43,6 +43,32 @@ public:
         return 3./2. * oppArmies;
     }
 
+    static double superRegionScore(const SuperRegionPtr &superRegion)
+    {
+        auto score = superRegion->getReward() * 1.;
+
+        auto minesSum = 0;
+        auto minesCount = 0;
+        auto oppCount = 0;
+        auto oppSum = 0;
+        for (auto &subReg : superRegion->getSubRegions())
+            if (subReg->getOwner() == Player::ME) {
+                ++minesCount;
+                minesSum += subReg->getArmies();
+            } else {
+                ++oppCount;
+                oppSum += subReg->getArmies();
+            }
+
+        if (!oppCount)
+            return -1.;
+
+        score *= (minesCount * 1.)/oppCount;
+        score *= (minesSum * 1.)/oppSum;
+
+        return score;
+    }
+
     // Others
 };
 

@@ -45,8 +45,7 @@ GreedyRoundStrategy::GreedyRoundStrategy(const World &world,
                 continue;
 
             pq.emplace(
-                ScoreComputer::simulationScore(neigh->getSuperRegion(),
-                                               availableArmies),
+                ScoreComputer::superRegionScore(neigh->getSuperRegion()),
                 neigh->getSuperRegion()
             );
             supers.emplace(neigh->getSuperRegion());
