@@ -181,6 +181,11 @@ void Bot::setOppName(const std::string &oppName)
 void Bot::setAvailableArmies(int availableArmies)
 {
     m_availableArmies = availableArmies;
+
+    // Safe to do this here as "settings starting_armies" is always given before
+    // the "update_map" command which updates our visible map.
+    for (auto &mine : m_world.getRegionsOwnedBy(Player::ME))
+        mine->setOwner(Player::OPPONENT);
 }
 
 void Bot::setTimebank(int timebank)
