@@ -13,8 +13,7 @@
 #include "Parser.h"
 #include "Region.h"
 #include "SuperRegion.h"
-#include "BasicPickStrategy.h"
-#include "BasicRoundStrategy.h"
+#include "QuickPickStrategy.h"
 #include "GreedyRoundStrategy.h"
 
 // C++
@@ -96,7 +95,7 @@ void Bot::attack()
 
 void Bot::checkStartingRegions()
 {
-    m_pickStrategy.reset(new BasicPickStrategy(m_startingRegions));
+    m_pickStrategy.reset(new QuickPickStrategy(m_startingRegions));
 }
 
 void Bot::checkOpponentStartingRegions()
