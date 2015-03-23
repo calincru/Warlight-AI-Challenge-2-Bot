@@ -10,6 +10,7 @@
 // C++
 #include <vector>
 #include <string>
+#include <queue>
 
 // Project
 #include "Settings.h"
@@ -32,8 +33,14 @@ public:
      * Handles requests from the game
      */
     void handle_request(Request request);
-
     void pick_starting_region();
+
+    /**
+     * Returns a (source, destination) pair for an attack
+     */
+    std::pair<int, int> plan_moves();
+    int compute_score(int super);
+
     void place_armies();
     void make_moves();
     void handle_opp_moves(const Placements& pls, const Movements& movs);
@@ -42,7 +49,7 @@ public:
      * INITIAL starting positions!!
      * Gets the indexes of the starting regions and does some computation based
      * on them. E.g. computes the `scores` for each one of them to easily make a
-     * choose in the pick starting regions phase.
+     * choice in the pick starting regions phase.
      */
     void handle_initial_starting_regions(const std::vector<int> &regions);
 
@@ -74,30 +81,14 @@ public:
 
     /**
      * Updates the regions from the game engine
-     * @param noRegion region identifier
-     * @param playerName player who owns it
-     * @param nbArmies number of armies he gets
+     * @param region region identifier
+     * @param name player who owns it
+     * @param armies number of armies he gets
      */
     void update_region(int region, const std::string& name, int armies);
     void reset_owned_regions();
 
 private:
-    /**
-     * Adds armies to a region
-     * @param region region to add to
-     * @param armies number of armies
-     */
-    void add_armies(int region, int armies);
-
-    /**
-     * Moves armies on the map
-     * @param from_reg starting region
-     * @param to_reg target region
-     * @param armies number of armies
-     */
-    void move_armies(int from_reg, int to_reg, int armies);
-
-
     // Lista de adiacență; aka Graful; Pe poziția i se afla lista cu vecinii
     // regiunii i.
     AdjencyList adj_list;
@@ -107,8 +98,12 @@ private:
     std::vector<int> super_rewards;
 
     // Lista care conține super regiunile din care fac parte regiunile. Pe
-    // poziția i se află supra regiunea din care face parte regiunea i.
+    // poziția i se află super regiunea din care face parte regiunea i.
     std::vector<int> regs_super;
+
+    // Lista care conține listele de regiuni dintr-o super regiune. Pe poziția
+    // i se află lista cu regiunile care fac parte din super regiunea i.
+    std::vector<std::vector<int>> super_table;
 
     // Lista conține numărul de armate pe fiecare regiune despre care botul
     // nostru știe.
@@ -124,7 +119,10 @@ private:
 
     std::string name;
     std::string opp_name;
+
+    // numărul de armate pe tură
     int avail_armies;
+
     int timebank;
     int time_per_move;
     int max_rounds;

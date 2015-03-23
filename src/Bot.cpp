@@ -12,17 +12,18 @@
 #include <sstream>
 #include <cmath>
 #include <cassert>
+#include <algorithm>
 
 // Project
 #include "Parser.h"
 #include "StringManipulation.h"
 #include "utils.h"
 
-
 Bot::Bot()
     : adj_list(1)
     , super_rewards(1)
     , regs_super(1)
+    , super_table(1)
     , armies_cnt(1)
     , regs_owner(1)
 {
@@ -46,27 +47,84 @@ void Bot::handle_request(Request request)
         throw std::invalid_argument("Unknown request");
 }
 
-void Bot::pick_starting_region()
+int Bot::compute_score(int super_region)
+{
+    auto regs = super_table[super_region];
+
+    auto nr_regs = regs.size();
+    auto sum = -(static_cast<int>(nr_regs));
+
+    for (auto i = 0u; i < nr_regs; ++i)
+        if (regs_owner[regs[i]] == Player::ME)
+            sum += armies_cnt[regs[i]];
+        else
+            sum -= 3./2. * armies_cnt[regs[i]];
+
+    if (sum > 0)
+        sum = 0;
+
+    return (10 - (-sum)/avail_armies) * super_rewards[super_region];
+}
+
+std::pair<int, int> Bot::plan_moves()
 {
     // TODO
-    std::cout << possible_starting_regions[
-                    std::rand() % possible_starting_regions.size()] << std::endl;
+    //
+    // Because deployments are dependent on planned attacks/transfers, there
+    // should be a function that decides all the actions for the second phase
+    // and deploys accordingly. This function should not return a pair, but
+    // rather compute all possible pairs needed for the attack/transfer phase
+    // and call the "place_armies" and "make_moves" functions (which should take
+    // as parameters either a list of pairs or one pair at a time.
+
+    std::vector<std::pair<int, int>> my_reg_other_reg_pairs;
+
+    // Finds all the adjacent super regions and keep all the (src, dest) pairs
+    // for possible attacks
+    for (auto &my_reg : owned_regions)
+        for (auto &other_reg : adj_list[my_reg])
+            if (regs_owner[other_reg] != Player::ME)
+                my_reg_other_reg_pairs.emplace_back(my_reg, other_reg);
+
+    std::pair<int, int> max_pair;
+    auto max_score = std::numeric_limits<int>::min();
+    for (auto &p : my_reg_other_reg_pairs)
+        if (compute_score(regs_super[p.second]) > max_score) {
+            max_score = compute_score(regs_super[p.second]);
+            max_pair = p;
+        }
+
+    return max_pair;
+}
+
+void Bot::pick_starting_region()
+{
+    // There is no need for a priority queue, since the score of the starting
+    // regions might vary based on the previous choices of either botm, so this
+    // function just picks the region with the maximum score.
+
+    auto max_reg = -1;
+    auto max_score = -1;
+    for (auto &reg : possible_starting_regions)
+        if (compute_score(regs_super[reg]) > max_score) {
+            max_score = compute_score(regs_super[reg]);
+            max_reg = reg;
+        }
+
+    std::cout << max_reg << std::endl;
 }
 
 void Bot::place_armies()
 {
-    // TODO
-    auto region = owned_regions[std::rand() % owned_regions.size()];
-    std::cout << name << " place_armies " << region << " " << avail_armies
+    auto p = plan_moves();
+    std::cout << name << " place_armies " << p.first  << " " << avail_armies
               << std::endl;
 
-    add_armies(region, avail_armies);
+    armies_cnt[p.first] += avail_armies;
 }
 
 void Bot::make_moves()
 {
-    // TODO
-
     /// Output No moves when you have no time left or do not want to commit any
     /// moves.
     //
@@ -80,27 +138,9 @@ void Bot::make_moves()
     /// When outputting multiple moves they must be seperated by a comma
     //
 
-    std::vector<std::string> moves;
-    for (auto j = 0u; j < owned_regions.size(); ++j) {
-        std::stringstream move;
-
-        auto i = owned_regions[j];
-        if (armies_cnt[i] <= 1)
-            continue;
-
-        auto target = adj_list[i].at(std::rand() % adj_list[i].size());
-        // prefer enemy regions
-        for (auto k = 0; k < 5; ++k) {
-            if (regs_owner[target] != Player::ME)
-                break;
-            target = adj_list[i].at(std::rand() % adj_list[i].size());
-        }
-        move << name << " attack/transfer " << i << " " << target << " "
-             << (armies_cnt[i] - 1);
-        moves.emplace_back(move.str());
-    }
-
-    std::cout << StringManipulation::comma_join(moves) << std::endl;
+    auto p = plan_moves();
+    std::cout << name << " attack/transfer " << p.first << " " << p.second
+              << " " << (armies_cnt[p.first] - 1) << std::endl;
 }
 
 void Bot::handle_opp_moves(const Placements& pls, const Movements& movs)
@@ -123,6 +163,8 @@ void Bot::add_region(int region, int super)
 
     assert(regs_owner.size() == static_cast<std::size_t>(region));
     regs_owner.emplace_back(Player::NEUTRAL);
+
+    super_table[super].emplace_back(region);
 }
 
 void Bot::add_neighbor(int region, int neigh)
@@ -141,6 +183,7 @@ void Bot::add_super_region(int super, int reward)
 {
     assert(super_rewards.size() == static_cast<std::size_t>(super));
     super_rewards.emplace_back(reward);
+    super_table.emplace_back();
 }
 
 void Bot::set_name(const std::string& _name)
@@ -175,7 +218,6 @@ void Bot::set_max_rounds(int rounds)
 
 void Bot::handle_initial_starting_regions(const std::vector<int> &regions)
 {
-    // TODO
     UNUSED(regions);
 }
 
@@ -209,28 +251,4 @@ void Bot::update_region(int region, const std::string& player, int armies)
 void Bot::reset_owned_regions()
 {
     owned_regions.clear();
-}
-
-void Bot::add_armies(int region, int armies)
-{
-    armies_cnt[region] += armies;
-}
-
-void Bot::move_armies(int from_reg, int to_reg, int armies)
-{
-    if (regs_owner[from_reg] == regs_owner[to_reg] &&
-        armies_cnt[from_reg] > armies) {
-
-        armies_cnt[from_reg] -= armies;
-        armies_cnt[to_reg] += armies;
-    } else if (armies_cnt[from_reg] > armies) {
-        armies_cnt[from_reg] -= armies;
-        if (armies_cnt[to_reg] - std::round(armies * 0.6) <= 0) {
-            armies_cnt[to_reg] = armies - std::round(armies_cnt[to_reg] * 0.7);
-            regs_owner[to_reg] = regs_owner[from_reg];
-        } else {
-            armies_cnt[from_reg] += armies - std::round(armies_cnt[to_reg] * 0.7);
-            armies_cnt[to_reg] -= std::round(armies * 0.6);
-        }
-    }
 }
