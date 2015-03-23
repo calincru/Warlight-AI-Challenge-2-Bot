@@ -80,10 +80,15 @@ void Bot::deploy()
 
 void Bot::attack()
 {
-    std::vector<std::string> result;
-
     // Temporary, until I learn how to reverse that vector
     auto attacks = m_roundStrategy->getAttacks();
+
+    if (!attacks.size()) {
+        std::cout << "No moves" << std::endl;
+        return;
+    }
+
+    std::vector<std::string> result;
     for (auto it = attacks.crbegin(); it != attacks.crend(); ++it) {
         std::stringstream ss;
         ss << m_name << " attack/transfer " << std::get<0>(*it)->id()
