@@ -45,7 +45,7 @@ public:
         return 3./2. * oppArmies;
     }
 
-    static double superRegionScore(const SuperRegionPtr &superRegion)
+    static double wastelandsBasedScore(const SuperRegionPtr &superRegion)
     {
         auto score = superRegion->getReward() * 1.;
 

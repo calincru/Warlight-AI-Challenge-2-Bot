@@ -9,25 +9,12 @@
 
 // C++
 #include <iostream>
-#include <exception>
 
 
 int main()
 {
     std::ios_base::sync_with_stdio(false);
-
-#ifndef STARTERBOT_DEBUG
-    try
-    {
-#endif
-        warlightAi::Bot b;
-        b.play();
-#ifndef STARTERBOT_DEBUG
-    } catch (std::exception& ex) {
-        std::cerr << "Exception:" << ex.what() << std::endl;
-        return 1;
-    }
-#endif
+    warlightAi::Bot().play();
 
     return 0;
 }

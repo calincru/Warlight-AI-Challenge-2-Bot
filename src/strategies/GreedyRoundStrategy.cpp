@@ -44,7 +44,7 @@ GreedyRoundStrategy::GreedyRoundStrategy(const World &world,
                 continue;
 
             pq.emplace(
-                ScoreComputer::superRegionScore(neigh->getSuperRegion()),
+                ScoreComputer::wastelandsBasedScore(neigh->getSuperRegion()),
                 neigh->getSuperRegion()
             );
             supers.emplace(neigh->getSuperRegion());
