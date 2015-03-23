@@ -31,6 +31,8 @@ public:
     bool containsRegion(RegionPtr region) const;
     std::vector<RegionPtr> getSubRegions() const;
 
+    std::vector<RegionPtr> getSurroundingRegions() const;
+
     bool isOwnedBy(warlightAi::Player player) const;
 
     int getReward() const;

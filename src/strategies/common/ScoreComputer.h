@@ -62,6 +62,12 @@ public:
                 oppSum += subReg->getArmies();
             }
 
+        for (auto &reg : superRegion->getSurroundingRegions())
+            if (reg->getOwner() == Player::ME) {
+                ++minesCount;
+                minesSum += reg->getArmies();
+            }
+
         if (!oppCount)
             return -1.;
 

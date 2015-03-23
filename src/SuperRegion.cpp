@@ -47,6 +47,18 @@ std::vector<RegionPtr> SuperRegion::getSubRegions() const
     return subRegs;
 }
 
+std::vector<RegionPtr> SuperRegion::getSurroundingRegions() const
+{
+    std::vector<RegionPtr> retRegs;
+
+    for (auto &subReg : m_subRegions)
+        for (auto &subRegNeigh : subReg.lock()->getNeighbors())
+            if (subRegNeigh->getSuperRegion().get() != this)
+                retRegs.emplace_back(subRegNeigh);
+
+    return retRegs;
+}
+
 bool SuperRegion::isOwnedBy(warlightAi::Player player) const
 {
     for (auto &reg : m_subRegions)

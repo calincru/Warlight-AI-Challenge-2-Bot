@@ -27,13 +27,12 @@ GreedyRoundStrategy::GreedyRoundStrategy(const World &world,
 {
     using common::ScoreComputer;
 
-    using ScoreSuperPair = std::pair<int, SuperRegionPtr>;
     auto pq_cmp = [](const auto &lhs, const auto &rhs) -> bool {
         return lhs.first < rhs.first;
     };
     std::priority_queue<
-                        ScoreSuperPair,
-                        std::vector<ScoreSuperPair>,
+                        std::pair<double, SuperRegionPtr>,
+                        std::vector<std::pair<double, SuperRegionPtr>>,
                         decltype(pq_cmp)
                        > pq(pq_cmp);
     std::unordered_set<SuperRegionPtr> supers;
