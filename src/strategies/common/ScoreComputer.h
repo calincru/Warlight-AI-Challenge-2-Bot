@@ -65,17 +65,14 @@ public:
                 oppSum += subReg->getArmies();
             }
 
-        for (auto &reg : superRegion->getSurroundingRegions())
-            if (reg->getOwner() == Player::ME) {
-                ++minesCount;
-                minesSum += reg->getArmies();
-            }
-
         if (!oppCount)
             return -1.;
 
         score *= (minesCount * 1.)/oppCount;
         score *= (minesSum * 1.)/oppSum;
+
+        score *= (superRegion->getReward() * 1.)/(std::min(1, oppCount - 1));
+        score *= (oppSum * 1.)/oppCount;
 
         return score;
     }
