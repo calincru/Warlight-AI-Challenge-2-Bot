@@ -7,6 +7,9 @@ create_archive() {
     cp -R ../include/* archive
     cp -R ../src/*.cpp archive
     cp -R ../src/*.h archive
+    cp -R ../src/strategies/*.cpp archive
+    cp -R ../src/strategies/*.h archive
+    cp -R ../src/strategies/common archive
     tar czvf "$filename" -C ./archive .
 
     ret=$?
