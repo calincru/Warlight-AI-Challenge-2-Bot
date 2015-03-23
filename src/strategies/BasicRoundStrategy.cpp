@@ -11,6 +11,9 @@
 #include "Region.h"
 #include "common/ScoreComputer.h"
 
+// C++
+#include <limits>
+
 
 namespace warlightAi {
 
