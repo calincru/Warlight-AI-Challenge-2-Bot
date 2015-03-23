@@ -71,10 +71,9 @@ public:
         score *= (minesCount * 1.)/oppCount;
         score *= (minesSum * 1.)/oppSum;
 
-        score *= (superRegion->getReward() * 1.)/(std::min(1, oppCount - 1));
-        score *= (oppSum * 1.)/oppCount;
-
-        return score;
+        auto threshold = (superRegion->getReward() * 1.)/(std::min(1, oppCount - 1)) +
+                         (oppSum * 1.)/oppCount;
+        return score + threshold;
     }
 
     // Others
