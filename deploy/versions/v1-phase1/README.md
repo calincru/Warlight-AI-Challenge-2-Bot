@@ -41,3 +41,16 @@ special Parser-ul, mare parte din restul codului a fost rescrisă).
 În headerele fișierelor apare licențierea sub MIT a acestora pentru că vrem ca
 botul să fie open-source după încheierea competiției. Până la încheierea
 acesteia, proiectul va fi privat.
+
+## Build
+
+Avem 2 variante, una folosind CMake, și cealaltă folosind doar GNU Make.
+
+Folosind CMake:
+    mkdir build
+    cmake ..
+    make
+
+Folosind GNU Make:
+    make
+
