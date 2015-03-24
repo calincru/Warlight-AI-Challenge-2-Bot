@@ -14,8 +14,6 @@
 // C++
 #include <queue>
 #include <limits>
-#include <iostream>
-#include <cassert>
 
 namespace warlightAi {
 
@@ -45,7 +43,6 @@ RegionPtr QuickPickStrategy::pickNext(const VecOfRegionPtrs &pickableRegions) co
     }
 
     auto minimumWastelands = pq.top().first;
-
     auto maximum = std::numeric_limits<double>::lowest();
     auto pickedReg = static_cast<RegionPtr>(nullptr);
 
