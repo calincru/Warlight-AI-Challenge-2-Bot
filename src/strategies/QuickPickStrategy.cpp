@@ -44,7 +44,7 @@ RegionPtr QuickPickStrategy::pickNext(const VecOfRegionPtrs &pickableRegions) co
     }
 
     auto minimumWastelands = pq.top().first;
-    auto maximum = std::numeric_limits<double>::min();
+    auto maximum = std::numeric_limits<double>::lowest();
     auto pickedReg = static_cast<RegionPtr>(nullptr);
 
     while (!pq.empty() && pq.top().first == minimumWastelands) {
