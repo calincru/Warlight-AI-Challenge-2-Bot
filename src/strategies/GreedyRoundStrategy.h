@@ -24,6 +24,7 @@ public:
     VecOfTuples getAttacks() const override;
 
 private:
+    VecOfRegionPtrs getTargetedOppRegions();
     void computeMigrations();
     std::unordered_set<RegionPtr> getRegionsOnBorder();
 

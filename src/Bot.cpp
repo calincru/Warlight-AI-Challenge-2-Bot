@@ -80,25 +80,20 @@ void Bot::deploy()
 
 void Bot::attack()
 {
-    // Temporary, until I learn how to reverse that vector
-    auto attacks = m_roundStrategy->getAttacks();
-
-    if (!attacks.size()) {
-        std::cout << "No moves" << std::endl;
-        return;
-    }
-
     std::vector<std::string> result;
-    for (auto it = attacks.crbegin(); it != attacks.crend(); ++it) {
+    for (auto &attack : m_roundStrategy->getAttacks()) {
         std::stringstream ss;
-        ss << m_name << " attack/transfer " << std::get<0>(*it)->id()
-           << " " << std::get<1>(*it)->id() << " "
-           << std::get<2>(*it);
+        ss << m_name << " attack/transfer " << std::get<0>(attack)->id()
+           << " " << std::get<1>(attack)->id() << " "
+           << std::get<2>(attack);
 
         result.emplace_back(ss.str());
     }
 
-    std::cout << StringManipulation::comma_join(result) << std::endl;
+    if (!result.size())
+        std::cout << "No moves" << std::endl;
+    else
+        std::cout << StringManipulation::comma_join(result) << std::endl;
 }
 
 void Bot::checkStartingRegions()

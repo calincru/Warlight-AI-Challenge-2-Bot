@@ -27,47 +27,7 @@ GreedyRoundStrategy::GreedyRoundStrategy(const World &world,
     : RoundStrategy(world, availableArmies)
 {
     using common::ScoreComputer;
-
-    auto pq_cmp = [](const auto &lhs, const auto &rhs) -> bool {
-        return lhs.first < rhs.first;
-    };
-    std::priority_queue<
-                        std::pair<double, SuperRegionPtr>,
-                        std::vector<std::pair<double, SuperRegionPtr>>,
-                        decltype(pq_cmp)
-                       > pq(pq_cmp);
-    std::unordered_set<SuperRegionPtr> supers;
-
-    for (auto &myReg : world.getRegionsOwnedBy(Player::ME))
-        for (auto &neigh : myReg->getNeighbors()) {
-            if (supers.count(neigh->getSuperRegion()))
-                continue;
-
-            pq.emplace(
-                ScoreComputer::wastelandsBasedScore(neigh->getSuperRegion()),
-                neigh->getSuperRegion()
-            );
-            supers.emplace(neigh->getSuperRegion());
-        }
-
-    std::unordered_set<RegionPtr> addedRegs;
-    VecOfRegionPtrs neighs;
-    while (!pq.empty()) {
-        auto superReg = pq.top().second;
-        pq.pop();
-
-        for (auto &reg : superReg->getSubRegions()) {
-            if (reg->getOwner() == Player::ME || addedRegs.count(reg))
-                continue;
-
-            for (auto &regNeigh : reg->getNeighbors())
-                if (regNeigh->getOwner() == Player::ME) {
-                    addedRegs.emplace(reg);
-                    neighs.emplace_back(reg);
-                    break;
-                }
-        }
-    }
+    auto neighs = getTargetedOppRegions();
 
     for (auto &neigh : neighs) {
         if (availableArmies <= 0)
@@ -115,6 +75,7 @@ GreedyRoundStrategy::GreedyRoundStrategy(const World &world,
     }
 
     computeMigrations();
+    std::reverse(m_attacks.begin(), m_attacks.end());
 }
 
 VecOfPairs GreedyRoundStrategy::getDeployments() const
@@ -124,8 +85,55 @@ VecOfPairs GreedyRoundStrategy::getDeployments() const
 
 VecOfTuples GreedyRoundStrategy::getAttacks() const
 {
-    // This is reversed by Bot. Temporary decision.
     return m_attacks;
+}
+
+VecOfRegionPtrs GreedyRoundStrategy::getTargetedOppRegions()
+{
+    using common::ScoreComputer;
+
+    auto pq_cmp = [](const auto &lhs, const auto &rhs) -> bool {
+        return lhs.first < rhs.first;
+    };
+    std::priority_queue<
+                        std::pair<double, SuperRegionPtr>,
+                        std::vector<std::pair<double, SuperRegionPtr>>,
+                        decltype(pq_cmp)
+                       > pq(pq_cmp);
+    std::unordered_set<SuperRegionPtr> supers;
+
+    for (auto &myReg : m_world.getRegionsOwnedBy(Player::ME))
+        for (auto &neigh : myReg->getNeighbors()) {
+            if (supers.count(neigh->getSuperRegion()))
+                continue;
+
+            pq.emplace(
+                ScoreComputer::wastelandsBasedScore(neigh->getSuperRegion()),
+                neigh->getSuperRegion()
+            );
+            supers.emplace(neigh->getSuperRegion());
+        }
+
+    std::unordered_set<RegionPtr> addedRegs;
+    VecOfRegionPtrs neighs;
+    while (!pq.empty()) {
+        auto superReg = pq.top().second;
+        pq.pop();
+
+        for (auto &reg : superReg->getSubRegions()) {
+            if (reg->getOwner() == Player::ME || addedRegs.count(reg))
+                continue;
+
+            for (auto &regNeigh : reg->getNeighbors())
+                if (regNeigh->getOwner() == Player::ME) {
+                    addedRegs.emplace(reg);
+                    neighs.emplace_back(reg);
+                    break;
+                }
+        }
+    }
+
+    return neighs;
 }
 
 void GreedyRoundStrategy::computeMigrations()
