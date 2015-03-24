@@ -75,7 +75,7 @@ int Region::getArmies() const
     return m_armies;
 }
 
-auto Region::getSuperRegion() const -> SuperRegionPtr
+SuperRegionPtr Region::getSuperRegion() const
 {
     return m_superRegion.lock();
 }

@@ -17,7 +17,6 @@ namespace warlightAi {
 const int INIT_AVAILABLE_ARMIES= 5;
 const int NEUTRAL_ARMY_COUNT = 2;
 const int WASTELAND_ARMY_COUNT = 6;
-const int IMPORTANT_SUPERREGIONS = 3; // TODO
 
 // Enums
 enum class Player {

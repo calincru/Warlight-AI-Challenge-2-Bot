@@ -74,7 +74,7 @@ auto World::getRegionsOwnedBy(warlightAi::Player player) const
     return ownedRegions;
 }
 
-auto World::getRegionById(int regionId) const -> RegionPtr
+RegionPtr World::getRegionById(int regionId) const
 {
     for (auto &region : m_regions)
         if (region->id() == regionId)
@@ -83,7 +83,7 @@ auto World::getRegionById(int regionId) const -> RegionPtr
     return nullptr;
 }
 
-auto World::getSuperRegionById(int superRegionId) const -> SuperRegionPtr
+SuperRegionPtr World::getSuperRegionById(int superRegionId) const
 {
     for (auto &super : m_superRegions)
         if (super->id() == superRegionId)
