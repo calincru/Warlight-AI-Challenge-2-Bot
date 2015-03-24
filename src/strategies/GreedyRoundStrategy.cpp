@@ -74,7 +74,7 @@ GreedyRoundStrategy::GreedyRoundStrategy(const World &world,
             break;
 
         auto biggestReg = static_cast<RegionPtr>(nullptr);
-        auto maxArmies = std::numeric_limits<int>::min();
+        auto maxArmies = std::numeric_limits<int>::lowest();
         for (auto &mine : neigh->getNeighbors()) {
             if (mine->getOwner() != Player::ME)
                 continue;
@@ -103,7 +103,7 @@ GreedyRoundStrategy::GreedyRoundStrategy(const World &world,
         m_deployments.emplace_back(std::get<0>(m_attacks.front()), availableArmies);
         std::get<2>(m_attacks.front()) += availableArmies;
     } else if (availableArmies) {
-        auto maxArmies = std::numeric_limits<int>::min();
+        auto maxArmies = std::numeric_limits<int>::lowest();
         auto maxReg = static_cast<RegionPtr>(nullptr);
         for (auto &mine : world.getRegionsOwnedBy(Player::ME))
             if (mine->getArmies() > maxArmies) {

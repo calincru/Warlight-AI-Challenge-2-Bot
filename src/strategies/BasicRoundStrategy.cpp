@@ -32,7 +32,7 @@ BasicRoundStrategy::BasicRoundStrategy(const World &world, int availableArmies)
                 myRegOtherRegPairs.emplace_back(myReg, otherReg);
 
     std::pair<RegionPtr, RegionPtr> maxPair;
-    auto maxScore = std::numeric_limits<int>::min();
+    auto maxScore = std::numeric_limits<int>::lowest();
     for (auto &p : myRegOtherRegPairs) {
         auto score = ScoreComputer::simulationScore(
                         p.second->getSuperRegion(),

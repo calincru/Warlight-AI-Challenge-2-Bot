@@ -32,7 +32,7 @@ RegionPtr BasicPickStrategy::pickNext(const VecOfRegionPtrs &pickableRegions) co
     using common::ScoreComputer;
 
     auto maxReg = static_cast<RegionPtr>(nullptr);
-    auto maxScore = std::numeric_limits<int>::min();
+    auto maxScore = std::numeric_limits<int>::lowest();
     for (auto &regionPtr : pickableRegions) {
         auto score = ScoreComputer::simulationScore(
                                             regionPtr->getSuperRegion(),
