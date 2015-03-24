@@ -47,11 +47,13 @@ acesteia, proiectul va fi privat.
 Avem 2 variante, una folosind CMake, și cealaltă folosind doar GNU Make.
 
 Folosind CMake:
+
     mkdir build
     cd build
     cmake ..
     make
 
 Folosind GNU Make:
+
     make
 
