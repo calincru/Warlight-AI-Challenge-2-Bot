@@ -22,18 +22,36 @@
 
 namespace warlightAi {
 
-
+/**
+ * This class is meant to be instantiated only once and holds the interaction
+ * with the parser and the logic behind our Bot's play.
+ */
 class Bot : private boost::noncopyable
 {
     using PickStrategyPtr = std::unique_ptr<PickStrategy>;
     using RoundStrategyPtr = std::unique_ptr<RoundStrategy>;
 
 public:
+    /**
+     * Creates and initializes a new and unique Bot.
+     */
     Bot();
 
+    /**
+     * Tells the Bot to start playing.
+     */
     void play();
+
+    /**
+     * This method is used in the interaction with the parser. Sometimes the
+     * parser needs to tell the Bot to handle some situations after forwarding
+     * all information to it; e.g.: picking phase, attack/transfer phase,
+     * dealing with opponents' moves, etc.
+     */
     void handleRequest(Request request);
 
+    // The following methods are entirely used in the communication with the
+    // Parser instance.
     void addRegion(int newRegion, int superOfRegion);
     void addSuperRegion(int superRegion, int superRegionReward);
     void addNeighbor(int region, int regionNeigh);
@@ -55,11 +73,42 @@ public:
     void updateRegion(int region, const std::string &playerName, int armiesCnt);
 
 private:
+    // The following methods are called from the handleRequest method and are
+    // dealing with specific requests from the Parser.
+    /**
+     * This method is called in the picking phase. It forwards the picking
+     * decision to the PickStrategy instance the bot holds.
+     */
     void pick();
+
+    /**
+     * This method is called in the deployment phase. This forwards the
+     * deployment decision to the RoundStrategy instance the bot holds.
+     */
     void deploy();
+
+    /**
+     * This method is called in the attacks phase. This forwards the deployment
+     * decision to the RoundStrategy instance the bot holds.
+     */
     void attack();
+
+    /**
+     * This method is called after the parser has already forwarded the initial
+     * starting regions the two bots will have to pick from.
+     */
     void checkStartingRegions();
+
+    /**
+     * This method is called after the parser has already forwarded the
+     * opponents starting regions to our Bot.
+     */
     void checkOpponentStartingRegions();
+
+    /**
+     * This method is called after each round, after the parser has already
+     * forwarded the opponent's movements from the last round.
+     */
     void checkOpponentMoves();
 
 

@@ -15,10 +15,15 @@
 
 namespace warlightAi { namespace common {
 
+/**
+ * Class containing static functions used by both picking and round strategies.
+ */
 class ScoreComputer
 {
 public:
-    // Basic brain impl score
+    /**
+     * Older function used for ranking super regions.
+     */
     static double simulationScore(const SuperRegionPtr &superRegion,
                                   int availableArmies)
     {
@@ -37,6 +42,10 @@ public:
         return (10 - (-sum)/availableArmies) * superRegion->getReward();
     }
 
+    /**
+     * Function used to determine the number of armies our Bot has to attack
+     * the opponent, to conquer the given region with the given probability.
+     */
     static int armiesNeeded(int oppArmies, double probability)
     {
         UNUSED(probability);
@@ -48,6 +57,9 @@ public:
         return 3./2.*oppArmies + 1;
     }
 
+    /**
+     * Our latest super region ranking function. Inhouse built formula :-).
+     */
     static double wastelandsBasedScore(const SuperRegionPtr &superRegion)
     {
         auto score = superRegion->getReward() * 1.;
@@ -72,9 +84,9 @@ public:
         score *= (minesSum * 1.)/oppSum;
 
         /* Before */
-        /*auto threshold = (superRegion->getReward() * 1.)/(std::min(1, oppCount - 1)) *
-                         (oppSum * 1.)/oppCount;
-        return score + threshold;*/
+        /* auto threshold = (superRegion->getReward() * 1.)/(std::min(1, oppCount - 1)) * */
+        /*                  (oppSum * 1.)/oppCount; */
+        /* return score + threshold; */
         /* After */
         return score / (minesCount + oppCount);
     }

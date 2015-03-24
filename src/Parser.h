@@ -17,14 +17,26 @@ namespace warlightAi {
 // Fwrd decls
 class Bot;
 
+/**
+ * The class which does all the parsing for our Bot.
+ */
 class Parser : private boost::noncopyable
 {
 public:
+    /**
+     * Creates a new and unique parser. It stores a reference to the Bot object
+     * in order to forward to it all the information parsed.
+     */
     Parser(Bot &bot);
 
+    /**
+     * Tells the parser to start parsing.
+     */
     void parseInput();
 
 private:
+    // Helper methods mainly used to modularize based on different commands
+    // received from the engine.
     void parseSetupMap();
     void parseStartingRegions();
     void parseSettings();

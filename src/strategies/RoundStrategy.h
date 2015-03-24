@@ -16,12 +16,23 @@ namespace warlightAi {
 // Fwrd decls
 class World;
 
+/**
+ * Base class for strategies deciding the deployments and attacks of our Bot.
+ */
 class RoundStrategy
 {
 public:
+    /**
+     * Creates a new round strategy given a reference to the map of the game
+     * (the World parameter) and the number of armies available this round.
+     */
     RoundStrategy(const World &world, int availableArmies);
     virtual ~RoundStrategy();
 
+    /**
+     * Pure virtual methods returning the deployments and the attacks our Bot
+     * should do this round.
+     */
     virtual VecOfPairs getDeployments() const = 0;
     virtual VecOfTuples getAttacks() const = 0;
 
