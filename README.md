@@ -16,6 +16,8 @@ Game log: http://theaigames.com/competitions/warlight-ai-challenge-2/game-log/a/
 
 Good games: http://theaigames.com/competitions/warlight-ai-challenge-2/game-log/GreenTea+LuckyBot/1
 
+**Official Game Engine:** https://github.com/theaigames/warlight2-engine
+
 ## Misc useful
 
 [C++ Starter repo.](https://github.com/pizzard/warlight-starterbot)
