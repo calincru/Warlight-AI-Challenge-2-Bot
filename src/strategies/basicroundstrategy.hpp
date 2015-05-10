@@ -26,8 +26,6 @@ public:
     VecOfTuples getAttacks() const override;
 
 private:
-    double simulationScore(SuperRegionPtr superRegion, int availableArmies) const;
-
     VecOfPairs m_deployments;
     VecOfTuples m_attacks;
 

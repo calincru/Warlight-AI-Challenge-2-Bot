@@ -9,7 +9,7 @@
 // Project
 #include "world.hpp"
 #include "region.hpp"
-#include "common/statistics.hpp"
+#include "common/basicscore.hpp"
 
 // C++
 #include <limits>
@@ -20,7 +20,7 @@ namespace warlightAi {
 BasicRoundStrategy::BasicRoundStrategy(const World &world, int availableArmies)
     : RoundStrategy(world, availableArmies)
 {
-    using common::Statistics;
+    using common::BasicScore;
 
     std::vector<std::pair<RegionPtr, RegionPtr>> myRegOtherRegPairs;
 
@@ -35,7 +35,8 @@ BasicRoundStrategy::BasicRoundStrategy(const World &world, int availableArmies)
     auto maxScore = std::numeric_limits<int>::lowest();
 
     for (auto &p : myRegOtherRegPairs) {
-        auto score = simulationScore(p.second->getSuperRegion(), availableArmies);
+        auto score = BasicScore::simulationScore(p.second->getSuperRegion(),
+                                                 availableArmies);
 
         if (score > maxScore) {
             maxScore = score;
@@ -57,26 +58,6 @@ VecOfPairs BasicRoundStrategy::getDeployments() const
 VecOfTuples BasicRoundStrategy::getAttacks() const
 {
     return m_attacks;
-}
-
-double BasicRoundStrategy::simulationScore(SuperRegionPtr superRegion,
-                                          int availableArmies) const
-{
-    using common::Statistics;
-
-    auto subRegs = superRegion->getSubRegions();
-    double sum = -subRegs.size();
-
-    for (auto &reg : subRegs)
-        if (reg->getOwner() == Player::ME)
-            sum += reg->getArmies();
-        else
-            sum -= Statistics::armiesNeeded(reg->getArmies(), 0.7);
-
-    if (sum > 0)
-        sum = 0.;
-
-    return (10 - (-sum)/availableArmies) * superRegion->getReward();
 }
 
 } // namespace warlightAi
