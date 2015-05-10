@@ -6,9 +6,9 @@ create_archive() {
     mkdir -p archive
     cp -R ../include/* archive
     cp -R ../src/*.cpp archive
-    cp -R ../src/*.h archive
+    cp -R ../src/*.hpp archive
     cp -R ../src/strategies/*.cpp archive
-    cp -R ../src/strategies/*.h archive
+    cp -R ../src/strategies/*.hpp archive
     cp -R ../src/strategies/common archive
     tar czvf "$filename" -C ./archive .
 
