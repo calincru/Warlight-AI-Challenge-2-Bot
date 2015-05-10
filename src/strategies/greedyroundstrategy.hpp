@@ -7,7 +7,7 @@
 #define GREEDY_ROUND_STRATEGY_H_INCLUDED
 
 // Project
-#include "RoundStrategy.hpp"
+#include "roundstrategy.hpp"
 
 // C++
 #include <unordered_set>

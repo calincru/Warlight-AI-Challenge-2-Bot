@@ -9,7 +9,7 @@
 
 // Project
 #include "globals.hpp"
-#include "RoundStrategy.hpp"
+#include "roundstrategy.hpp"
 
 
 namespace warlightAi {

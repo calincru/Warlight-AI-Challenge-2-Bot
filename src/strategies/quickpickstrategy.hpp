@@ -7,7 +7,7 @@
 #define QUICK_PICK_STRATEGY_H
 
 // Project
-#include "PickStrategy.hpp"
+#include "pickstrategy.hpp"
 
 
 namespace warlightAi {

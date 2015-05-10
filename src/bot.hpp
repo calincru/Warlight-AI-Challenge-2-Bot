@@ -11,9 +11,9 @@
 // Project
 #include "boost/noncopyable.hpp"
 #include "globals.hpp"
-#include "World.hpp"
-#include "PickStrategy.hpp"
-#include "RoundStrategy.hpp"
+#include "world.hpp"
+#include "pickstrategy.hpp"
+#include "roundstrategy.hpp"
 
 // C++
 #include <vector>

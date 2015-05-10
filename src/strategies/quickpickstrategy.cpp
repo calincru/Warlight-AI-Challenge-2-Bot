@@ -4,12 +4,12 @@
 //
 
 // Self
-#include "QuickPickStrategy.hpp"
+#include "quickpickstrategy.hpp"
 
 // Project
 #include "globals.hpp"
-#include "Region.hpp"
-#include "SuperRegion.hpp"
+#include "region.hpp"
+#include "superregion.hpp"
 
 // C++
 #include <queue>

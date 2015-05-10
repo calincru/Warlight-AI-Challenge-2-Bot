@@ -9,8 +9,8 @@
 // Project
 #include "utils.hpp"
 #include "globals.hpp"
-#include "Region.hpp"
-#include "SuperRegion.hpp"
+#include "region.hpp"
+#include "superregion.hpp"
 
 
 namespace warlightAi { namespace common {

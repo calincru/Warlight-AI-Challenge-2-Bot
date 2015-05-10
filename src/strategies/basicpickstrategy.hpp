@@ -7,7 +7,7 @@
 #define BASIC_PICK_STRATEGY_H_INCLUDED
 
 // Project
-#include "PickStrategy.hpp"
+#include "pickstrategy.hpp"
 #include "globals.hpp"
 
 

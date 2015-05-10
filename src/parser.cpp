@@ -5,7 +5,7 @@
 
 
 // Self
-#include "Parser.hpp"
+#include "parser.hpp"
 
 // C++
 #include <iostream>
@@ -13,8 +13,8 @@
 #include <limits>
 
 // Project
-#include "Bot.hpp"
-#include "StringManipulation.hpp"
+#include "bot.hpp"
+#include "stringmanipulation.hpp"
 #include "utils.hpp"
 
 

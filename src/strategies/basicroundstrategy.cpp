@@ -4,12 +4,12 @@
 //
 
 // Self
-#include "BasicRoundStrategy.hpp"
+#include "basicroundstrategy.hpp"
 
 // Project
-#include "World.hpp"
-#include "Region.hpp"
-#include "common/Statistics.hpp"
+#include "world.hpp"
+#include "region.hpp"
+#include "common/statistics.hpp"
 
 // C++
 #include <limits>

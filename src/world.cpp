@@ -4,11 +4,11 @@
 //
 
 // Self
-#include "World.hpp"
+#include "world.hpp"
 
 // Project
-#include "SuperRegion.hpp"
-#include "Region.hpp"
+#include "superregion.hpp"
+#include "region.hpp"
 
 // C++
 #include <exception>
