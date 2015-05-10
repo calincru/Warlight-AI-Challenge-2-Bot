@@ -33,8 +33,7 @@ public:
      * The sole constructor which creates a new region given its id, a reference
      * to its super region, the initial number of armies and its owner.
      */
-    Region(int id, SuperRegionPtr superRegion, int armies,
-           warlightAi::Player player);
+    Region(int id, SuperRegionPtr superRegion);
 
     /**
      * Returns the id of this region. It is an unique integer based on the input

@@ -24,7 +24,7 @@ public:
     /**
      * Older function used for ranking super regions.
      */
-    static double simulationScore(const SuperRegionPtr &superRegion,
+    static double simulationScore(SuperRegionPtr superRegion,
                                   int availableArmies)
     {
         auto subRegs = superRegion->getSubRegions();
@@ -60,14 +60,15 @@ public:
     /**
      * Our latest super region ranking function. Inhouse built formula :-).
      */
-    static double wastelandsBasedScore(const SuperRegionPtr &superRegion)
+    static double wastelandsBasedScore(SuperRegionPtr superRegion)
     {
         auto score = superRegion->getReward() * 1.;
-
         auto minesSum = 0;
         auto minesCount = 0;
         auto oppCount = 0;
         auto oppSum = 0;
+
+        // TODO: Vs opponent
         for (auto &subReg : superRegion->getSubRegions())
             if (subReg->getOwner() == Player::ME) {
                 ++minesCount;

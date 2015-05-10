@@ -76,6 +76,12 @@ public:
      */
     VecOfRegionPtrs getRegionsOwnedBy(warlightAi::Player player) const;
 
+    // TODO
+    VecOfRegionPtrs getRegionsInFogOf(warlightAi::Player player) const;
+
+    // TODO
+    bool isInFogOf(RegionPtr reg, warlightAi::Player player) const;
+
 private:
     VecOfRegionPtrs m_regions;
     VecOfSuperRegionPtrs m_superRegions;

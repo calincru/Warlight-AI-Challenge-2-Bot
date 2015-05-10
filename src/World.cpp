@@ -22,12 +22,7 @@ void World::addRegion(int regionId, int superRegionId)
     if (!regionSuper)
         throw std::runtime_error("Couldn't find region's superRegion");
 
-    auto newReg = std::make_shared<Region>(
-                        regionId,
-                        regionSuper,
-                        NEUTRAL_ARMY_COUNT,
-                        Player::NEUTRAL
-    );
+    auto newReg = std::make_shared<Region>(regionId, regionSuper);
     m_regions.emplace_back(newReg);
     regionSuper->addSubRegion(newReg);
 }
@@ -90,6 +85,42 @@ SuperRegionPtr World::getSuperRegionById(int superRegionId) const
             return super;
 
     return nullptr;
+}
+
+VecOfRegionPtrs World::getRegionsInFogOf(warlightAi::Player player) const
+{
+    VecOfRegionPtrs fogRegs;
+
+    for (auto &reg : m_regions) {
+        bool inFog = true;
+
+        if (reg->getOwner() == player)
+            continue;
+
+        for (auto &neigh : reg->getNeighbors())
+            if (neigh->getOwner() == player) {
+                inFog = false;
+                break;
+            }
+
+        if (inFog)
+            fogRegs.emplace_back(reg);
+    }
+
+    return fogRegs;
+}
+
+bool World::isInFogOf(RegionPtr reg, warlightAi::Player player) const
+{
+    bool isInFog = true;
+
+    for (auto &neigh : reg->getNeighbors())
+        if (neigh->getOwner() == player) {
+            isInFog = false;
+            break;
+        }
+
+    return isInFog;
 }
 
 } // namespace warlightAi

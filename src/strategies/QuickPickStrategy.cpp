@@ -36,6 +36,7 @@ RegionPtr QuickPickStrategy::pickNext(const VecOfRegionPtrs &pickableRegions) co
 
     for (auto &reg : pickableRegions) {
         auto wastelands = 0;
+
         for (auto &subReg : reg->getSuperRegion()->getSubRegions())
             if (subReg->getArmies() == WASTELAND_ARMY_COUNT)
                 ++wastelands;
@@ -61,7 +62,7 @@ RegionPtr QuickPickStrategy::pickNext(const VecOfRegionPtrs &pickableRegions) co
     return pickedReg;
 }
 
-double QuickPickStrategy::superRegionScore(const SuperRegionPtr superReg) const
+double QuickPickStrategy::superRegionScore(SuperRegionPtr superReg) const
 {
     auto subRegs = superReg->getSubRegions();
 

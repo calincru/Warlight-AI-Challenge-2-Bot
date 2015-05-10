@@ -38,7 +38,7 @@ private:
      * Computes a score for the given super region. This is used in the decision
      * made in the pickNext method.
      */
-    double superRegionScore(const SuperRegionPtr superReg) const;
+    double superRegionScore(SuperRegionPtr superReg) const;
 
 }; // class QuickPickStrategy
 

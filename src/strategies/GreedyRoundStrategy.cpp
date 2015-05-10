@@ -35,6 +35,7 @@ GreedyRoundStrategy::GreedyRoundStrategy(const World &world,
 
         auto biggestReg = static_cast<RegionPtr>(nullptr);
         auto maxArmies = std::numeric_limits<int>::lowest();
+
         for (auto &mine : neigh->getNeighbors()) {
             if (mine->getOwner() != Player::ME)
                 continue;
@@ -47,6 +48,7 @@ GreedyRoundStrategy::GreedyRoundStrategy(const World &world,
 
         auto armiesNeeded = ScoreComputer::armiesNeeded(neigh->getArmies(), 0.7) + 1;
         auto diff = armiesNeeded - maxArmies;
+
         if (diff > availableArmies) {
             continue;
         } else if (diff > 0) {
@@ -65,6 +67,7 @@ GreedyRoundStrategy::GreedyRoundStrategy(const World &world,
     } else if (availableArmies) {
         auto maxArmies = std::numeric_limits<int>::lowest();
         auto maxReg = static_cast<RegionPtr>(nullptr);
+
         for (auto &mine : world.getRegionsOwnedBy(Player::ME))
             if (mine->getArmies() > maxArmies) {
                 maxArmies = mine->getArmies();
@@ -116,10 +119,11 @@ VecOfRegionPtrs GreedyRoundStrategy::getTargetedOppRegions()
 
     std::unordered_set<RegionPtr> addedRegs;
     VecOfRegionPtrs neighs;
+
     while (!pq.empty()) {
         auto superReg = pq.top().second;
-        pq.pop();
 
+        pq.pop();
         for (auto &reg : superReg->getSubRegions()) {
             if (reg->getOwner() == Player::ME || addedRegs.count(reg))
                 continue;
@@ -146,8 +150,8 @@ void GreedyRoundStrategy::computeMigrations()
 
     while (!Q.empty()) {
         auto nextReg = Q.front();
-        Q.pop();
 
+        Q.pop();
         for (auto &neigh : nextReg->getNeighbors()) {
             if (neigh->getOwner() != Player::ME || visitedRegs.count(neigh))
                 continue;
@@ -166,6 +170,7 @@ std::unordered_set<RegionPtr> GreedyRoundStrategy::getRegionsOnBorder()
 
     for (auto &mine : m_world.getRegionsOwnedBy(Player::ME)) {
         auto isOnBorder = false;
+
         for (auto &neigh : mine->getNeighbors())
             if (neigh->getOwner() != Player::ME) {
                 isOnBorder = true;

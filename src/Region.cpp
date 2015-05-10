@@ -13,12 +13,11 @@
 
 namespace warlightAi {
 
-Region::Region(int id, SuperRegionPtr superRegion, int armies,
-               warlightAi::Player player)
+Region::Region(int id, SuperRegionPtr superRegion)
     : m_id(id)
     , m_superRegion(superRegion)
-    , m_armies(armies)
-    , m_owner(player)
+    , m_armies(NEUTRAL_ARMY_COUNT)
+    , m_owner(Player::NEUTRAL)
 {}
 
 int Region::id() const
