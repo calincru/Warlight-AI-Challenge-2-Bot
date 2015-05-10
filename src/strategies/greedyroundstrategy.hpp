@@ -21,7 +21,7 @@ namespace warlightAi {
 class GreedyRoundStrategy : public RoundStrategy
 {
     using RegRegPair = std::pair<RegionPtr, RegionPtr>;
-    using VecOfRegReg = std::vector<RegRegPair>;
+    using RegRegList = std::vector<RegRegPair>;
     using DoubleRegReg = std::tuple<double, RegionPtr, RegionPtr>;
 
 public:
@@ -36,12 +36,12 @@ public:
      * which tries to conquer all the regions from the best ranked super
      * region based on our ranking score.
      */
-    VecOfRegInt getDeployments() const override;
-    VecOfRegRegInt getAttacks() const override;
+    RegIntList getDeployments() const override;
+    RegRegIntList getAttacks() const override;
 
 private:
     // TODO
-     VecOfRegReg getSpoilableRegions() const;
+     RegRegList getSpoilableRegions() const;
 
     /**
      * Return a list of references to Regions which should be in our Bot's
@@ -80,8 +80,8 @@ private:
 
 
     int m_availArmies;
-    VecOfRegInt m_deployments;
-    VecOfRegRegInt m_attacks;
+    RegIntList m_deployments;
+    RegRegIntList m_attacks;
 
 }; // class GreedyRoundStrategy
 

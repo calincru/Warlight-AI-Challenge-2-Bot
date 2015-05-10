@@ -47,17 +47,17 @@ GreedyRoundStrategy::GreedyRoundStrategy(const World &world,
     std::reverse(m_attacks.begin(), m_attacks.end());
 }
 
-VecOfRegInt GreedyRoundStrategy::getDeployments() const
+RegIntList GreedyRoundStrategy::getDeployments() const
 {
     return m_deployments;
 }
 
-VecOfRegRegInt GreedyRoundStrategy::getAttacks() const
+RegRegIntList GreedyRoundStrategy::getAttacks() const
 {
     return m_attacks;
 }
 
-auto GreedyRoundStrategy::getSpoilableRegions() const -> VecOfRegReg
+auto GreedyRoundStrategy::getSpoilableRegions() const -> RegRegList
 {
     auto pq_cmp = [](const auto &lhs, const auto &rhs) {
         return std::get<0>(lhs) < std::get<0>(rhs);
@@ -87,7 +87,7 @@ auto GreedyRoundStrategy::getSpoilableRegions() const -> VecOfRegReg
             pq.emplace(spoilingScoreTuple(super));
     }
 
-    VecOfRegReg spoilables;
+    RegRegList spoilables;
 
     while (!pq.empty()) {
         auto top = pq.top();

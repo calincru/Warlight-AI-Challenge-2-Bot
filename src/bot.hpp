@@ -126,8 +126,8 @@ private:
     RegionPtrSet m_startingRegions;
     RegionPtrSet m_opponentStartingRegions;
 
-    VecOfRegRegInt m_opponentAttacks;
-    VecOfRegInt m_opponentDeployments;
+    RegRegIntList m_opponentAttacks;
+    RegIntList m_opponentDeployments;
 
     PickStrategyPtr m_pickStrategy;
     RoundStrategyPtr m_roundStrategy;

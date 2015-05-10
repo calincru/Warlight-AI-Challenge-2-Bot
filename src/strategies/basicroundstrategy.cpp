@@ -45,17 +45,16 @@ BasicRoundStrategy::BasicRoundStrategy(const World &world, int availableArmies)
     }
 
     m_deployments.emplace_back(maxPair.first, availableArmies);
-    m_attacks.emplace_back(maxPair.first,
-                           maxPair.second,
+    m_attacks.emplace_back(maxPair.first, maxPair.second,
                            maxPair.first->getArmies() - 1);
 }
 
-VecOfRegInt BasicRoundStrategy::getDeployments() const
+RegIntList BasicRoundStrategy::getDeployments() const
 {
     return m_deployments;
 }
 
-VecOfRegRegInt BasicRoundStrategy::getAttacks() const
+RegRegIntList BasicRoundStrategy::getAttacks() const
 {
     return m_attacks;
 }

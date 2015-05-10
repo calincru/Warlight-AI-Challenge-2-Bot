@@ -48,8 +48,74 @@ using SuperRegionPtrList = std::vector<SuperRegionPtr>;
 using RegionPtrSet = std::unordered_set<RegionPtr>;
 using SuperRegionPtrSet = std::unordered_set<SuperRegionPtr>;
 
-using VecOfRegInt = std::vector<std::pair<RegionPtr, int>>;
-using VecOfRegRegInt = std::vector<std::tuple<RegionPtr, RegionPtr, int>>;
+using RegIntList = std::vector<std::pair<RegionPtr, int>>;
+using RegRegIntList = std::vector<std::tuple<RegionPtr, RegionPtr, int>>;
+
+struct RegIntEq;
+struct RegIntHash;
+using RegIntSet = std::unordered_set<
+                            std::pair<RegionPtr, int>,
+                            RegIntHash,
+                            RegIntEq
+                  >;
+
+struct RegRegIntEq;
+struct RegRegIntHash;
+using RegRegIntSet = std::unordered_set<
+                            std::tuple<RegionPtr, RegionPtr, int>,
+                            RegRegIntHash,
+                            RegRegIntEq
+                     >;
+struct RegIntEq
+{
+    bool operator()(const std::pair<RegionPtr, int> &lhs,
+                    const std::pair<RegionPtr, int> &rhs) const
+    {
+        return !lhs.first.owner_before(rhs.first)
+                && !rhs.first.owner_before(lhs.first)
+                && lhs.second == rhs.second;
+    }
+};
+
+struct RegIntHash
+{
+    std::size_t operator()(const std::pair<RegionPtr, int> &e) const
+    {
+        return std::hash<RegionPtr>()(e.first) * 141 + e.second * 17;
+    }
+};
+
+struct RegRegIntEq
+{
+    bool operator()(const std::tuple<RegionPtr, RegionPtr, int> &lhs,
+                    const std::tuple<RegionPtr, RegionPtr, int> &rhs) const
+    {
+        const auto &lfst = std::get<0>(lhs);
+        const auto &lsnd = std::get<1>(lhs);
+        const auto &ltrd = std::get<2>(lhs);
+        const auto &rfst = std::get<0>(rhs);
+        const auto &rsnd = std::get<1>(rhs);
+        const auto &rtrd = std::get<2>(rhs);
+
+        return !lfst.owner_before(rfst) && !rfst.owner_before(lfst)
+                && !lsnd.owner_before(rsnd) && !rsnd.owner_before(lsnd)
+                && ltrd == rtrd;
+    }
+};
+
+struct RegRegIntHash
+{
+    std::size_t operator()(const std::tuple<RegionPtr, RegionPtr, int> &e) const
+    {
+        const auto &fst = std::get<0>(e);
+        const auto &snd = std::get<1>(e);
+        const auto &trd = std::get<2>(e);
+
+        return std::hash<RegionPtr>()(fst) * 149
+                + std::hash<RegionPtr>()(snd) * 71
+                + trd * 37;
+    }
+};
 
 }
 
