@@ -10,7 +10,7 @@
 #include "utils.hpp"
 #include "globals.hpp"
 #include "World.hpp"
-#include "common/ScoreComputer.hpp"
+#include "common/Statistics.hpp"
 
 // C++
 #include <limits>
@@ -29,14 +29,13 @@ BasicPickStrategy::~BasicPickStrategy()
 
 RegionPtr BasicPickStrategy::pickNext(const VecOfRegionPtrs &pickableRegions) const
 {
-    using common::ScoreComputer;
-
     auto maxReg = static_cast<RegionPtr>(nullptr);
     auto maxScore = std::numeric_limits<int>::lowest();
+
     for (auto &regionPtr : pickableRegions) {
-        auto score = ScoreComputer::simulationScore(
-                                            regionPtr->getSuperRegion(),
-                                            INIT_AVAILABLE_ARMIES);
+        auto score = simulationScore(regionPtr->getSuperRegion(),
+                                     INIT_AVAILABLE_ARMIES);
+
         if (score > maxScore) {
             maxScore = score;
             maxReg = regionPtr;
@@ -44,6 +43,26 @@ RegionPtr BasicPickStrategy::pickNext(const VecOfRegionPtrs &pickableRegions) co
     }
 
     return maxReg;
+}
+
+double BasicPickStrategy::simulationScore(SuperRegionPtr superRegion,
+                                          int availableArmies) const
+{
+    using common::Statistics;
+
+    auto subRegs = superRegion->getSubRegions();
+    double sum = -subRegs.size();
+
+    for (auto &reg : subRegs)
+        if (reg->getOwner() == Player::ME)
+            sum += reg->getArmies();
+        else
+            sum -= Statistics::armiesNeeded(reg->getArmies(), 0.7);
+
+    if (sum > 0)
+        sum = 0.;
+
+    return (10 - (-sum)/availableArmies) * superRegion->getReward();
 }
 
 } // namespace warlightAi

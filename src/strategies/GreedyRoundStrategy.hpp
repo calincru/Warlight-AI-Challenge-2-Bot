@@ -37,11 +37,23 @@ public:
     VecOfTuples getAttacks() const override;
 
 private:
+    // TODO
+    std::vector<std::pair<RegionPtr, RegionPtr>> getSpoilableRegions() const;
+
     /**
      * Return a list of references to Regions which should be in our Bot's
      * target during this round.
      */
-    VecOfRegionPtrs getTargetedOppRegions();
+    VecOfRegionPtrs getTargetedOppRegions() const;
+
+    // TODO
+    void handleSpoilingAttack(const std::pair<RegionPtr, RegionPtr> &meToOp);
+
+    // TODO
+    void handleExpandingAttack(RegionPtr reg);
+
+    // TODO
+    void handleRemainingArmies();
 
     /**
      * After computing the attacks, this strategy is trying to get all our
@@ -55,8 +67,17 @@ private:
      * containing the regions our Bot owns and have at least one enemy
      * neighbor.
      */
-    std::unordered_set<RegionPtr> getRegionsOnBorder();
+    std::unordered_set<RegionPtr> getRegionsOnBorder() const;
 
+    // TODO
+    double wastelandsBasedScore(SuperRegionPtr superRegion) const;
+
+    // TODO
+    std::tuple<double, RegionPtr, RegionPtr> spoilingScore(
+                                         SuperRegionPtr superRegion) const;
+
+
+    int m_availArmies;
     VecOfPairs m_deployments;
     VecOfTuples m_attacks;
 

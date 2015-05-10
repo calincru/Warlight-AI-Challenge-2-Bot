@@ -22,6 +22,7 @@ public:
     RegionPtr pickNext(const VecOfRegionPtrs &pickableRegions) const override;
 
 private:
+    double simulationScore(SuperRegionPtr superRegion, int availableArmies) const;
 
 }; // class BasicPickStrategy
 
