@@ -3,11 +3,11 @@
 // source code.
 //
 
-
 #ifndef GLOBALS_H_INCLUDED
 #define GLOBALS_H_INCLUDED
 
 #include <vector>
+#include <unordered_set>
 #include <tuple>
 #include <memory>
 
@@ -41,10 +41,15 @@ class SuperRegion;
 
 using RegionPtr = std::shared_ptr<Region>;
 using SuperRegionPtr = std::shared_ptr<SuperRegion>;
-using VecOfRegionPtrs = std::vector<RegionPtr>;
-using VecOfSuperRegionPtrs = std::vector<SuperRegionPtr>;
-using VecOfPairs = std::vector<std::pair<RegionPtr, int>>;
-using VecOfTuples = std::vector<std::tuple<RegionPtr, RegionPtr, int>>;
+
+using RegionPtrList = std::vector<RegionPtr>;
+using SuperRegionPtrList = std::vector<SuperRegionPtr>;
+
+using RegionPtrSet = std::unordered_set<RegionPtr>;
+using SuperRegionPtrSet = std::unordered_set<SuperRegionPtr>;
+
+using VecOfRegInt = std::vector<std::pair<RegionPtr, int>>;
+using VecOfRegRegInt = std::vector<std::tuple<RegionPtr, RegionPtr, int>>;
 
 }
 

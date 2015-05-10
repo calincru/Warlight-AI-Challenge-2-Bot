@@ -23,7 +23,7 @@ public:
      * Creates a new pick strategy given the initial starting regions the
      * game engine selects.
      */
-    PickStrategy(const VecOfRegionPtrs &startingRegions);
+    PickStrategy(const RegionPtrSet &startingRegions);
     virtual ~PickStrategy();
 
     /**
@@ -31,10 +31,10 @@ public:
      * should consist of the whole logic behind our Bot's picks. This is called
      * each time the engine gives the pick_starting_region command.
      */
-    virtual RegionPtr pickNext(const VecOfRegionPtrs &pickableRegions) const = 0;
+    virtual RegionPtr pickNext(const RegionPtrSet &pickableRegions) const = 0;
 
 protected:
-    const VecOfRegionPtrs &m_startingRegions;
+    const RegionPtrSet &m_startingRegions;
 
 }; // class PickStrategy
 

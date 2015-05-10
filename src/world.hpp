@@ -74,17 +74,17 @@ public:
     /**
      * Returns a list of references to all regions owned by the given player.
      */
-    VecOfRegionPtrs getRegionsOwnedBy(warlightAi::Player player) const;
+    RegionPtrSet getRegionsOwnedBy(warlightAi::Player player) const;
 
     // TODO
-    VecOfRegionPtrs getRegionsInFogOf(warlightAi::Player player) const;
+    RegionPtrSet getRegionsInFogOf(warlightAi::Player player) const;
 
     // TODO
     bool isInFogOf(RegionPtr reg, warlightAi::Player player) const;
 
 private:
-    VecOfRegionPtrs m_regions;
-    VecOfSuperRegionPtrs m_superRegions;
+    RegionPtrSet m_regions;
+    SuperRegionPtrSet m_superRegions;
 
 }; // class warlightAi
 

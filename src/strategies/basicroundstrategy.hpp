@@ -22,12 +22,12 @@ class BasicRoundStrategy : public RoundStrategy
 public:
     BasicRoundStrategy(const World &world, int availableArmies);
 
-    VecOfPairs getDeployments() const override;
-    VecOfTuples getAttacks() const override;
+    VecOfRegInt getDeployments() const override;
+    VecOfRegRegInt getAttacks() const override;
 
 private:
-    VecOfPairs m_deployments;
-    VecOfTuples m_attacks;
+    VecOfRegInt m_deployments;
+    VecOfRegRegInt m_attacks;
 
 }; // class BasicRoundStrategy
 

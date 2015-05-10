@@ -21,6 +21,10 @@ namespace warlightAi {
  */
 class GreedyRoundStrategy : public RoundStrategy
 {
+    using RegRegPair = std::pair<RegionPtr, RegionPtr>;
+    using VecOfRegReg = std::vector<RegRegPair>;
+    using DoubleRegReg = std::tuple<double, RegionPtr, RegionPtr>;
+
 public:
     /**
      * @see RoundStrategy::RoundStrategy
@@ -33,21 +37,21 @@ public:
      * which tries to conquer all the regions from the best ranked super
      * region based on our ranking score.
      */
-    VecOfPairs getDeployments() const override;
-    VecOfTuples getAttacks() const override;
+    VecOfRegInt getDeployments() const override;
+    VecOfRegRegInt getAttacks() const override;
 
 private:
     // TODO
-    std::vector<std::pair<RegionPtr, RegionPtr>> getSpoilableRegions() const;
+     VecOfRegReg getSpoilableRegions() const;
 
     /**
      * Return a list of references to Regions which should be in our Bot's
      * target during this round.
      */
-    VecOfRegionPtrs getTargetedOppRegions() const;
+    RegionPtrList getTargetedOppRegions() const;
 
     // TODO
-    void handleSpoilingAttack(const std::pair<RegionPtr, RegionPtr> &meToOp);
+    void handleSpoilingAttack(const RegRegPair &meToOp);
 
     // TODO
     void handleExpandingAttack(RegionPtr reg);
@@ -67,19 +71,18 @@ private:
      * containing the regions our Bot owns and have at least one enemy
      * neighbor.
      */
-    std::unordered_set<RegionPtr> getRegionsOnBorder() const;
+    RegionPtrSet getRegionsOnBorder() const;
 
     // TODO
     double wastelandsBasedScore(SuperRegionPtr superRegion) const;
 
     // TODO
-    std::tuple<double, RegionPtr, RegionPtr> spoilingScore(
-                                         SuperRegionPtr superRegion) const;
+    DoubleRegReg spoilingScore(SuperRegionPtr superRegion) const;
 
 
     int m_availArmies;
-    VecOfPairs m_deployments;
-    VecOfTuples m_attacks;
+    VecOfRegInt m_deployments;
+    VecOfRegRegInt m_attacks;
 
 }; // class GreedyRoundStrategy
 

@@ -16,10 +16,10 @@ namespace warlightAi {
 class BasicPickStrategy : public PickStrategy
 {
 public:
-    BasicPickStrategy(const VecOfRegionPtrs &startingRegions);
+    BasicPickStrategy(const RegionPtrSet &startingRegions);
     virtual ~BasicPickStrategy();
 
-    RegionPtr pickNext(const VecOfRegionPtrs &pickableRegions) const override;
+    RegionPtr pickNext(const RegionPtrSet &pickableRegions) const override;
 
 private:
 

@@ -122,12 +122,12 @@ private:
     int m_maxRounds;
     int m_availableArmies;
 
-    VecOfRegionPtrs m_pickableRegions;
-    VecOfRegionPtrs m_startingRegions;
-    VecOfRegionPtrs m_opponentStartingRegions;
+    RegionPtrSet m_pickableRegions;
+    RegionPtrSet m_startingRegions;
+    RegionPtrSet m_opponentStartingRegions;
 
-    VecOfTuples m_opponentAttacks;
-    VecOfPairs m_opponentDeployments;
+    VecOfRegRegInt m_opponentAttacks;
+    VecOfRegInt m_opponentDeployments;
 
     PickStrategyPtr m_pickStrategy;
     RoundStrategyPtr m_roundStrategy;

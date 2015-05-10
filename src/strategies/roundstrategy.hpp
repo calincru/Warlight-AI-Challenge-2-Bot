@@ -33,8 +33,8 @@ public:
      * Pure virtual methods returning the deployments and the attacks our Bot
      * should do this round.
      */
-    virtual VecOfPairs getDeployments() const = 0;
-    virtual VecOfTuples getAttacks() const = 0;
+    virtual VecOfRegInt getDeployments() const = 0;
+    virtual VecOfRegRegInt getAttacks() const = 0;
 
 protected:
     const World &m_world;

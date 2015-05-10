@@ -9,7 +9,7 @@
 
 namespace warlightAi {
 
-PickStrategy::PickStrategy(const VecOfRegionPtrs &startingRegions)
+PickStrategy::PickStrategy(const RegionPtrSet &startingRegions)
     : m_startingRegions(startingRegions)
 {}
 

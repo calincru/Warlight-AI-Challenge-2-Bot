@@ -48,28 +48,27 @@ GreedyRoundStrategy::GreedyRoundStrategy(const World &world,
     std::reverse(m_attacks.begin(), m_attacks.end());
 }
 
-VecOfPairs GreedyRoundStrategy::getDeployments() const
+VecOfRegInt GreedyRoundStrategy::getDeployments() const
 {
     return m_deployments;
 }
 
-VecOfTuples GreedyRoundStrategy::getAttacks() const
+VecOfRegRegInt GreedyRoundStrategy::getAttacks() const
 {
     return m_attacks;
 }
 
-auto GreedyRoundStrategy::getSpoilableRegions() const
-    -> std::vector<std::pair<RegionPtr, RegionPtr>>
+auto GreedyRoundStrategy::getSpoilableRegions() const -> VecOfRegReg
 {
-    auto pq_cmp = [](const auto &lhs, const auto &rhs) -> bool {
+    auto pq_cmp = [](const auto &lhs, const auto &rhs) {
         return std::get<0>(lhs) < std::get<0>(rhs);
     };
     std::priority_queue<
-                        std::tuple<double, RegionPtr, RegionPtr>,
-                        std::vector<std::tuple<double, RegionPtr, RegionPtr>>,
+                        DoubleRegReg,
+                        std::vector<DoubleRegReg>,
                         decltype(pq_cmp)
                        > pq(pq_cmp);
-    std::unordered_set<SuperRegionPtr> supers;
+    SuperRegionPtrSet supers;
 
     for (auto &myReg : m_world.getRegionsOwnedBy(Player::ME))
         for (auto &neigh : myReg->getNeighbors())
@@ -89,21 +88,21 @@ auto GreedyRoundStrategy::getSpoilableRegions() const
             pq.emplace(spoilingScore(super));
     }
 
-    std::vector<std::pair<RegionPtr, RegionPtr>> spoilables;
+    VecOfRegReg spoilables;
 
     while (!pq.empty()) {
         auto top = pq.top();
-        pq.pop();
 
+        pq.pop();
         spoilables.emplace_back(std::get<1>(top), std::get<2>(top));
     }
 
     return spoilables;
 }
 
-VecOfRegionPtrs GreedyRoundStrategy::getTargetedOppRegions() const
+RegionPtrList GreedyRoundStrategy::getTargetedOppRegions() const
 {
-    auto pq_cmp = [](const auto &lhs, const auto &rhs) -> bool {
+    auto pq_cmp = [](const auto &lhs, const auto &rhs) {
         return lhs.first < rhs.first;
     };
     std::priority_queue<
@@ -111,7 +110,7 @@ VecOfRegionPtrs GreedyRoundStrategy::getTargetedOppRegions() const
                         std::vector<std::pair<double, SuperRegionPtr>>,
                         decltype(pq_cmp)
                        > pq(pq_cmp);
-    std::unordered_set<SuperRegionPtr> supers;
+    SuperRegionPtrSet supers;
 
     for (auto &myReg : m_world.getRegionsOwnedBy(Player::ME))
         for (auto &neigh : myReg->getNeighbors()) {
@@ -125,8 +124,8 @@ VecOfRegionPtrs GreedyRoundStrategy::getTargetedOppRegions() const
             supers.emplace(neigh->getSuperRegion());
         }
 
-    std::unordered_set<RegionPtr> addedRegs;
-    VecOfRegionPtrs neighs;
+    RegionPtrSet addedRegs;
+    RegionPtrList neighs;
 
     while (!pq.empty()) {
         auto superReg = pq.top().second;
@@ -148,8 +147,7 @@ VecOfRegionPtrs GreedyRoundStrategy::getTargetedOppRegions() const
     return neighs;
 }
 
-void GreedyRoundStrategy::handleSpoilingAttack(
-        const std::pair<RegionPtr, RegionPtr> &meToOp)
+void GreedyRoundStrategy::handleSpoilingAttack(const RegRegPair &meToOp)
 {
     using common::Statistics;
 
@@ -246,9 +244,9 @@ void GreedyRoundStrategy::computeMigrations()
     }
 }
 
-std::unordered_set<RegionPtr> GreedyRoundStrategy::getRegionsOnBorder() const
+RegionPtrSet GreedyRoundStrategy::getRegionsOnBorder() const
 {
-    std::unordered_set<RegionPtr> regsOnBorder;
+    RegionPtrSet regsOnBorder;
 
     for (auto &mine : m_world.getRegionsOwnedBy(Player::ME)) {
         auto isOnBorder = false;
@@ -293,15 +291,15 @@ double GreedyRoundStrategy::wastelandsBasedScore(SuperRegionPtr superRegion) con
 }
 
 auto GreedyRoundStrategy::spoilingScore(SuperRegionPtr superRegion) const
-    -> std::tuple<double, RegionPtr, RegionPtr>
+    -> DoubleRegReg
 {
-    auto pq_cmp = [](const auto &lhs, const auto &rhs) -> bool {
+    auto pq_cmp = [](const auto &lhs, const auto &rhs) {
         return (1. * lhs.second->getArmies()) / lhs.first->getArmies()
                 > (1. * rhs.second->getArmies()) / rhs.first->getArmies();
     };
     std::priority_queue<
-                        std::pair<RegionPtr, RegionPtr>,
-                        std::vector<std::pair<RegionPtr, RegionPtr>>,
+                        RegRegPair,
+                        std::vector<RegRegPair>,
                         decltype(pq_cmp)
                        > pq(pq_cmp);
 

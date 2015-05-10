@@ -3,7 +3,6 @@
 // source code.
 //
 
-
 #ifndef STRING_MANIPULATION_H_INCLUDED
 #define STRING_MANIPULATION_H_INCLUDED
 

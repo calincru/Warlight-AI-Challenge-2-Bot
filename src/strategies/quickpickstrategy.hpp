@@ -25,13 +25,13 @@ public:
     /**
      * @see PickStrategy::PickStrategy
      */
-    QuickPickStrategy(const VecOfRegionPtrs &startingRegions);
+    QuickPickStrategy(const RegionPtrSet &startingRegions);
 
     /**
      * Returns a reference to the Region to be picked at this picking phase,
      * based on the "Quick" algorithm, briefly described above.
      */
-    RegionPtr pickNext(const VecOfRegionPtrs &pickableRegions) const override;
+    RegionPtr pickNext(const RegionPtrSet &pickableRegions) const override;
 
 private:
     /**

@@ -23,14 +23,13 @@ void World::addRegion(int regionId, int superRegionId)
         throw std::runtime_error("Couldn't find region's superRegion");
 
     auto newReg = std::make_shared<Region>(regionId, regionSuper);
-    m_regions.emplace_back(newReg);
+    m_regions.emplace(newReg);
     regionSuper->addSubRegion(newReg);
 }
 
 void World::addSuperRegion(int superRegionId, int award)
 {
-    m_superRegions.emplace_back(
-                std::make_shared<SuperRegion>(superRegionId, award));
+    m_superRegions.emplace(std::make_shared<SuperRegion>(superRegionId, award));
 }
 
 void World::addLink(int region1, int region2)
@@ -64,7 +63,7 @@ auto World::getRegionsOwnedBy(warlightAi::Player player) const
 
     for (auto &region : m_regions)
         if (region->getOwner() == player)
-            ownedRegions.emplace_back(region);
+            ownedRegions.emplace(region);
 
     return ownedRegions;
 }
@@ -87,9 +86,9 @@ SuperRegionPtr World::getSuperRegionById(int superRegionId) const
     return nullptr;
 }
 
-VecOfRegionPtrs World::getRegionsInFogOf(warlightAi::Player player) const
+RegionPtrSet World::getRegionsInFogOf(warlightAi::Player player) const
 {
-    VecOfRegionPtrs fogRegs;
+    RegionPtrSet fogRegs;
 
     for (auto &reg : m_regions) {
         bool inFog = true;
@@ -104,7 +103,7 @@ VecOfRegionPtrs World::getRegionsInFogOf(warlightAi::Player player) const
             }
 
         if (inFog)
-            fogRegs.emplace_back(reg);
+            fogRegs.emplace(reg);
     }
 
     return fogRegs;

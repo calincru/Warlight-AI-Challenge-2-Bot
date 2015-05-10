@@ -18,7 +18,7 @@
 
 namespace warlightAi {
 
-BasicPickStrategy::BasicPickStrategy(const VecOfRegionPtrs &startingRegions)
+BasicPickStrategy::BasicPickStrategy(const RegionPtrSet &startingRegions)
     : PickStrategy(startingRegions)
 {
 }
@@ -27,7 +27,7 @@ BasicPickStrategy::~BasicPickStrategy()
 {
 }
 
-RegionPtr BasicPickStrategy::pickNext(const VecOfRegionPtrs &pickableRegions) const
+RegionPtr BasicPickStrategy::pickNext(const RegionPtrSet &pickableRegions) const
 {
     using common::BasicScore;
 

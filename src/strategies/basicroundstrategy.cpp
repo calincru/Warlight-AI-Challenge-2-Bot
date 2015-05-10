@@ -50,12 +50,12 @@ BasicRoundStrategy::BasicRoundStrategy(const World &world, int availableArmies)
                            maxPair.first->getArmies() - 1);
 }
 
-VecOfPairs BasicRoundStrategy::getDeployments() const
+VecOfRegInt BasicRoundStrategy::getDeployments() const
 {
     return m_deployments;
 }
 
-VecOfTuples BasicRoundStrategy::getAttacks() const
+VecOfRegRegInt BasicRoundStrategy::getAttacks() const
 {
     return m_attacks;
 }

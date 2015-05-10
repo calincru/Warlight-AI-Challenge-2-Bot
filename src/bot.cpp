@@ -139,12 +139,12 @@ void Bot::addWasteland(int targetRegion)
 
 void Bot::addStartingRegion(int startingRegion)
 {
-    m_startingRegions.emplace_back(m_world.getRegionById(startingRegion));
+    m_startingRegions.emplace(m_world.getRegionById(startingRegion));
 }
 
 void Bot::addPickableRegion(int pickableRegion)
 {
-    m_pickableRegions.emplace_back(m_world.getRegionById(pickableRegion));
+    m_pickableRegions.emplace(m_world.getRegionById(pickableRegion));
 }
 
 void Bot::addOpponentAttack(int fromRegion, int toRegion, int armiesCount)
@@ -166,9 +166,7 @@ void Bot::addOpponentDeployment(int destRegion, int armiesCount)
 
 void Bot::addOpponentStartingRegion(int startingRegion)
 {
-    m_opponentStartingRegions.emplace_back(
-                        m_world.getRegionById(startingRegion)
-    );
+    m_opponentStartingRegions.emplace(m_world.getRegionById(startingRegion));
 }
 
 void Bot::setName(const std::string &name)

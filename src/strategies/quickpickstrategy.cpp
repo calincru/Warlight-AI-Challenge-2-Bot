@@ -18,12 +18,12 @@
 
 namespace warlightAi {
 
-QuickPickStrategy::QuickPickStrategy(const VecOfRegionPtrs &startingRegions)
+QuickPickStrategy::QuickPickStrategy(const RegionPtrSet &startingRegions)
     : PickStrategy(startingRegions)
 {
 }
 
-RegionPtr QuickPickStrategy::pickNext(const VecOfRegionPtrs &pickableRegions) const
+RegionPtr QuickPickStrategy::pickNext(const RegionPtrSet &pickableRegions) const
 {
     auto pq_cmp = [](const auto &lhs, const auto &rhs) {
         return lhs.first > rhs.first;
