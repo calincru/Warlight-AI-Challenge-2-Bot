@@ -19,10 +19,12 @@ namespace warlightAi {
 void World::addRegion(int regionId, int superRegionId)
 {
     auto regionSuper = getSuperRegionById(superRegionId);
+
     if (!regionSuper)
         throw std::runtime_error("Couldn't find region's superRegion");
 
     auto newReg = std::make_shared<Region>(regionId, regionSuper);
+
     m_regions.emplace(newReg);
     regionSuper->addSubRegion(newReg);
 }
@@ -52,6 +54,7 @@ void World::addWasteland(int id)
 void World::updateRegion(int region, Player owner, int armies)
 {
     auto targetReg = getRegionById(region);
+
     targetReg->setOwner(owner);
     targetReg->setArmies(armies);
 }

@@ -12,7 +12,6 @@
 // C++
 #include <unordered_set>
 
-
 namespace warlightAi {
 
 /**
@@ -48,13 +47,13 @@ private:
      * Return a list of references to Regions which should be in our Bot's
      * target during this round.
      */
-    RegionPtrList getTargetedOppRegions() const;
+    RegionPtrList getHostileRegions() const;
 
     // TODO
     void handleSpoilingAttack(const RegRegPair &meToOp);
 
     // TODO
-    void handleExpandingAttack(RegionPtr reg);
+    void handleHostileAttack(RegionPtr reg);
 
     // TODO
     void handleRemainingArmies();
@@ -64,7 +63,7 @@ private:
      * armies from regions which do not have any enemy neighbor in the
      * direction where there are enemy armies.
      */
-    void computeMigrations();
+    void migrate();
 
     /**
      * Helper function, used by the above method, which returns a set
@@ -74,10 +73,10 @@ private:
     RegionPtrSet getRegionsOnBorder() const;
 
     // TODO
-    double wastelandsBasedScore(SuperRegionPtr superRegion) const;
+    double superRegionsScore(SuperRegionPtr superRegion) const;
 
     // TODO
-    DoubleRegReg spoilingScore(SuperRegionPtr superRegion) const;
+    DoubleRegReg spoilingScoreTuple(SuperRegionPtr superRegion) const;
 
 
     int m_availArmies;

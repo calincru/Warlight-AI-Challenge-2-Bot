@@ -15,7 +15,6 @@
 #include <queue>
 #include <limits>
 
-
 namespace warlightAi {
 
 QuickPickStrategy::QuickPickStrategy(const RegionPtrSet &startingRegions)
@@ -53,6 +52,7 @@ RegionPtr QuickPickStrategy::pickNext(const RegionPtrSet &pickableRegions) const
         pq.pop();
 
         auto currentMax = superRegionScore(currEntry.second->getSuperRegion());
+
         if (currentMax > maximum) {
             maximum = currentMax;
             pickedReg = currEntry.second;

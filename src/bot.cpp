@@ -67,11 +67,12 @@ void Bot::pick()
 void Bot::deploy()
 {
     std::vector<std::string> result;
+
     for (auto &entry : m_roundStrategy->getDeployments()) {
         std::stringstream ss;
+
         ss << m_name << " place_armies " << entry.first->id() << " "
            << entry.second;
-
         result.emplace_back(ss.str());
     }
 
@@ -81,12 +82,13 @@ void Bot::deploy()
 void Bot::attack()
 {
     std::vector<std::string> result;
+
     for (auto &attack : m_roundStrategy->getAttacks()) {
         std::stringstream ss;
+
         ss << m_name << " attack/transfer " << std::get<0>(attack)->id()
            << " " << std::get<1>(attack)->id() << " "
            << std::get<2>(attack);
-
         result.emplace_back(ss.str());
     }
 

@@ -19,7 +19,6 @@
 #include <iostream>
 #include <algorithm>
 
-
 namespace warlightAi {
 
 GreedyRoundStrategy::GreedyRoundStrategy(const World &world,
@@ -34,17 +33,17 @@ GreedyRoundStrategy::GreedyRoundStrategy(const World &world,
         handleSpoilingAttack(neigh);
     }
 
-    for (auto &neigh : getTargetedOppRegions()) {
+    for (auto &neigh : getHostileRegions()) {
         if (m_availArmies <= 0)
             break;
 
-        handleExpandingAttack(neigh);
+        handleHostileAttack(neigh);
    }
 
     if (m_availArmies)
         handleRemainingArmies();
 
-    computeMigrations();
+    migrate();
     std::reverse(m_attacks.begin(), m_attacks.end());
 }
 
@@ -85,7 +84,7 @@ auto GreedyRoundStrategy::getSpoilableRegions() const -> VecOfRegReg
             }
 
         if (isSpoilable)
-            pq.emplace(spoilingScore(super));
+            pq.emplace(spoilingScoreTuple(super));
     }
 
     VecOfRegReg spoilables;
@@ -100,7 +99,7 @@ auto GreedyRoundStrategy::getSpoilableRegions() const -> VecOfRegReg
     return spoilables;
 }
 
-RegionPtrList GreedyRoundStrategy::getTargetedOppRegions() const
+RegionPtrList GreedyRoundStrategy::getHostileRegions() const
 {
     auto pq_cmp = [](const auto &lhs, const auto &rhs) {
         return lhs.first < rhs.first;
@@ -118,7 +117,7 @@ RegionPtrList GreedyRoundStrategy::getTargetedOppRegions() const
                 continue;
 
             pq.emplace(
-                wastelandsBasedScore(neigh->getSuperRegion()),
+                superRegionsScore(neigh->getSuperRegion()),
                 neigh->getSuperRegion()
             );
             supers.emplace(neigh->getSuperRegion());
@@ -169,7 +168,7 @@ void GreedyRoundStrategy::handleSpoilingAttack(const RegRegPair &meToOp)
     mine->setArmies(1);
 }
 
-void GreedyRoundStrategy::handleExpandingAttack(RegionPtr reg)
+void GreedyRoundStrategy::handleHostileAttack(RegionPtr reg)
 {
     using common::Statistics;
 
@@ -220,7 +219,7 @@ void GreedyRoundStrategy::handleRemainingArmies()
     }
 }
 
-void GreedyRoundStrategy::computeMigrations()
+void GreedyRoundStrategy::migrate()
 {
     auto visitedRegs = getRegionsOnBorder();
     std::queue<RegionPtr> Q;
@@ -264,7 +263,7 @@ RegionPtrSet GreedyRoundStrategy::getRegionsOnBorder() const
     return regsOnBorder;
 }
 
-double GreedyRoundStrategy::wastelandsBasedScore(SuperRegionPtr superRegion) const
+double GreedyRoundStrategy::superRegionsScore(SuperRegionPtr superRegion) const
 {
     auto score = superRegion->getReward() * 1.;
     auto minesSum = 0;
@@ -290,7 +289,7 @@ double GreedyRoundStrategy::wastelandsBasedScore(SuperRegionPtr superRegion) con
     return score / (minesCount + oppCount);
 }
 
-auto GreedyRoundStrategy::spoilingScore(SuperRegionPtr superRegion) const
+auto GreedyRoundStrategy::spoilingScoreTuple(SuperRegionPtr superRegion) const
     -> DoubleRegReg
 {
     auto pq_cmp = [](const auto &lhs, const auto &rhs) {

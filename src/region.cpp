@@ -43,6 +43,7 @@ bool Region::isNeighbor(RegionPtr region) const
 std::vector<RegionPtr> Region::getNeighbors() const
 {
     std::vector<RegionPtr> neighs;
+
     for (auto &neigh : m_neighbors)
         neighs.emplace_back(neigh.lock());
 

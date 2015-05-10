@@ -41,6 +41,7 @@ bool SuperRegion::containsRegion(RegionPtr region) const
 std::vector<RegionPtr> SuperRegion::getSubRegions() const
 {
     std::vector<RegionPtr> subRegs;
+
     for (auto &subReg : m_subRegions)
         subRegs.emplace_back(subReg);
 

@@ -9,7 +9,6 @@
 // Project
 #include "pickstrategy.hpp"
 
-
 namespace warlightAi {
 
 // Fwrd decls
