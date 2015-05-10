@@ -5,7 +5,7 @@
 
 
 // Self
-#include "Region.h"
+#include "Region.hpp"
 
 // C++
 #include <cassert>

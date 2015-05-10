@@ -5,7 +5,7 @@
 
 
 // Project
-#include "Bot.h"
+#include "Bot.hpp"
 
 // C++
 #include <iostream>

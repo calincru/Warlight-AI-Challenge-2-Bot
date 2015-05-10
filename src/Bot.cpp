@@ -5,16 +5,16 @@
 
 
 // Self
-#include "Bot.h"
+#include "Bot.hpp"
 
 // Project
-#include "utils.h"
-#include "StringManipulation.h"
-#include "Parser.h"
-#include "Region.h"
-#include "SuperRegion.h"
-#include "QuickPickStrategy.h"
-#include "GreedyRoundStrategy.h"
+#include "utils.hpp"
+#include "StringManipulation.hpp"
+#include "Parser.hpp"
+#include "Region.hpp"
+#include "SuperRegion.hpp"
+#include "QuickPickStrategy.hpp"
+#include "GreedyRoundStrategy.hpp"
 
 // C++
 #include <iostream>

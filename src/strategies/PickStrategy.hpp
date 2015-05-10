@@ -8,7 +8,7 @@
 
 
 // Project
-#include "globals.h"
+#include "globals.hpp"
 
 
 namespace warlightAi {

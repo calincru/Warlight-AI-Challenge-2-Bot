@@ -7,8 +7,8 @@
 #define BASIC_PICK_STRATEGY_H_INCLUDED
 
 // Project
-#include "PickStrategy.h"
-#include "globals.h"
+#include "PickStrategy.hpp"
+#include "globals.hpp"
 
 
 namespace warlightAi {

@@ -4,10 +4,10 @@
 //
 
 // Self
-#include "RoundStrategy.h"
+#include "RoundStrategy.hpp"
 
 // Project
-#include "World.h"
+#include "World.hpp"
 
 
 namespace warlightAi {

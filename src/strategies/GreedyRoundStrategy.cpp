@@ -4,14 +4,14 @@
 //
 
 // Self
-#include "GreedyRoundStrategy.h"
+#include "GreedyRoundStrategy.hpp"
 
 // Project
-#include "globals.h"
-#include "World.h"
-#include "Region.h"
-#include "SuperRegion.h"
-#include "common/ScoreComputer.h"
+#include "globals.hpp"
+#include "World.hpp"
+#include "Region.hpp"
+#include "SuperRegion.hpp"
+#include "common/ScoreComputer.hpp"
 
 // C++
 #include <queue>

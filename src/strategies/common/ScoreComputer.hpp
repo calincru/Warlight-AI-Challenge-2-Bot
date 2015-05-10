@@ -7,10 +7,10 @@
 #define SCORE_COMPUTER_H_INCLUDED
 
 // Project
-#include "utils.h"
-#include "globals.h"
-#include "Region.h"
-#include "SuperRegion.h"
+#include "utils.hpp"
+#include "globals.hpp"
+#include "Region.hpp"
+#include "SuperRegion.hpp"
 
 
 namespace warlightAi { namespace common {

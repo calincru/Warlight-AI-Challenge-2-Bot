@@ -4,13 +4,13 @@
 //
 
 // Self
-#include "BasicPickStrategy.h"
+#include "BasicPickStrategy.hpp"
 
 // Project
-#include "utils.h"
-#include "globals.h"
-#include "World.h"
-#include "common/ScoreComputer.h"
+#include "utils.hpp"
+#include "globals.hpp"
+#include "World.hpp"
+#include "common/ScoreComputer.hpp"
 
 // C++
 #include <limits>

@@ -4,7 +4,7 @@
 //
 
 // Self
-#include "PickStrategy.h"
+#include "PickStrategy.hpp"
 
 
 namespace warlightAi {

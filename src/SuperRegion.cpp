@@ -5,10 +5,10 @@
 
 
 // Self
-#include "SuperRegion.h"
+#include "SuperRegion.hpp"
 
 // Project
-#include "Region.h"
+#include "Region.hpp"
 
 
 namespace warlightAi {

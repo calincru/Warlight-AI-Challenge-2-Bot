@@ -8,8 +8,8 @@
 
 
 // Project
-#include "globals.h"
-#include "RoundStrategy.h"
+#include "globals.hpp"
+#include "RoundStrategy.hpp"
 
 
 namespace warlightAi {

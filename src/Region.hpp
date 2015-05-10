@@ -8,7 +8,7 @@
 #define REGION_H_INCLUDED
 
 // Project
-#include <globals.h>
+#include "globals.hpp"
 
 // C++
 #include <vector>

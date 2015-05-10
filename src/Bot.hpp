@@ -10,10 +10,10 @@
 
 // Project
 #include "boost/noncopyable.hpp"
-#include "globals.h"
-#include "World.h"
-#include "PickStrategy.h"
-#include "RoundStrategy.h"
+#include "globals.hpp"
+#include "World.hpp"
+#include "PickStrategy.hpp"
+#include "RoundStrategy.hpp"
 
 // C++
 #include <vector>
