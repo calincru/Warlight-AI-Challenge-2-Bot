@@ -101,6 +101,20 @@ auto GreedyRoundStrategy::getSpoilableRegions() const -> RegRegList
 
 RegionPtrList GreedyRoundStrategy::getHostileRegions() const
 {
+    SuperRegionPtrSet supers;
+
+    for (auto &reg : m_world.getRegionsOwnedBy(Player::ME))
+        supers.emplace(reg->getSuperRegion());
+    for (auto &reg : m_world.getRegionsOwnedBy(Player::OPPONENT))
+        supers.emplace(reg->getSuperRegion());
+    for (auto &reg : m_world.getRegionsOwnedBy(Player::NEUTRAL))
+        supers.emplace(reg->getSuperRegion());
+
+    SuperRegToDouble superToDouble;
+
+    for (auto &superReg : supers)
+        superToDouble.emplace(superReg, superScore(superReg));
+
     auto pq_cmp = [](const auto &lhs, const auto &rhs) {
         return lhs.first < rhs.first;
     };
@@ -109,15 +123,15 @@ RegionPtrList GreedyRoundStrategy::getHostileRegions() const
                         std::vector<std::pair<double, SuperRegionPtr>>,
                         decltype(pq_cmp)
                        > pq(pq_cmp);
-    SuperRegionPtrSet supers;
 
+    supers.clear();
     for (auto &myReg : m_world.getRegionsOwnedBy(Player::ME))
         for (auto &neigh : myReg->getNeighbors()) {
             if (supers.count(neigh->getSuperRegion()))
                 continue;
 
             pq.emplace(
-                superRegionsScore(neigh->getSuperRegion()),
+                superWeightedScore(neigh->getSuperRegion(), superToDouble),
                 neigh->getSuperRegion()
             );
             supers.emplace(neigh->getSuperRegion());
@@ -275,30 +289,64 @@ RegionPtrSet GreedyRoundStrategy::getRegionsOnBorder() const
     return regsOnBorder;
 }
 
-double GreedyRoundStrategy::superRegionsScore(SuperRegionPtr superRegion) const
+double GreedyRoundStrategy::superScore(SuperRegionPtr superRegion) const
 {
-    auto score = superRegion->getReward() * 1.;
     auto minesSum = 0;
     auto minesCount = 0;
-    auto oppCount = 0;
     auto oppSum = 0;
+    auto oppCount = 0;
+    auto neutralSum = 0;
+    auto neutralCount = 0;
 
     for (auto &subReg : superRegion->getSubRegions())
         if (subReg->getOwner() == Player::ME) {
             ++minesCount;
             minesSum += subReg->getArmies();
-        } else {
+        } else if (subReg->getOwner() == Player::OPPONENT) {
             ++oppCount;
             oppSum += subReg->getArmies();
+        } else {
+            ++neutralCount;
+            neutralSum += subReg->getArmies();
         }
 
-    if (!oppCount)
-        return -1.;
+    if (oppCount + neutralCount == 0)
+        return .5;
 
-    score *= (minesCount * 1.)/oppCount;
-    score *= (minesSum * 1.)/oppSum;
+    if (!minesCount)
+        minesCount =  minesSum = 1;
 
-    return score / (minesCount + oppCount);
+    auto beta = .7;
+    auto gamma = .3;
+    auto delta = .7;
+    auto eps = .3;
+    auto score = superRegion->getReward() * 1.;
+
+    score *= (minesCount * 1.)/(beta * oppCount + gamma * neutralCount);
+    score *= (minesSum * 1.)/(delta * oppSum + eps * neutralSum);
+
+    return score / (minesCount + oppCount + neutralCount);
+}
+
+double GreedyRoundStrategy::superWeightedScore(SuperRegionPtr superReg,
+                                               SuperRegToDouble &m) const
+{
+    SuperRegionPtrSet supers{superReg};
+    auto sum = 0.;
+    auto count = 0;
+
+    for (auto &reg : superReg->getSubRegions())
+        for (auto &neigh : reg->getNeighbors()) {
+            if (supers.count(neigh->getSuperRegion()))
+                continue;
+
+            sum += m.at(neigh->getSuperRegion());
+            ++count;
+            supers.emplace(neigh->getSuperRegion());
+        }
+
+    // TODO f(sum, count)
+    return m.at(superReg) * sum / count;
 }
 
 auto GreedyRoundStrategy::spoilingScoreTuple(SuperRegionPtr superRegion) const

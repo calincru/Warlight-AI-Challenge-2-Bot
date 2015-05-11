@@ -11,6 +11,7 @@
 
 // C++
 #include <unordered_set>
+#include <unordered_map>
 
 namespace warlightAi {
 
@@ -23,6 +24,7 @@ class GreedyRoundStrategy : public RoundStrategy
     using RegRegPair = std::pair<RegionPtr, RegionPtr>;
     using RegRegList = std::vector<RegRegPair>;
     using DoubleRegReg = std::tuple<double, RegionPtr, RegionPtr>;
+    using SuperRegToDouble = std::unordered_map<SuperRegionPtr, double>;
 
 public:
     /**
@@ -73,7 +75,11 @@ private:
     RegionPtrSet getRegionsOnBorder() const;
 
     // TODO
-    double superRegionsScore(SuperRegionPtr superRegion) const;
+    double superScore(SuperRegionPtr superRegion) const;
+
+    // TODO
+    double superWeightedScore(SuperRegionPtr superReg,
+                              SuperRegToDouble &m) const;
 
     // TODO
     DoubleRegReg spoilingScoreTuple(SuperRegionPtr superRegion) const;
