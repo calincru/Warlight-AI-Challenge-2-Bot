@@ -336,26 +336,33 @@ double GreedyRoundStrategy::superRegionsScore(SuperRegionPtr superRegion) const
     auto minesCount = 0;
     auto oppCount = 0;
     auto oppSum = 0;
+    auto neutralCount = 0;
+    auto neutralSum = 0;
 
     for (auto &subReg : superRegion->getSubRegions())
         if (subReg->getOwner() == Player::ME) {
             ++minesCount;
             minesSum += subReg->getArmies();
-        } else {
+        } else if (subReg->getOwner() == Player::OPPONENT) {
             ++oppCount;
             oppSum += subReg->getArmies();
+        } else {
+            ++neutralCount;
+            neutralSum += subReg->getArmies();
         }
 
-    if (!oppCount)
+    if (oppCount + neutralCount == 0)
         return -1.;
 
     if (!minesCount)
         minesCount = minesSum = 1;
 
-    score *= (minesCount * 1.)/oppCount;
-    score *= (minesSum * 1.)/oppSum;
+    // Added just for trial => 10% improvement lel. Reason for this in the
+    // future.
+    score *= (minesCount * 1.)/(0.8 * neutralCount + 0.2 * oppCount);
+    score *= (minesSum * 1.)/(0.8 * neutralSum + 0.2 * oppSum);
 
-    return score / (minesCount + oppCount);
+    return score / (minesCount + neutralCount + oppCount);
 }
 
 auto GreedyRoundStrategy::spoilingScoreTuple(SuperRegionPtr superRegion) const
