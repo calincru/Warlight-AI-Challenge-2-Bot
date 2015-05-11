@@ -3,8 +3,6 @@
 // source code.
 //
 
-
-
 #ifndef BOT_H_INCLUDED
 #define BOT_H_INCLUDED
 
@@ -18,7 +16,6 @@
 // C++
 #include <vector>
 #include <string>
-
 
 namespace warlightAi {
 

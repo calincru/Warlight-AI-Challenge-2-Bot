@@ -112,6 +112,8 @@ void Bot::checkOpponentStartingRegions()
     m_pickableRegions.clear();
 
     // TODO
+    for (auto &reg : m_opponentStartingRegions)
+        m_world.updateRegion(reg->id(), Player::OPPONENT, INIT_AVAILABLE_ARMIES);
 }
 
 void Bot::checkOpponentMoves()
