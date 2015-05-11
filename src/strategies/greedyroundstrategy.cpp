@@ -217,6 +217,12 @@ void GreedyRoundStrategy::handleHostileAttack(RegionPtr reg)
 
 void GreedyRoundStrategy::handleRemainingArmies()
 {
+    remainingArmiesDefStrategy();
+    remainingArmiesNvmStrategy();
+}
+
+void GreedyRoundStrategy::remainingArmiesDefStrategy()
+{
     using common::Statistics;
 
     auto oppRegsSet = m_world.getRegionsOwnedBy(Player::OPPONENT);
@@ -253,7 +259,15 @@ void GreedyRoundStrategy::handleRemainingArmies()
                 }
             }
         }
+}
 
+void GreedyRoundStrategy::remainingArmiesOffStrategy()
+{
+
+}
+
+void GreedyRoundStrategy::remainingArmiesNvmStrategy()
+{
     if (m_attacks.size() && m_availArmies > 0) {
         m_deployments.emplace_back(std::get<0>(m_attacks.front()), m_availArmies);
         std::get<2>(m_attacks.front()) += m_availArmies;

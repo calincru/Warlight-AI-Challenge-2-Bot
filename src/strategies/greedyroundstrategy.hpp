@@ -58,7 +58,11 @@ private:
     void handleHostileAttack(RegionPtr reg);
 
     // TODO
+    // Remaining armies strategies
     void handleRemainingArmies();
+    void remainingArmiesDefStrategy();
+    void remainingArmiesOffStrategy();
+    void remainingArmiesNvmStrategy();
 
     /**
      * After computing the attacks, this strategy is trying to get all our
