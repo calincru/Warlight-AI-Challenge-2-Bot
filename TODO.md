@@ -1,7 +1,18 @@
 # TODO List
 
-* Fără fugărire (reverse nu tocmai ok?)
-* Vs adversar
+* Fără fugărire (reverse nu tocmai ok?) - mai poate fi amanata, nu e o problema
+foarte mare.
+* Faza de pick. Am pierdut cateva meciuri doar pt ca am avut pick prost.
+Superregiunile sunt OK, insa trebuie tinut cont si de adversar si de regiunile
+noastre pe care le-am ales deja.
+* Adaugat faza de defense. Eventual combinata cu faza de spoil, pentru ca
+se aseamana conditiile.
+* Faza de expand imbunatatita astfel incat sa tina si ea cont de adversar - 
+vedeti meciul asta
+http://theaigames.com/competitions/warlight-ai-challenge-2/games/5550347135ec1d06ec727f5d
+Incepe sa cucereasca superregiune aia in prima runda chiar daca vede ca e
+inconjurat de 2 inamici. Eventual sa modificam functia de scor sa tina cont de
+inamici / distanta pana la alte regiuni ale noastre.
 
 
 
