@@ -17,6 +17,7 @@ include(CMakeDependentOption)
 option(AI_AB_ENABLE_PEDANTIC      "Compile with pedantic enabled." ON)
 option(AI_AB_ENABLE_WERROR        "Fail and stop if a warning is triggered." ON)
 option(AI_AB_ENABLE_CXX14         "Use the -std=c++14 switch if the compiler supports it." ON)
+option(AI_AB_OPTIMIZE_COMPILATION "Use the -O3 and -funroll-loops compilation flags." ON)
 set(CMAKE_BUILD_TYPE Debug)
 
 
@@ -50,6 +51,11 @@ endif()
 
 if (AI_AB_ENABLE_CXX14)
     ai_ab_append_flag(AI_AB_CXX_FEATURE_FLAGS AI_AB_HAS_STDCXX14_FLAG -std=c++14)
+endif()
+
+if (AI_AB_OPTIMIZE_COMPILATION)
+    ai_ab_append_flag(AI_AB_CXX_FEATURE_FLAGS AI_AB_HAS_O_THREE_FLAG        -O3)
+    ai_ab_append_flag(AI_AB_CXX_FEATURE_FLAGS AI_AB_HAS_F_UNROLL_LOOPS_FLAG -funroll-loops)
 endif()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
