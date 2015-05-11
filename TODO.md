@@ -4,7 +4,12 @@
 foarte mare.
 * Faza de pick. Am pierdut cateva meciuri doar pt ca am avut pick prost.
 Superregiunile sunt OK, insa trebuie tinut cont si de adversar si de regiunile
-noastre pe care le-am ales deja.
+noastre pe care le-am ales deja. Am putea face funcii de scor pentru fiecare
+criteriu si apoi sa facem o medie ponderata. Partea grea e la gasirea
+ponderilor, insa cred ca ar merge. Gen o functie care da scorul bazat pe
+reward raportat la numarul de subregiuni. O functie care da scorul bazat pe
+suma distantelor pana la celelalte regiuni deja alese de noi. O functie care da
+scorul bazat pe suma distantelor pana la adversar.
 * Adaugat faza de defense. Eventual combinata cu faza de spoil, pentru ca
 se aseamana conditiile.
 * Faza de expand imbunatatita astfel incat sa tina si ea cont de adversar - 
