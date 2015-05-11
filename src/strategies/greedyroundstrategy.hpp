@@ -11,6 +11,7 @@
 
 // C++
 #include <unordered_set>
+#include <unordered_map>
 
 namespace warlightAi {
 
@@ -23,6 +24,7 @@ class GreedyRoundStrategy : public RoundStrategy
     using RegRegPair = std::pair<RegionPtr, RegionPtr>;
     using RegRegList = std::vector<RegRegPair>;
     using DoubleRegReg = std::tuple<double, RegionPtr, RegionPtr>;
+    using RegToIntMap = std::unordered_map<RegionPtr, int>;
 
 public:
     /**
@@ -80,6 +82,8 @@ private:
 
 
     int m_availArmies;
+    RegToIntMap m_regToArmiesBfr;
+
     RegIntList m_deployments;
     RegRegIntList m_attacks;
 

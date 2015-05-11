@@ -26,6 +26,9 @@ GreedyRoundStrategy::GreedyRoundStrategy(const World &world,
     : RoundStrategy(world, availableArmies)
     , m_availArmies(availableArmies)
 {
+    for (auto &reg : m_world.getRegionsOwnedBy(Player::ME))
+        m_regToArmiesBfr.emplace(reg, reg->getArmies());
+
     for (auto &neigh : getSpoilableRegions()) {
         if (m_availArmies <= 0)
             break;
@@ -153,7 +156,7 @@ void GreedyRoundStrategy::handleSpoilingAttack(const RegRegPair &meToOp)
     auto opp = meToOp.second;
     auto mine = meToOp.first;
 
-    auto armiesNeeded = Statistics::armiesNeeded(opp->getArmies(), 0.7) + 1;
+    auto armiesNeeded = Statistics::armiesNeeded(opp->getArmies()) + 1;
     auto diff = armiesNeeded - mine->getArmies();
 
     if (diff > m_availArmies) {
@@ -185,7 +188,7 @@ void GreedyRoundStrategy::handleHostileAttack(RegionPtr reg)
         }
     }
 
-    auto armiesNeeded = Statistics::armiesNeeded(reg->getArmies(), 0.7) + 1;
+    auto armiesNeeded = Statistics::armiesNeeded(reg->getArmies()) + 1;
     auto diff = armiesNeeded - maxArmies;
 
     if (diff > m_availArmies) {
@@ -214,10 +217,47 @@ void GreedyRoundStrategy::handleHostileAttack(RegionPtr reg)
 
 void GreedyRoundStrategy::handleRemainingArmies()
 {
-    if (m_attacks.size()) {
+    using common::Statistics;
+
+    auto oppRegsSet = m_world.getRegionsOwnedBy(Player::OPPONENT);
+    RegionPtrList oppRegs{oppRegsSet.begin(), oppRegsSet.end()};
+
+    auto regSort = [](const auto &lhs, const auto &rhs) {
+        return lhs->getArmies() > rhs->getArmies();
+    };
+    std::sort(oppRegs.begin(), oppRegs.end(), regSort);
+
+    for (auto &reg : oppRegs)
+        for  (auto &myReg : reg->getNeighbors()) {
+            if (m_availArmies <= 0)
+                return;
+
+            if (myReg->getOwner() != Player::ME)
+                continue;
+
+            auto myRegBfr = m_regToArmiesBfr.at(myReg);
+            auto armies = Statistics::armiesNeeded(myRegBfr);
+            auto diff = reg->getArmies() - armies - 1;
+
+            if (diff <= 0) {
+                m_deployments.emplace_back(myReg, 1);
+                m_availArmies -= 1;
+                myReg->setArmies(myReg->getArmies() + 1);
+            } else {
+                auto inverse = Statistics::revArmiesNeeded(reg->getArmies()) + 1;
+
+                if (inverse - myRegBfr <= m_availArmies) {
+                    m_deployments.emplace_back(myReg, inverse - myRegBfr);
+                    m_availArmies -= inverse - myRegBfr;
+                    myReg->setArmies(myReg->getArmies() + inverse - myRegBfr);
+                }
+            }
+        }
+
+    if (m_attacks.size() && m_availArmies > 0) {
         m_deployments.emplace_back(std::get<0>(m_attacks.front()), m_availArmies);
         std::get<2>(m_attacks.front()) += m_availArmies;
-    } else {
+    } else if (m_availArmies > 0) {
         auto maxArmies = std::numeric_limits<int>::lowest();
         auto maxReg = static_cast<RegionPtr>(nullptr);
 

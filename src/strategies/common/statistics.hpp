@@ -12,6 +12,8 @@
 #include "region.hpp"
 #include "superregion.hpp"
 
+// C++
+#include <cmath>
 
 namespace warlightAi { namespace common {
 
@@ -25,15 +27,24 @@ public:
      * Function used to determine the number of armies our Bot has to attack
      * the opponent, to conquer the given region with the given probability.
      */
-    static int armiesNeeded(int oppArmies, double probability)
+    static int armiesNeeded(int oppArmies)
     {
-        UNUSED(probability);
         if (oppArmies == 1)
-            return 2.;
+            return 2;
         if (oppArmies == 2)
-            return 3.;
+            return 3;
 
-        return 3./2.*oppArmies + 1;
+        return std::floor(3./2. * oppArmies + 1);
+    }
+
+    static int revArmiesNeeded(int armies)
+    {
+        if (armies == 2)
+            return 1;
+        if (armies == 3)
+            return 2;
+
+        return std::floor(2./3. * (armies - 1));
     }
 };
 

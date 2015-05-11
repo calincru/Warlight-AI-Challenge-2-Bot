@@ -26,7 +26,7 @@ public:
             if (reg->getOwner() == Player::ME)
                 sum += reg->getArmies();
             else
-                sum -= Statistics::armiesNeeded(reg->getArmies(), 0.7);
+                sum -= Statistics::armiesNeeded(reg->getArmies());
 
         if (sum > 0)
             sum = 0.;
