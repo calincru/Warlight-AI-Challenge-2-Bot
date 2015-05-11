@@ -295,6 +295,9 @@ double GreedyRoundStrategy::superRegionsScore(SuperRegionPtr superRegion) const
     if (!oppCount)
         return -1.;
 
+    if (!minesCount)
+        minesCount = minesSum = 1;
+
     score *= (minesCount * 1.)/oppCount;
     score *= (minesSum * 1.)/oppSum;
 
