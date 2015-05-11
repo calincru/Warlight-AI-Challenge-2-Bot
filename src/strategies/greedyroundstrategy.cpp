@@ -196,7 +196,19 @@ void GreedyRoundStrategy::handleHostileAttack(RegionPtr reg)
         m_availArmies -= diff;
     }
 
-    m_attacks.emplace_back(biggestReg, reg, biggestReg->getArmies() - 1);
+    // Check if the attack already exists and acccumulate it.
+    bool found = false;
+
+    for (auto &attack : m_attacks)
+        if (std::get<0>(attack) == biggestReg && std::get<1>(attack) == reg) {
+            std::get<2>(attack) += biggestReg->getArmies() - 1;
+            found = true;
+            break;
+        }
+
+    if (!found)
+        m_attacks.emplace_back(biggestReg, reg, biggestReg->getArmies() - 1);
+
     biggestReg->setArmies(1);
 }
 

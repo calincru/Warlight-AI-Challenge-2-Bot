@@ -48,8 +48,11 @@ using SuperRegionPtrList = std::vector<SuperRegionPtr>;
 using RegionPtrSet = std::unordered_set<RegionPtr>;
 using SuperRegionPtrSet = std::unordered_set<SuperRegionPtr>;
 
-using RegIntList = std::vector<std::pair<RegionPtr, int>>;
-using RegRegIntList = std::vector<std::tuple<RegionPtr, RegionPtr, int>>;
+using RegIntPair = std::pair<RegionPtr, int>;
+using RegIntList = std::vector<RegIntPair>;
+
+using RegRegIntTuple = std::tuple<RegionPtr, RegionPtr, int>;
+using RegRegIntList = std::vector<RegRegIntTuple>;
 
 struct RegIntEq;
 struct RegIntHash;
@@ -62,14 +65,13 @@ using RegIntSet = std::unordered_set<
 struct RegRegIntEq;
 struct RegRegIntHash;
 using RegRegIntSet = std::unordered_set<
-                            std::tuple<RegionPtr, RegionPtr, int>,
+                            RegRegIntTuple,
                             RegRegIntHash,
                             RegRegIntEq
                      >;
 struct RegIntEq
 {
-    bool operator()(const std::pair<RegionPtr, int> &lhs,
-                    const std::pair<RegionPtr, int> &rhs) const
+    bool operator()(const RegIntPair &lhs, const RegIntPair &rhs) const
     {
         return !lhs.first.owner_before(rhs.first)
                 && !rhs.first.owner_before(lhs.first)
@@ -79,7 +81,7 @@ struct RegIntEq
 
 struct RegIntHash
 {
-    std::size_t operator()(const std::pair<RegionPtr, int> &e) const
+    std::size_t operator()(const RegIntPair &e) const
     {
         return std::hash<RegionPtr>()(e.first) * 141 + e.second * 17;
     }
@@ -87,8 +89,7 @@ struct RegIntHash
 
 struct RegRegIntEq
 {
-    bool operator()(const std::tuple<RegionPtr, RegionPtr, int> &lhs,
-                    const std::tuple<RegionPtr, RegionPtr, int> &rhs) const
+    bool operator()(const RegRegIntTuple &lhs, const RegRegIntTuple &rhs) const
     {
         const auto &lfst = std::get<0>(lhs);
         const auto &lsnd = std::get<1>(lhs);
@@ -105,7 +106,7 @@ struct RegRegIntEq
 
 struct RegRegIntHash
 {
-    std::size_t operator()(const std::tuple<RegionPtr, RegionPtr, int> &e) const
+    std::size_t operator()(const RegRegIntTuple &e) const
     {
         const auto &fst = std::get<0>(e);
         const auto &snd = std::get<1>(e);
