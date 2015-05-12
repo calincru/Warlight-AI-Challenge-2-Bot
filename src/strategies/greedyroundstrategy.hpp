@@ -42,9 +42,6 @@ public:
     RegRegIntList getAttacks() const override;
 
 private:
-    // TODO Just added
-    SuperRegionPtrList getDefendableSuperRegs() const;
-
     /**
      * Returns the list of "spoilable" regions. The term is defined in the
      * description of the class.
@@ -117,9 +114,6 @@ private:
      * priority.
      */
     DoubleRegReg spoilingScoreTuple(SuperRegionPtr superRegion) const;
-
-    // TODO Just added
-    double defendingScore(SuperRegionPtr superReg) const;
 
 
     int m_availArmies;
