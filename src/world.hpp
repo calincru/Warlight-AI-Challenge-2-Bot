@@ -76,6 +76,11 @@ public:
     RegionPtrSet getRegionsOwnedBy(warlightAi::Player player) const;
 
     /**
+     * Returns the set of super regions owned by the given player;
+     */
+    SuperRegionPtrSet getSuperRegionsOwnedBy(warlightAi::Player player) const;
+
+    /**
      * Returns the set of regions which are in fog of the given player.
      */
     RegionPtrSet getRegionsInFogOf(warlightAi::Player player) const;

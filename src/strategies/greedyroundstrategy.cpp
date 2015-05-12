@@ -29,6 +29,13 @@ GreedyRoundStrategy::GreedyRoundStrategy(const World &world,
     for (auto &reg : m_world.getRegionsOwnedBy(Player::ME))
         m_regToArmiesBfr.emplace(reg, reg->getArmies());
 
+    for (auto &superReg : getDefendableSuperRegs()) {
+        if (m_availArmies <= 0)
+            break;
+
+        handleDefendingSuperReg(superReg);
+    }
+
     for (auto &neigh : getSpoilableRegions()) {
         if (m_availArmies <= 0)
             break;
@@ -58,6 +65,30 @@ RegIntList GreedyRoundStrategy::getDeployments() const
 RegRegIntList GreedyRoundStrategy::getAttacks() const
 {
     return m_attacks;
+}
+
+SuperRegionPtrList GreedyRoundStrategy::getDefendableSuperRegs() const
+{
+    auto pq_cmp = [](const auto &lhs, const auto &rhs) {
+        return lhs.first < rhs.first;
+    };
+    std::priority_queue<
+                        std::pair<double, SuperRegionPtr>,
+                        std::vector<std::pair<double, SuperRegionPtr>>,
+                        decltype(pq_cmp)
+                       > pq(pq_cmp);
+
+    for (auto &superReg : m_world.getSuperRegionsOwnedBy(Player::ME))
+        pq.emplace(defendingScore(superReg), superReg);
+
+    SuperRegionPtrList superRegsList;
+
+    while (!pq.empty()) {
+        superRegsList.emplace_back(pq.top().second);
+        pq.pop();
+    }
+
+    return superRegsList;
 }
 
 auto GreedyRoundStrategy::getSpoilableRegions() const -> RegRegList
@@ -147,6 +178,62 @@ RegionPtrList GreedyRoundStrategy::getHostileRegions() const
     }
 
     return neighs;
+}
+
+void GreedyRoundStrategy::handleDefendingSuperReg(SuperRegionPtr superReg)
+{
+    using common::Statistics;
+
+    auto pq_cmp = [](const auto &lhs, const auto &rhs) {
+        return lhs.second->getArmies() < rhs.second->getArmies();
+    };
+    std::priority_queue<
+                        std::pair<RegionPtr, RegionPtr>,
+                        std::vector<std::pair<RegionPtr, RegionPtr>>,
+                        decltype(pq_cmp)
+                       > pq(pq_cmp);
+
+    for (auto &mine : superReg->getSubRegions()) {
+        auto maxOppArmies = 0;
+        auto oppReg = static_cast<RegionPtr>(nullptr);
+
+        for (auto &his : mine->getNeighbors())
+            if (his->getOwner() == Player::OPPONENT
+                    && his->getArmies() > maxOppArmies) {
+                maxOppArmies = his->getArmies();
+                oppReg = his;
+            }
+
+        if (!oppReg)
+            continue;
+
+        pq.emplace(mine, oppReg);
+    }
+
+    while (!pq.empty() && m_availArmies > 0) {
+        auto mine = pq.top().first;
+        auto his = pq.top().second;
+
+        pq.pop();
+
+        auto myArmies = mine->getArmies();
+        auto armies = Statistics::armiesNeeded(myArmies);
+        auto diff = his->getArmies() - armies - 1;
+
+        if (diff <= 0) {
+            m_deployments.emplace_back(mine, 1);
+            m_availArmies -= 1;
+            mine->setArmies(myArmies + 1);
+        } else {
+            auto inverse = Statistics::revArmiesNeeded(his->getArmies()) + 1;
+
+            if (inverse - myArmies <= m_availArmies) {
+                m_deployments.emplace_back(mine, inverse - myArmies);
+                m_availArmies -= inverse - myArmies;
+                mine->setArmies(inverse);
+            }
+        }
+    }
 }
 
 void GreedyRoundStrategy::handleSpoilingAttack(const RegRegPair &meToOp)
@@ -391,6 +478,31 @@ auto GreedyRoundStrategy::spoilingScoreTuple(SuperRegionPtr superRegion) const
     auto ratio = (1. * top.second->getArmies()) / top.first->getArmies();
 
     return std::make_tuple(ratio, top.first, top.second);
+}
+
+double GreedyRoundStrategy::defendingScore(SuperRegionPtr superReg) const
+{
+    // Three factors:
+    //      1) Nr. of Opp armies/regions
+    //      2) Nr. of My armies/regions
+    //      3) Bonus
+    auto hisArmies = 0;
+    auto mineArmies = 0;
+    RegionPtrSet visited;
+
+    for (auto &mine : superReg->getSubRegions()) {
+        mineArmies += mine->getArmies();
+
+        for (auto &neigh : mine->getNeighbors())
+            if (neigh->getOwner() == Player::OPPONENT
+                    && !visited.count(neigh)) {
+                hisArmies += neigh->getArmies();
+                visited.emplace(neigh);
+            }
+    }
+
+    // Ignore his for the moment.
+    return superReg->getReward() * mineArmies;
 }
 
 } // namespace warlightAi

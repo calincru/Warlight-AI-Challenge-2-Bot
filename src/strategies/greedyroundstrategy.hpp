@@ -42,6 +42,9 @@ public:
     RegRegIntList getAttacks() const override;
 
 private:
+    // TODO Just added
+    SuperRegionPtrList getDefendableSuperRegs() const;
+
     /**
      * Returns the list of "spoilable" regions. The term is defined in the
      * description of the class.
@@ -53,6 +56,9 @@ private:
      * should be attacked by our bot in order to expand.
      */
     RegionPtrList getHostileRegions() const;
+
+    // TODO Just added
+    void handleDefendingSuperReg(SuperRegionPtr superReg);
 
     /**
      * Takes a pair (myReg, oppReg), meaning that we should attack from `myReg`,
@@ -111,6 +117,9 @@ private:
      * priority.
      */
     DoubleRegReg spoilingScoreTuple(SuperRegionPtr superRegion) const;
+
+    // TODO Just added
+    double defendingScore(SuperRegionPtr superReg) const;
 
 
     int m_availArmies;

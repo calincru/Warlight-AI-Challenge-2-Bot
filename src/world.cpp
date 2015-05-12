@@ -70,6 +70,27 @@ auto World::getRegionsOwnedBy(warlightAi::Player player) const
     return ownedRegions;
 }
 
+auto World::getSuperRegionsOwnedBy(warlightAi::Player player) const
+    -> decltype(m_superRegions)
+{
+    decltype(m_superRegions) ownedSuperRegs;
+
+    for (auto &superReg : m_superRegions) {
+        bool isOwned = true;
+
+        for (auto &reg : superReg->getSubRegions())
+            if (reg->getOwner() != player) {
+                isOwned = false;
+                break;
+            }
+
+        if (isOwned)
+            ownedSuperRegs.emplace(superReg);
+    }
+
+    return ownedSuperRegs;
+}
+
 RegionPtr World::getRegionById(int regionId) const
 {
     for (auto &region : m_regions)
