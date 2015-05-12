@@ -3,14 +3,12 @@
 // source code.
 //
 
-
 #ifndef PARSER_H_INCLUDED
 #define PARSER_H_INCLUDED
 
 // Project
 #include "globals.hpp"
 #include "boost/noncopyable.hpp"
-
 
 namespace warlightAi {
 

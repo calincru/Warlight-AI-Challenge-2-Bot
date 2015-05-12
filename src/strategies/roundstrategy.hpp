@@ -6,10 +6,8 @@
 #ifndef ROUND_STRATEGY_H_INCLUDED
 #define ROUND_STRATEGY_H_INCLUDED
 
-
 // Project
 #include "globals.hpp"
-
 
 namespace warlightAi {
 
@@ -43,6 +41,5 @@ protected:
 }; // class RoundStrategy
 
 } // namespace warlightAi
-
 
 #endif // ROUND_STRATEGY_H_INCLUDED

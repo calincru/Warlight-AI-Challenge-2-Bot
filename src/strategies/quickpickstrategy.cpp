@@ -22,11 +22,6 @@ QuickPickStrategy::QuickPickStrategy(const RegionPtrSet &startingRegions)
 {
 }
 
-// Cum arata cum functia, ar trebui sa fie tranformata complet in functia
-// care da scorul bazat pe raportul dintre numarul de subregiuni si reward,
-// insa ar trebui sa facem cumva ca scorul sa tina cont de nr de armate din
-// super regiune. Astfel, vor fi defavorizate cele cu wastelandsuri si fix
-// asta vrem.
 RegionPtr QuickPickStrategy::pickNext(const RegionPtrSet &pickableRegions) const
 {
     auto pq_cmp = [](const auto &lhs, const auto &rhs) {

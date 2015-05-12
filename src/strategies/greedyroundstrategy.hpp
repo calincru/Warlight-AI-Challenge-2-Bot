@@ -18,6 +18,8 @@ namespace warlightAi {
 /**
  * The main round strategy of our Bot at this phase. This is based on a greedy
  * algorithm.
+ *
+ *
  */
 class GreedyRoundStrategy : public RoundStrategy
 {
@@ -34,31 +36,49 @@ public:
 
     /**
      * Return the deployments and the attacks our Bot should do during this
-     * round. As mentioned above, they are computed using a greedy algorithm
-     * which tries to conquer all the regions from the best ranked super
-     * region based on our ranking score.
+     * round.
      */
     RegIntList getDeployments() const override;
     RegRegIntList getAttacks() const override;
 
 private:
-    // TODO
+    /**
+     * Returns the list of "spoilable" regions. The term is defined in the
+     * description of the class.
+     */
      RegRegList getSpoilableRegions() const;
 
     /**
-     * Return a list of references to Regions which should be in our Bot's
-     * target during this round.
+     * Returns a list of regions in a non-decreasing order (by importance) which
+     * should be attacked by our bot in order to expand.
      */
     RegionPtrList getHostileRegions() const;
 
-    // TODO
+    /**
+     * Takes a pair (myReg, oppReg), meaning that we should attack from `myReg`,
+     * the opponent's region `oppReg` in order to spoil its super region. This
+     * function decides how many armies we should attack with.
+     *
+     * More about this in the description of the class.
+     */
     void handleSpoilingAttack(const RegRegPair &meToOp);
 
-    // TODO
+    /**
+     * Takes a region of the opponent which our bot should attack in order to
+     * expand.
+     */
     void handleHostileAttack(RegionPtr reg);
 
-    // TODO
-    // Remaining armies strategies
+    /**
+     * If after the previous attack/transfer function handlers we still have
+     * available armies, they are taken care of in these functions.
+     *
+     * We have two different strategies for this phase, but only one is
+     * currently implemented - the deffensive one.
+     *
+     * The `Nvm` strategy is the "last resort" function, in case we still have
+     * available armies.
+     */
     void handleRemainingArmies();
     void remainingArmiesDefStrategy();
     void remainingArmiesOffStrategy();
@@ -78,10 +98,18 @@ private:
      */
     RegionPtrSet getRegionsOnBorder() const;
 
-    // TODO
+    /**
+     * Returns a score associated to the given super region. This score is used
+     * with the intent to conquer this super region and the score represents
+     * the priority our bot should do this with.
+     */
     double superRegionsScore(SuperRegionPtr superRegion) const;
 
-    // TODO
+    /**
+     * Returns a tuple (score, myReg, oppReg) meaning that the pair
+     * (myReg, oppReg) should be considered as a spoiling move with the `score`
+     * priority.
+     */
     DoubleRegReg spoilingScoreTuple(SuperRegionPtr superRegion) const;
 
 

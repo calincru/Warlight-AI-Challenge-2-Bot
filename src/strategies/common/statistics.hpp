@@ -34,6 +34,9 @@ public:
         return std::ceil((d - 0.5) * 5 / 3);
     }
 
+    /**
+     * The inverse of the above function.
+     */
     static int revArmiesNeeded(int armies)
     {
         return round(3./5 * armies + 0.001);

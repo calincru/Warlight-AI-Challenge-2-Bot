@@ -6,10 +6,8 @@
 #ifndef PICK_STRATEGY_H_INCLUDED
 #define PICK_STRATEGY_H_INCLUDED
 
-
 // Project
 #include "globals.hpp"
-
 
 namespace warlightAi {
 
@@ -24,6 +22,7 @@ public:
      * game engine selects.
      */
     PickStrategy(const RegionPtrSet &startingRegions);
+
     virtual ~PickStrategy();
 
     /**
@@ -39,6 +38,5 @@ protected:
 }; // class PickStrategy
 
 } // namespace warlightAi
-
 
 #endif // PICK_STRATEGY_H_INCLUDED

@@ -3,13 +3,11 @@
 // source code.
 //
 
-
 // Self
 #include "region.hpp"
 
 // C++
 #include <cassert>
-
 
 namespace warlightAi {
 

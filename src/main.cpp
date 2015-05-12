@@ -3,13 +3,11 @@
 // source code.
 //
 
-
 // Project
 #include "bot.hpp"
 
 // C++
 #include <iostream>
-
 
 int main()
 {

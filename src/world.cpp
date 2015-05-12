@@ -13,7 +13,6 @@
 // C++
 #include <exception>
 
-
 namespace warlightAi {
 
 void World::addRegion(int regionId, int superRegionId)

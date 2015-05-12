@@ -3,7 +3,6 @@
 // source code.
 //
 
-
 // Self
 #include "parser.hpp"
 
@@ -17,15 +16,11 @@
 #include "stringmanipulation.hpp"
 #include "utils.hpp"
 
-
-
 namespace warlightAi {
 
 Parser::Parser(Bot &bot)
     : m_bot(bot)
-{
-    // nothing to do
-}
+{}
 
 bool Parser::lineEnds() const
 {
@@ -215,7 +210,7 @@ void Parser::parseNeighbors()
     std::string neighbors;
 
     while (!lineEnds() && std::cin >> region >> neighbors) {
-        auto neighborsFlds = StringManipulation::comma_split(neighbors);
+        auto neighborsFlds = stringManipulation::comma_split(neighbors);
 
         for (auto &neigh : neighborsFlds)
             m_bot.addNeighbor(region, std::stoi(neigh));

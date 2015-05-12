@@ -263,7 +263,7 @@ void GreedyRoundStrategy::remainingArmiesDefStrategy()
 
 void GreedyRoundStrategy::remainingArmiesOffStrategy()
 {
-
+    // TODO
 }
 
 void GreedyRoundStrategy::remainingArmiesNvmStrategy()

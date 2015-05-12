@@ -10,7 +10,6 @@
 #include "pickstrategy.hpp"
 #include "globals.hpp"
 
-
 namespace warlightAi {
 
 class BasicPickStrategy : public PickStrategy
@@ -26,6 +25,5 @@ private:
 }; // class BasicPickStrategy
 
 } // namespace warlightAi
-
 
 #endif // BASIC_PICK_STRATEGY_H_INCLUDED

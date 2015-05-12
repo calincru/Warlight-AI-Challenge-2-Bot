@@ -13,7 +13,6 @@
 #include <vector>
 #include <memory>
 
-
 namespace warlightAi {
 
 // Fwrd decls
@@ -72,14 +71,18 @@ public:
     SuperRegionPtr getSuperRegionById(int superRegionId) const;
 
     /**
-     * Returns a list of references to all regions owned by the given player.
+     * Returns the set of regions owned by the given player.
      */
     RegionPtrSet getRegionsOwnedBy(warlightAi::Player player) const;
 
-    // TODO
+    /**
+     * Returns the set of regions which are in fog of the given player.
+     */
     RegionPtrSet getRegionsInFogOf(warlightAi::Player player) const;
 
-    // TODO
+    /**
+     * Returns true if the region `reg` is in the fog of the given player.
+     */
     bool isInFogOf(RegionPtr reg, warlightAi::Player player) const;
 
 private:
@@ -87,7 +90,6 @@ private:
     SuperRegionPtrSet m_superRegions;
 
 }; // class warlightAi
-
 
 } // namespace warlightAi
 

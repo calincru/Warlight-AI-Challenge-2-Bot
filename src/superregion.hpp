@@ -12,7 +12,6 @@
 // C++
 #include <memory>
 
-
 namespace warlightAi {
 
 // Fwrd decls

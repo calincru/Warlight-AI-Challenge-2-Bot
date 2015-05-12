@@ -11,7 +11,7 @@
 #include <string>
 #include <sstream>
 
-namespace StringManipulation {
+namespace stringManipulation {
 
 inline std::vector<std::string> comma_split(const std::string &s)
 {
@@ -29,11 +29,13 @@ inline std::vector<std::string> comma_split(const std::string &s)
 inline std::string comma_join(const std::vector<std::string> &elems)
 {
     std::string res = elems.front();
+
     for (auto it = elems.begin() + 1; it != elems.end(); ++it)
         res += ',' + *it;
 
     return res;
 }
 
-}
-#endif
+} // namespace stringManipulation
+
+#endif // STRING_MANIPULATION_H_INCLUDED

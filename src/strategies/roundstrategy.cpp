@@ -9,7 +9,6 @@
 // Project
 #include "world.hpp"
 
-
 namespace warlightAi {
 
 RoundStrategy::RoundStrategy(const World &world, int availableArmies)

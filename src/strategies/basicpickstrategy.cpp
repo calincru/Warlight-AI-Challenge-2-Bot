@@ -15,7 +15,6 @@
 // C++
 #include <limits>
 
-
 namespace warlightAi {
 
 BasicPickStrategy::BasicPickStrategy(const RegionPtrSet &startingRegions)

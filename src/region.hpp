@@ -3,7 +3,6 @@
 // source code.
 //
 
-
 #ifndef REGION_H_INCLUDED
 #define REGION_H_INCLUDED
 
@@ -13,7 +12,6 @@
 // C++
 #include <vector>
 #include <memory>
-
 
 namespace warlightAi {
 

@@ -118,6 +118,6 @@ struct RegRegIntHash
     }
 };
 
-}
+} // namespace warlightAi
 
 #endif // GLOBALS_H_INCLUDED

@@ -3,7 +3,6 @@
 // source code.
 //
 
-
 // Self
 #include "bot.hpp"
 
@@ -23,15 +22,12 @@
 #include <algorithm>
 #include <memory>
 
-
-
 namespace warlightAi {
 
 Bot::Bot()
     : m_pickStrategy(nullptr)
     , m_roundStrategy(nullptr)
-{
-}
+{}
 
 void Bot::play()
 {
@@ -76,7 +72,7 @@ void Bot::deploy()
         result.emplace_back(ss.str());
     }
 
-    std::cout << StringManipulation::comma_join(result) << std::endl;
+    std::cout << stringManipulation::comma_join(result) << std::endl;
 }
 
 void Bot::attack()
@@ -95,7 +91,7 @@ void Bot::attack()
     if (!result.size())
         std::cout << "No moves" << std::endl;
     else
-        std::cout << StringManipulation::comma_join(result) << std::endl;
+        std::cout << stringManipulation::comma_join(result) << std::endl;
 }
 
 void Bot::checkStartingRegions()
@@ -111,7 +107,6 @@ void Bot::checkOpponentStartingRegions()
     m_startingRegions.clear();
     m_pickableRegions.clear();
 
-    // TODO
     for (auto &reg : m_opponentStartingRegions)
         m_world.updateRegion(reg->id(), Player::OPPONENT, INIT_AVAILABLE_ARMIES);
 }

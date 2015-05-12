@@ -14,7 +14,6 @@
 // C++
 #include <limits>
 
-
 namespace warlightAi {
 
 BasicRoundStrategy::BasicRoundStrategy(const World &world, int availableArmies)

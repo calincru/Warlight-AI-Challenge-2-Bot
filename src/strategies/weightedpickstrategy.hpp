@@ -14,7 +14,7 @@ namespace warlightAi {
 // Fwrd decls
 class World;
 
-// TODO
+// TODO Just the starting piece of code for a new, smarter picking strategy.
 class WeightedPickStrategy : public PickStrategy
 {
 public:

@@ -3,13 +3,11 @@
 // source code.
 //
 
-
 // Self
 #include "superregion.hpp"
 
 // Project
 #include "region.hpp"
-
 
 namespace warlightAi {
 

@@ -13,6 +13,9 @@
 
 namespace warlightAi { namespace common {
 
+/**
+ * A class containing functions common to the basic family of strategies.
+ */
 class BasicScore
 {
 public:
