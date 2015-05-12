@@ -317,7 +317,7 @@ RegionPtrSet GreedyRoundStrategy::getRegionsOnBorder() const
         auto isOnBorder = false;
 
         for (auto &neigh : mine->getNeighbors())
-            if (neigh->getOwner() != Player::ME) {
+            if (neigh->getOwner() == Player::OPPONENT) {
                 isOnBorder = true;
                 break;
             }
