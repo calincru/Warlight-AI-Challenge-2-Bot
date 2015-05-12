@@ -223,6 +223,11 @@ void GreedyRoundStrategy::handleDefendingSuperReg(SuperRegionPtr superReg)
         if (diff <= 0) {
             m_deployments.emplace_back(mine, 1);
             m_availArmies -= 1;
+
+            // Tested with not "telling" the following steps about the change.
+            // It resulted in not a significant improvement.
+            //
+            // The same applies for below.
             mine->setArmies(myArmies + 1);
         } else {
             auto inverse = Statistics::revArmiesNeeded(his->getArmies()) + 1;
